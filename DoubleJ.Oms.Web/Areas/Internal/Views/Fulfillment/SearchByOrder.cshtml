@@ -1,0 +1,12 @@
+﻿@using (Ajax.BeginForm("SearchByOrder", new AjaxOptions { OnSuccess = "showSearchByOrderResult" }))
+{
+    <div>
+        <label for="q">
+            Search Order
+        </label>
+        @Html.TextBox("q")
+        <input type="submit" value="Search" class="k-button" />
+    </div>
+    <div id="searchByOrderResult">
+    </div>
+}

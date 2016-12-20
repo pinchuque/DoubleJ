@@ -1,0 +1,120 @@
+﻿@model NutritionInfoViewModel
+<div id="customerData">
+    <h1>Edit Product</h1>
+    @using (Html.BeginForm("EditNutritionInfo"))
+    {
+        <fieldset class="dataentry" id="form-nutrition">
+            <legend>Nutrition Info</legend>
+            <canvas id="form-nutrition-canvas" style="float: right; height: 533px; width: 231px;"></canvas>
+            <div>
+                @Html.LabelFor(m => m.Description)
+                @Html.TextAreaFor(m => m.Description)
+                @Html.ValidationMessageFor(m => m.Description)
+            </div>
+            <div>
+                @Html.LabelFor(m => m.ServingSize)
+                @Html.EditorFor(m => m.ServingSize)
+                @Html.ValidationMessageFor(m => m.ServingSize)
+            </div>
+            <div>
+                @Html.LabelFor(m => m.ServingPerContainer)
+                @Html.EditorFor(m => m.ServingPerContainer)
+                @Html.ValidationMessageFor(m => m.ServingPerContainer)
+            </div>
+            <div>
+                @Html.LabelFor(m => m.Calories)
+                @Html.EditorFor(m => m.Calories)
+                @Html.ValidationMessageFor(m => m.Calories)
+            </div>
+            <div>
+                @Html.LabelFor(m => m.CaloriesFat)
+                @Html.EditorFor(m => m.CaloriesFat)
+                @Html.ValidationMessageFor(m => m.CaloriesFat)
+            </div>
+            <div>
+                @Html.LabelFor(m => m.TotalFat)
+                @Html.EditorFor(m => m.TotalFat)
+                @Html.ValidationMessageFor(m => m.TotalFat)
+            </div>
+            <div>
+                @Html.LabelFor(m => m.SatFat)
+                @Html.EditorFor(m => m.SatFat)
+                @Html.ValidationMessageFor(m => m.SatFat)
+            </div>
+            <div>
+                @Html.LabelFor(m => m.TransFat)
+                @Html.EditorFor(m => m.TransFat)
+                @Html.ValidationMessageFor(m => m.TransFat)
+            </div>
+            <div>
+                @Html.LabelFor(m => m.PolyFat)
+                @Html.EditorFor(m => m.PolyFat)
+                @Html.ValidationMessageFor(m => m.PolyFat)
+            </div>
+            <div>
+                @Html.LabelFor(m => m.MonoFat)
+                @Html.EditorFor(m => m.MonoFat)
+                @Html.ValidationMessageFor(m => m.MonoFat)
+            </div>
+            <div>
+                @Html.LabelFor(m => m.Cholesterol)
+                @Html.EditorFor(m => m.Cholesterol)
+                @Html.ValidationMessageFor(m => m.Cholesterol)
+            </div>
+            <div>
+                @Html.LabelFor(m => m.Sodium)
+                @Html.EditorFor(m => m.Sodium)
+                @Html.ValidationMessageFor(m => m.Sodium)
+            </div>
+            <div>
+                @Html.LabelFor(m => m.Carbs)
+                @Html.EditorFor(m => m.Carbs)
+                @Html.ValidationMessageFor(m => m.Carbs)
+            </div>
+            <div>
+                @Html.LabelFor(m => m.Protein)
+                @Html.EditorFor(m => m.Protein)
+                @Html.ValidationMessageFor(m => m.Protein)
+            </div>
+            <div>
+                @Html.LabelFor(m => m.VitA)
+                @Html.EditorFor(m => m.VitA)
+                @Html.ValidationMessageFor(m => m.VitA)
+            </div>
+            <div>
+                @Html.LabelFor(m => m.VitC)
+                @Html.EditorFor(m => m.VitC)
+                @Html.ValidationMessageFor(m => m.VitC)
+            </div>
+            <div>
+                @Html.LabelFor(m => m.Calcium)
+                @Html.EditorFor(m => m.Calcium)
+                @Html.ValidationMessageFor(m => m.Calcium)
+            </div>
+            <div>
+                @Html.LabelFor(m => m.Iron)
+                @Html.EditorFor(m => m.Iron)
+                @Html.ValidationMessageFor(m => m.Iron)
+            </div>
+        </fieldset>
+        
+        <div class="buttonRow oms-button">
+            @Html.ActionLink("cancel", "Index", "Products", null, new { @class = "k-button" })
+            <input type="submit" id="btnSubmit" class="k-button" value="save" />
+        </div>
+        
+        @Html.HiddenFor(x => x.ProductId)
+    }
+</div>
+<script src="@Url.Content("~/Scripts/DoubleJ.Oms.Web.Internal.Product.js")" type="text/javascript"></script>
+<script>
+    NutritionInfo.Init({
+        urls: {
+            canvasBackground: '@Url.Content("~/Content/Images/NutritionFactsTemplate.PNG")'
+        },
+        elements: {
+            canvas: $("#form-nutrition-canvas")[0],
+            form: $("#form-nutrition"),
+        }
+    })
+</script>

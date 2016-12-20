@@ -1,0 +1,47 @@
+﻿@model int?
+
+@using System.Collections
+@using System.Web.Mvc;
+<style type="text/css">
+    ul#menu li {
+        width: 150px;
+        max-width: 150px;
+        display: table;
+        list-style: none;
+    }
+
+    ul {
+        display: flex;
+        margin: 0px;
+        padding: 0px;
+    }
+
+    .rb {
+        width: 0;
+    }
+    </style>
+@{
+    var list = (List<SelectListItem>)ViewData["List"];
+}
+
+<ul id="menu" class="radio-list">
+    @foreach (var item in list)
+    {
+        <li>
+            @{
+                <span>&nbsp;</span>
+        var radioId =
+            ViewData.TemplateInfo.GetFullHtmlFieldId(item.Value);
+            var checkedClass = (item.Value == Model.ToString()
+            ? "checked"
+            : string.Empty);
+            <input type="radio"
+                   id="@radioId"
+                   name="@ViewData.TemplateInfo.HtmlFieldPrefix"
+                   value="@item.Value"
+                   @checkedClass />
+            <label class="rb" for="@radioId">@item.Text</label>
+            }
+        </li>
+    }
+</ul>

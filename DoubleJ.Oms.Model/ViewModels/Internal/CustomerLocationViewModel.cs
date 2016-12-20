@@ -1,0 +1,145 @@
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using DoubleJ.Oms.Domain.Entities;
+
+namespace DoubleJ.Oms.Model.ViewModels.Internal
+{
+    public class CustomerLocationViewModel
+    {
+        public CustomerLocationViewModel()
+        {
+        }
+
+        public CustomerLocationViewModel(CustomerLocation customerLocation)
+        {
+            Address1 = customerLocation.Address1;
+            Address2 = customerLocation.Address2;
+            City = customerLocation.City;
+            Fax = customerLocation.Fax;
+            IsBillTo = customerLocation.IsBillTo;
+            IsShipTo = customerLocation.IsShipTo;
+            Name = customerLocation.Name;
+            ShortName = customerLocation.ShortName;
+            Phone = customerLocation.Phone;
+            StateCode = customerLocation.StateCode;
+            ZipCode = customerLocation.ZipCode;
+            CustomerId = customerLocation.CustomerId;
+            LocationId = customerLocation.Id;
+            Email = customerLocation.Email;
+        }
+
+        [DisplayFormat(DataFormatString = "{0:000000}")]
+        [DisplayName("Customer Id")]
+        public int LocationId { get; set; }
+        public int CustomerId { get; set; }
+
+        [DisplayName("Name")]
+        [Required]
+        public string Name { get; set; }
+
+        [DisplayName("Short Name")]
+        [Required]
+        [MaxLength(4, ErrorMessage = "No more than 4 characters")]
+        public string ShortName { get; set; }
+
+        [DisplayName("Street 1")]
+        public string Address1 { get; set; }
+
+        [DisplayName("Street 2")]
+        public string Address2 { get; set; }
+
+        [DisplayName("City")]
+        public string City { get; set; }
+
+        [DisplayName("State")]
+        [StringLength(2, MinimumLength = 2, ErrorMessage = "Wrong state code, should contain string of two characters")]
+        public string StateCode { get; set; }
+
+        [DisplayName("Zip")]
+        public string ZipCode { get; set; }
+
+        [DisplayName("Phone")]
+        public string Phone { get; set; }
+        
+        public string Fax { get; set; }
+
+        public bool IsShipTo { get; set; }
+
+        public bool IsBillTo { get; set; }
+
+        [DisplayName("Email Address")]
+        [Unique]
+        [Required]
+        public string Email { get; set; }
+
+        public bool IsExists()
+        {
+            return !string.IsNullOrWhiteSpace(Name) || !string.IsNullOrWhiteSpace(ShortName) || !string.IsNullOrWhiteSpace(Address1) ||
+                   !string.IsNullOrWhiteSpace(Address2) || !string.IsNullOrWhiteSpace(City) || !string.IsNullOrWhiteSpace(StateCode) ||
+                   !string.IsNullOrWhiteSpace(ZipCode) || !string.IsNullOrWhiteSpace(Phone) || !string.IsNullOrWhiteSpace(Fax) || !string.IsNullOrWhiteSpace(Email);
+        }
+
+        public bool IsValid()
+        {
+            return !IsExists() ||
+                (!string.IsNullOrWhiteSpace(Name) && !string.IsNullOrWhiteSpace(ShortName) &&
+                !string.IsNullOrWhiteSpace(Address1) && !string.IsNullOrWhiteSpace(City) &&
+                !string.IsNullOrWhiteSpace(StateCode) && !string.IsNullOrWhiteSpace(ZipCode) &&
+                !string.IsNullOrWhiteSpace(Phone) && !string.IsNullOrWhiteSpace(Email));
+        }
+
+        public IList<KeyValuePair<string, string>> Validate()
+        {
+            var errors = new List<KeyValuePair<string, string>>();
+
+            if (string.IsNullOrWhiteSpace(Name))
+                errors.Add(new KeyValuePair<string, string>("Location.Name", "Name is required"));
+
+            if (string.IsNullOrWhiteSpace(ShortName))
+                errors.Add(new KeyValuePair<string, string>("Location.ShortName", "Short Name is required. Must be no more than 4 characters"));
+
+            if (string.IsNullOrWhiteSpace(Address1))
+                errors.Add(new KeyValuePair<string, string>("Location.Address1", "Street 1 is required"));
+
+            if (string.IsNullOrWhiteSpace(Phone))
+                errors.Add(new KeyValuePair<string, string>("Location.Phone", "Phone is required"));
+
+            if (string.IsNullOrWhiteSpace(City))
+                errors.Add(new KeyValuePair<string, string>("Location.City", "City is required"));
+
+            if (string.IsNullOrWhiteSpace(StateCode))
+                errors.Add(new KeyValuePair<string, string>("Location.StateCode", "State is required"));
+
+            if (string.IsNullOrWhiteSpace(ZipCode))
+                errors.Add(new KeyValuePair<string, string>("Location.ZipCode", "Zip Code is required"));
+
+            if (string.IsNullOrWhiteSpace(Email))
+                errors.Add(new KeyValuePair<string, string>("Location.Email", "Email is required"));
+
+            return errors;
+        } 
+
+        public CustomerLocation ToCustomerLocation(CustomerLocation customerLocation = null)
+        {
+            if (customerLocation == null)
+                customerLocation = new CustomerLocation { OrderDetail = new Collection<OrderDetail>() };
+
+            customerLocation.Address1 = Address1;
+            customerLocation.Address2 = Address2;
+            customerLocation.City = City;
+            customerLocation.Fax = Fax;
+            customerLocation.IsBillTo = IsBillTo;
+            customerLocation.IsShipTo = IsShipTo;
+            customerLocation.Name = Name;
+            customerLocation.ShortName = ShortName;
+            customerLocation.Phone = Phone;
+            customerLocation.StateCode = StateCode;
+            customerLocation.ZipCode = ZipCode;
+            customerLocation.Email = Email;
+
+            return customerLocation;
+        }
+    }
+}

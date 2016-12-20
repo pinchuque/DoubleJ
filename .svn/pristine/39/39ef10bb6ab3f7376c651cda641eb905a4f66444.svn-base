@@ -1,0 +1,44 @@
+﻿@model ProductSearchViewModel
+
+@using (Html.BeginForm("Index", "Products", FormMethod.Post, new { id = "ProductSearchForm",style="text-align: center" }))
+{
+    @Html.ValidationSummary(true)
+
+    <div>
+        @Html.LabelFor(model => model.Upc)
+        @Html.TextBoxFor(model => model.Upc, new { maxLength = 12 })
+    </div>
+    <div>
+        @Html.LabelFor(model => model.Description)
+        @Html.TextBoxFor(model => model.Description, new {maxLength = 30})
+    </div>
+     <div>
+        @Html.LabelFor(model => model.CustomerType)
+        @Html.EnumDropDownListFor(m => m.CustomerType, "Both")
+    </div>
+    @*<div>
+        @Html.LabelFor(model => model.PrimalCutId)
+        @Html.DropDownListFor(model => model.PrimalCutId, new SelectList((IEnumerable<PrimalCut>)ViewBag.PrimalCuts, "Id", "Name"), string.Empty)
+    </div>
+    <div>
+        @Html.LabelFor(model => model.SubPrimalCutId)
+        @Html.DropDownListFor(model => model.SubPrimalCutId, new SelectList((IEnumerable<SubPrimalCut>)ViewBag.SubPrimalCuts, "Id", "Name"), string.Empty)
+    </div>*@
+    <div>
+        @Html.LabelFor(model => model.TrimCutId)
+        @Html.DropDownListFor(model => model.TrimCutId, new SelectList((IEnumerable<TrimCut>)ViewBag.TrimCuts, "Id", "Name"), string.Empty)
+    </div>
+    <div>
+        @Html.LabelFor(model => model.SpeciesId)
+        @Html.DropDownListFor(model => model.SpeciesId, new SelectList((IEnumerable<Species>)ViewBag.Species, "Id", "Name"), string.Empty)
+    </div>
+    <div>
+        @Html.LabelFor(model => model.QualityGradeId)
+        @Html.DropDownListFor(model => model.QualityGradeId, new SelectList((IEnumerable<QualityGrade>)ViewBag.QualityGrades, "Id", "Name"), string.Empty)
+    </div>
+    
+    <div class="buttonRow border-bottom oms-button">
+        @Html.ActionLink("Reset", "Reset", null, new { @class = "k-button" })
+        <input type="submit" class="k-button" value="Search" />
+    </div>
+}

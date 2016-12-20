@@ -1,0 +1,25 @@
+﻿@model OrderSearchViewModel
+
+@using (Html.BeginForm("Index", "Orders", FormMethod.Post, new { id = "OrderSearchForm" }))
+{
+    @Html.ValidationSummary(true)
+
+    <div>
+        @Html.LabelFor(model => model.CustomerId) 
+        @Html.DropDownListFor(model => model.CustomerId, new SelectList((IEnumerable<Customer>)ViewBag.Customers, "Id", "Name"), string.Empty)
+    </div>
+    <div>
+        @Html.LabelFor(model => model.OrderId) 
+        @Html.TextBoxFor(model => model.OrderId)
+    </div>
+    <div>
+        @Html.LabelFor(model => model.StatusId) 
+        @Html.DropDownListFor(model => model.StatusId, new SelectList((IEnumerable<Status>)ViewBag.Statuses, "Id", "Name"), string.Empty)
+    </div>
+    
+    <div class="buttonRow border-bottom oms-button">
+        @Html.ActionLink("reset", "Reset", null, new { @class = "k-button" })
+        <input type="submit" class="k-button" value="search" />
+    </div>
+}
+

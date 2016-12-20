@@ -1,0 +1,36 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity.Spatial;
+using DoubleJ.Oms.Domain.Definitions;
+
+
+namespace DoubleJ.Oms.Domain.Entities
+{
+    public class ColdWeightEntryDetail : EntityBase
+    {
+        public ColdWeightEntryDetail()
+        {
+            CreatedDate = DateTime.Now;
+            AnimalOrderDetails = new List<AnimalOrderDetail>();
+        }
+
+        public int ColdWeightId { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public int? FirstSideWeight { get; set; }
+        public int? SecondSideWeight { get; set; }
+        public int? ThirdSideWeight { get; set; }
+        public int? FourthSideWeight { get; set; }
+        public decimal HotWeight { get; set; }
+        public decimal ColdWeight { get; set; }
+        public string AnimalNumber { get; set; }
+        public int AnimalLabelId { get; set; }
+        public string EarTag { get; set; }
+        public int? QualityGradeId { get; set; }
+        public bool IsOrganic { get; set; }
+        public virtual ColdWeightEntry ColdWeightEntry { get; set; }
+        public virtual QualityGrade QualityGrade { get; set; }
+        public virtual ICollection<AnimalOrderDetail> AnimalOrderDetails { get; set; }
+        public virtual AnimalLabel AnimalLabel { get; set; }
+        public TrackAnimal TrackAnimalId { get; set; }
+    }
+}

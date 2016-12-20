@@ -1,0 +1,22 @@
+using System;
+
+namespace DoubleJ.Oms.Domain.Entities
+{
+    public class CaseSize : EntityBase
+    {
+        public CaseSize()
+        {
+            CreateDateTime = DateTime.Today;
+        }
+        public string Name { get; set; }
+        public int? CaseTypeId { get; set; }
+        public int? CustomerTypeId { get; set; }
+        public decimal TareWeight { get; set; }
+        public bool IsActive { get; set; }
+        public DateTime? CreateDateTime { get; set; }
+        public int? CreateUserId { get; set; }
+
+        public virtual CaseType CaseType { get; set; }
+        public virtual CustomerType CustomerType { get; set; }
+    }
+}

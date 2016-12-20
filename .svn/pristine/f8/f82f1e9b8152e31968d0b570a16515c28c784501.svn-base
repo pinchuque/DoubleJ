@@ -1,0 +1,58 @@
+﻿@model LabelViewModel
+
+@{
+    ViewBag.Title = "Labels";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="content-container">
+    <div id="content">
+        <h1>Label Management</h1>
+        @using (Html.BeginForm())
+        {
+            @Html.ValidationSummary(true)
+            <fieldset class="dataentry">
+                <legend>Order Information</legend>
+                <div>@Html.LabelFor(model => model.OrderId) @Html.DropDownListFor(model => model.OrderId, ((IEnumerable<Order>)ViewBag.Orders).ToSelectListItems(order => order.Id.ToString(), pc => pc.Id.ToString(), order => order.Id == Model.OrderId, " ", "")) @Html.ValidationMessageFor(model => model.OrderId)</div>
+                @if (Model.OrderId.HasValue)
+                {
+                    <div>@Html.LabelFor(model => model.CustomerName) @Html.DisplayFor(model => model.CustomerName)</div>
+                    <div>@Html.LabelFor(model => model.CustomerLocationsTotal) @Html.DisplayFor(model => model.CustomerLocationsTotal)</div>
+                    <div>@Html.LabelFor(model => model.PieceTotal) @Html.DisplayFor(model => model.PieceTotal)</div>
+                    <div>@Html.LabelFor(model => model.BagTotal) @Html.DisplayFor(model => model.BagTotal)</div>
+                    <div>@Html.LabelFor(model => model.BoxTotal) @Html.DisplayFor(model => model.BoxTotal)</div>
+                }
+            </fieldset>
+                if (Model.OrderId.HasValue)
+                {
+            <fieldset>
+                <legend>Bag Labels</legend>
+                @Html.Action("BagLabelGrid", "Labels", new { id = @Model.OrderId })
+            </fieldset>
+               
+            <fieldset>
+                <legend>Box Labels</legend>
+                @Html.Action("BoxLabelGrid", "Labels", new { id = @Model.OrderId })
+            </fieldset>
+            <div class="buttonRow oms-button">
+                @Html.ActionLink("edit printed", "Edit", "Labels", new { id = @Model.OrderId }, new { @class = "k-button" })
+                @Html.ActionLink("complete order", "SetStatus", "Orders", new { orderId = @Model.OrderId, status = OmsStatus.Completed }, new { @class = "k-button" })
+                @Html.ActionLink("park order", "SetStatus", "Orders", new { orderId = @Model.OrderId, status = OmsStatus.Parked }, new { @class = "k-button" })
+            </div>
+                }
+
+        }
+
+
+        @Html.ActionLink("weighAndPrint", "WeightAndPrint", "Labels", null, new { @class = "utility-url-resolve", id = "urlWeighAndPrint" })
+        @Html.ActionLink("disconnectScale", "DisconnectScale", "Labels", null, new { @class = "utility-url-resolve", id = "urlDisconnectScale" })
+    </div>
+    <div style="clear: both;"></div>
+</div>
+@section SiteNavigation {
+    @Html.Action("_Site", "Navigation", new { area = "", selected = OmsSiteNavigation.Labels })
+}
+
+@section Scripts {
+    <script src="@Url.Content("~/Scripts/DoubleJ.Oms.Web.Internal.Labels.js")" type="text/javascript"></script>
+}

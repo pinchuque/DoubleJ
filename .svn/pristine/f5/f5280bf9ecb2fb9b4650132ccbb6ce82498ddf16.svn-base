@@ -1,0 +1,33 @@
+﻿@model ColdWeightEntryDetailItem
+
+@(Html.Kendo().Grid<ColdWeightEntryDetailItem>()
+    .Name("AnimalTrackingGrid").AutoBind(Model.IsExist)
+    .Columns(columns =>
+    {
+        columns.Bound(coldWeight => coldWeight.Id).Visible(false);
+        columns.Bound(coldWeight => coldWeight.ColdWeightId).Visible(false);
+        columns.Bound(coldWeight => coldWeight.AnimalNumber).Width(40).Title("Back Tag");
+        columns.Bound(coldWeight => coldWeight.AnimalLabel).ClientTemplate("#=AnimalLabel.Name#").Width(90).Title("Species");
+        columns.Bound(coldWeight => coldWeight.EarTag).Width(50);
+        columns.Bound(coldWeight => coldWeight.IsGrassFed).Width(45).ClientTemplate("# if(IsGrassFed){#" + "Yes" + "#}else{#" + "No" + "#}#");
+        columns.Bound(coldWeight => coldWeight.IsOrganic).Width(56).ClientTemplate("# if(IsOrganic){#" + "Yes" + "#}else{#" + "No" + "#}#");
+        columns.Bound(coldWeight => coldWeight.Note);
+        columns.Bound(coldWeight => coldWeight.HotWeight).Width(55);
+        columns.Bound(coldWeight => coldWeight.ColdWeight).Width(55);
+        columns.Bound(coldWeight => coldWeight.QualityGrade).ClientTemplate("#=QualityGrade.Name#").Title("Quality").Width(70);
+        columns.Bound(coldWeight => coldWeight.FirstCustomer).ClientTemplate("#=FirstCustomer.CustomerLocationName#").Width(90).Title("3 Quarters");
+        columns.Bound(coldWeight => coldWeight.SecondCustomer).ClientTemplate("#=SecondCustomer.CustomerLocationName#").Width(90).Title("Quarter");
+        columns.Command(command => command.Custom("X").Click("onRemove")).Width(40).HtmlAttributes(new { @class = "remove-animal-button", style = Model.IsEditable ? "" : "display:none" });
+    })
+    .Editable(editing => editing.Mode(GridEditMode.InCell))
+    .Pageable()
+    .Sortable()
+    .Scrollable()
+    .DataSource(dataSource => dataSource.Ajax()
+        .Model(model => model.Id(coldWeight => coldWeight.Id))
+        .Model(mode => mode.Field(coldWeight => coldWeight.AnimalNumber))
+        .Model(mode => mode.Field(coldWeight => coldWeight.AnimalNumber).Editable(false))
+        .Read(read => read.Action("AnimalGrid_Read", "Orders", new { orderId = @Model.OrderId }))
+    )
+)
+

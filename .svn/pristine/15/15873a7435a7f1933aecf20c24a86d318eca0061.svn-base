@@ -1,0 +1,142 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using DoubleJ.Oms.DataAccess;
+using DoubleJ.Oms.Domain.Definitions;
+using DoubleJ.Oms.Domain.Entities;
+using DoubleJ.Oms.Model.Interfaces;
+using DoubleJ.Oms.Model.Models;
+using DoubleJ.Oms.Model.Repositories;
+using DoubleJ.Oms.Model.ViewModels.Internal;
+using DoubleJ.Oms.Service.Interfaces;
+
+
+namespace DoubleJ.Oms.Service.Services.Internal
+{
+    public class OrderService : IOrderService
+    {
+        private readonly ICustomerLocationRepository _customerLocationRepository;
+        private readonly ICustomerRepository _customerRepository;
+        private IOrderRepository _orderRepository;
+        private readonly IColdWeightEntryRepository _coldWeightEntryRepository;
+
+        public OrderService(IOrderRepository orderRepository, ICustomerRepository customerRepository, ICustomerLocationRepository customerLocationRepository, IColdWeightEntryRepository coldWeightEntryRepository)
+        {
+            _orderRepository = orderRepository;
+            _customerRepository = customerRepository;
+            _customerLocationRepository = customerLocationRepository;
+            _coldWeightEntryRepository = coldWeightEntryRepository;
+        }
+
+        #region Add
+
+        public OrderViewModel Get()
+        {
+            var customer = _customerRepository.GetAll().First();
+            var orderViewModel = new OrderViewModel
+            {
+                StatusId = OmsStatus.Scheduled,
+                BestBeforeDate = null,
+                CustomerBestBeforeDays = customer.BestBeforeDays,
+            };
+
+            return orderViewModel;
+        }
+
+        #endregion
+
+        #region Edit
+
+        public OrderViewModel Get(int orderId)
+        {
+            var model = new OrderViewModel(_orderRepository.Get(orderId));
+
+            var coldWeightEntry = _coldWeightEntryRepository.GetByOrderId(orderId);
+            if (coldWeightEntry != null)
+                model.QualityGradeId = coldWeightEntry.QualityGradeId;
+
+            return model;
+        }
+
+        public int Add(OrderViewModel model)
+        {
+            var order = new Order();
+            model.UpdateEntity(order);
+            _orderRepository.Add(order);
+            _orderRepository.Save();
+            return order.Id;
+        }
+
+        public void Edit(OrderViewModel model)
+        {
+            if (model.Id == null) return;
+
+            var order = _orderRepository.Get(model.Id.Value);
+            model.UpdateEntity(order);
+
+            
+            _orderRepository.Save();
+        }
+
+        #endregion
+
+        #region Status
+
+        public void SetStatus(OmsStatus status)
+        {
+            _orderRepository = new OrderRepository(new OmsContext());
+            var orders = _orderRepository.GetAll().ToArray();
+
+            foreach (var order in orders)
+            {
+                order.StatusId = status;
+            }
+
+            _orderRepository.Save();
+        }
+
+        public void SetStatus(int orderId, OmsStatus status)
+        {
+            _orderRepository = new OrderRepository(new OmsContext());
+            var order = _orderRepository.Get(orderId);
+            order.StatusId = status;
+            _orderRepository.Save();
+        }
+
+        #endregion
+
+        #region Customer Specifics
+
+        public CustomerPreferenceViewModel GetCustomerPreferences(int? customerId)
+        {
+            if (!customerId.HasValue) return new CustomerPreferenceViewModel();
+
+            var customer = _customerRepository.Get(Convert.ToInt32(customerId));
+            return new CustomerPreferenceViewModel
+            {
+                BestBeforeDays = customer.BestBeforeDays.ToString(),
+                LogoTypeIdEnumName = customer.LogoTypeId.ToString(),
+            };
+        }
+
+        public List<CheckBoxItem> GetCustomerLocations(int? customerId)
+        {
+            if (!customerId.HasValue) return new List<CheckBoxItem>();
+
+            var result = _customerLocationRepository
+                .FindAll(x => x.CustomerId == customerId.Value)
+                .Select(customer => new CheckBoxItem
+                {
+                    Id = customer.Id,
+                    Name = customer.Name,
+                    IsSelected = false,
+                })
+                .ToList();
+
+            return result;
+        }
+
+        #endregion
+    }
+}

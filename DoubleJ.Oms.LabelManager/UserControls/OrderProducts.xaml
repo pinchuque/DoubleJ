@@ -1,0 +1,59 @@
+﻿<Window x:Class="DoubleJ.Oms.LabelManager.UserControls.OrderProducts"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DoubleJ.Oms.LabelManager.UserControls"
+        mc:Ignorable="d"
+        Name="OrderProductsWindow"
+        Title="OrderProducts" Width="700" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Button Width="100"
+                    Height="50"
+                    HorizontalAlignment="Left" 
+                    Margin="10" FontWeight="Bold"
+                    Click="Back">Back</Button>
+            <Button Width="100"
+                    Height="50"
+                    Grid.Column="1"
+                    HorizontalAlignment="Right" 
+                    Margin="10" FontWeight="Bold"
+                    Click="CloseWindow">Close</Button>
+        </Grid>
+        <ListView Margin="5" Name="Products" Grid.Row="1" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Horizontal" Width="{Binding (FrameworkElement.ActualWidth), 
+                            RelativeSource={RelativeSource AncestorType=ScrollContentPresenter}}"
+                            ItemWidth="{Binding (ListView.View).ItemWidth, 
+                            RelativeSource={RelativeSource AncestorType=ListView}}"
+                            MinWidth="{Binding ItemWidth, RelativeSource={RelativeSource Self}}"
+                            ItemHeight="{Binding (ListView.View).ItemHeight, 
+                            RelativeSource={RelativeSource AncestorType=ListView}}"
+                            Margin="1" ScrollViewer.CanContentScroll="False"/>
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <WrapPanel>
+                        <Button Height="50" Width="200" Tag="{Binding Path=ProductId}" Background="{Binding Path=BackGroundColor, Converter={StaticResource HexConverter}}"
+                                Click="ButtonBase_OnClick">
+                            <Button.Content>
+                                <TextBlock  Foreground="{Binding Path=TextColor, Converter={StaticResource HexConverter}}" Padding="5 2 5 2" Text="{Binding ProductName}"/>
+                            </Button.Content>
+                        </Button>
+                    </WrapPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
+</Window>

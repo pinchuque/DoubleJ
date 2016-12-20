@@ -1,0 +1,45 @@
+﻿@model CustomerSearchViewModel
+<script>
+    function customerChanged(data) {
+        if (data.sender.dataItem() != undefined) {
+            $("#CustomerId").val(data.sender.dataItem().Id);
+        } else {
+            $("#CustomerId").val(0);
+        }
+    }
+</script>
+@using (Html.BeginForm("Index", "Customer", FormMethod.Post, new { id = "OrderSearchForm" }))
+{
+    @Html.ValidationSummary(true)
+
+    <fieldset class="dataentry search-critieria">
+        <legend>Search</legend>
+        <div>
+            @Html.LabelFor(model => model.Name)
+            @Html.Kendo().AutoCompleteFor(x => x.Name).DataTextField("Name").DataSource(x => x.Read("GetCustomers", "Orders")).Filter(FilterType.Contains).Placeholder("Type Customer Name").Events(x => x.Change("customerChanged")).HtmlAttributes(new { style = "width:200px;background-color:transpanent;" })
+        </div>
+        <div>
+            @Html.LabelFor(model => model.CustomerType)
+            @Html.EnumDropDownListFor(m => m.CustomerType, "Search All", new { @class = "form-control" })
+        </div>
+        <div>
+            @Html.LabelFor(model => model.Order)
+            @Html.TextBoxFor(model => model.Order)
+        </div>
+        <div>
+            @Html.LabelFor(model => model.Product)
+            @Html.TextBoxFor(model => model.Product)
+        </div>
+        <div class="buttonRow border-bottom oms-button">
+            @Html.ActionLink("Reset", "Reset", null, new { @class = "k-button" })
+            <input type="submit" value="Search" class="k-button" />
+        </div>
+    </fieldset>
+    
+}
+<script>
+    $(document).ready(function() {
+        $("#Name").removeClass('k-input').parent().removeClass("k-widget k-autocomplete k-header");
+        $("#Name").width('200px');
+    });
+</script>

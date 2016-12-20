@@ -1,0 +1,30 @@
+﻿@model ProductSearchViewModel
+@{
+    ViewBag.Title = "Product Managment";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="content-container">
+    <div id="content">
+        <div style="text-align: right; float: right; padding: 10px; margin-top: 10px;" class="oms-button">
+            @Html.ActionLink("Add", "Add", "Products", null, new { @class = "k-button" })
+        </div>
+        <h1>Product Management</h1>
+        <fieldset class="dataentry search-critieria">
+            <legend>Search</legend>
+            <div id="search-critieria">
+                @Html.Partial("_SearchCriteria", Model)
+            </div>
+        </fieldset>
+        <div id="search-results">
+            @if (Model.HasSessionCriteria)
+            {
+                @Html.Partial("_SearchResult", null)
+            }
+        </div>
+    </div>
+    <div style="clear: both;"></div>
+</div>
+@section SiteNavigation {
+    @Html.Action("_Site", "Navigation", new { area = "", selected = OmsSiteNavigation.Products })
+}

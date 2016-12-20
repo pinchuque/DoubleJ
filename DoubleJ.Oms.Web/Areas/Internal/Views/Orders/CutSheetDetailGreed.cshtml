@@ -1,0 +1,358 @@
+﻿@model CutSheetDetailViewModel
+<style type="text/css">
+    #table div {
+        display: inline-block;
+    }
+
+    #able {
+        margin: auto;display: flex;}
+
+
+    label {
+        margin: auto 0px;
+    }
+
+    #able label {
+        width: 95px;
+        margin: auto 0px;
+        text-align: right;
+        padding-right: 20px;
+    }
+
+    #able label.ddl {
+        padding-right: 30px;
+    }
+
+    #able:nth-child(odd) {
+        background: lightgray;
+    }
+
+    ul#menuCheckBoxes {
+        display: flex;
+        margin: 0px;
+        padding: 0px;
+        list-style: none;
+    }
+
+    .customCheckbox {
+        width: 0;
+    }
+
+
+    ul#menuCheckBoxes input[type='checkbox'] {
+        margin-left: 10px;
+    }
+</style>
+
+<style type="text/css">
+    #table {
+        display: table;
+        width: auto;
+    }
+
+        #table div {
+            display: table-cell;
+        }
+
+            #table div div {
+                display: inline-flex;
+            }
+
+        #table .dataentry label {
+            width: 133px;
+        }
+
+        #table .dataentry input[type='checkbox'] {
+            margin: 2px;
+        }
+
+        #table .dataentry input[type='text'],
+        #table .dataentry input[type='password'],
+        #table .dataentry textarea {
+            width: 132px;
+        }
+
+        #table .dataentry select {
+            width: 136px;
+        }
+
+    fieldset legend {
+        margin-bottom: 10px;
+    }
+
+    #table  {
+        display: table;
+    }
+
+    #table .row {
+        display: table-row;
+    }
+
+    #table .cell {
+        display: table-cell;
+        width: 100px;
+        padding-right: 10px;
+    }
+
+    #OptionsTable div.cell {
+        display: table-cell;
+        padding-right: 20px;
+    }
+
+    #OptionsTable .row {
+        display: table-row;
+    }
+
+    #OptionsTable {
+        display: table;
+    }
+    
+     #OptionsTable input[type='text'] {
+        width: 20px;
+        text-align: center;
+    }
+
+    #Total input[type='text'] {
+        width: 30px;
+        text-align: center;
+        display: flex;
+        margin-right: 10px;
+    }
+    #Total label {
+        padding-right: 10px;
+        width: inherit;
+    }
+
+
+    .text {
+        position: absolute;
+        margin-left: -90px;
+    }
+    #Total {
+        display: flex;
+        padding-left: 120px;
+    }
+                
+</style>
+@using (Html.BeginForm("Cut", "Orders", FormMethod.Post))
+{
+    <div id="table">
+        <div class="row">
+            <div class="cell">@Html.LabelFor(model => model.CustomerName)</div>
+            <div class="cell">@Html.DisplayFor(model => model.CustomerName)</div>
+            <div class="cell">@Html.DisplayFor(model => model.CustomerPhone)</div>
+            <div class="cell">Tag</div>
+        </div>
+        <div class="row">
+            <div class="cell">@Html.LabelFor(model => model.CustomerLocationName)</div>
+            <div class="cell">@Html.DisplayFor(model => model.CustomerLocationName)</div>
+            <div class="cell">@Html.DisplayFor(model => model.CustomerLocationPhone)</div>
+            <div class="cell">Section Name</div>
+        </div>
+    </div>
+
+
+    <fieldset>
+        <div id="OptionsTable">
+            <div class="row">
+                <div class="cell">@Html.LabelFor(model => model.TarGetRoastWeight)</div>
+                <div class="cell">@Html.TextBoxFor(model => model.TarGetRoastWeight)</div>
+                <div class="cell">Tag</div>
+            </div>
+            <div class="row">
+                <div class="cell">@Html.LabelFor(model => model.SteackThickness)</div>
+                <div class="cell">@Html.TextBoxFor(model => model.SteackThickness)</div>
+                <div class="cell">@Html.LabelFor(model => model.SteackPerPackage)</div>
+                <div class="cell">@Html.TextBoxFor(model => model.SteackPerPackage)</div>
+            </div>
+        </div>
+        <div>
+            <div id="able">
+                @Html.LabelFor(model => model.RoundTip)
+                <div>@Html.EditorFor(model => model.RoundTip, new {List = @Model.RoundTipRadioButtonList})</div>
+                <div>@Html.ValidationMessageFor(model => model.RoundTipRadioButtonList)</div>
+            </div>
+            <div id="able">
+                @Html.LabelFor(model => model.TopRound)
+                <div>@Html.EditorFor(model => model.TopRound, new { List = @Model.TopRoundButtonList })</div>
+            </div>
+            <div id="able">
+                @Html.LabelFor(model => model.BottomRound)
+                <div>
+                    @Html.EditorFor(model => model.BottomRound, new { List = @Model.BottomRoundRadioButtonsList })
+                </div>
+            </div>
+            <div id="able">
+
+                @Html.LabelFor(model => model.Rump)
+                <div>
+                    @Html.EditorFor(model => model.Rump, new { List = @Model.RumpRadioButtonsList })
+                </div>
+            </div>
+
+            <div id="able">
+                @Html.LabelFor(model => model.PikesPeak)
+                <div>
+                    @Html.EditorFor(model => model.PikesPeak, new { List = @Model.PikesPeakRadioButtonsList })
+                </div>
+            </div>
+            <div id="able">
+                @Html.LabelFor(model => model.Sirloin)
+                <div>
+                    @Html.EditorFor(model => model.Sirloin, new { List = @Model.SirloinRadioButtonsList })
+                </div>
+            </div>
+            <div id="able">
+                @Html.LabelFor(model => model.TriTip)
+                <div>
+                    @Html.EditorFor(model => model.TriTip, new { List = @Model.TriTipRadioButtonsList })
+                </div>
+            </div>
+
+            <div id="able">
+                @Html.LabelFor(model => model.Bavatte)
+                <div>
+                    @Html.EditorFor(model => model.Bavatte, new { List = @Model.BavatteRadioButtonsList })
+                </div>
+            </div>
+            <div id="able">
+
+                @Html.LabelFor(model => model.SkirtSteak)
+                <div>
+                    @Html.EditorFor(model => model.SkirtSteak, new { List = @Model.SkirtSteakRadioButtonsList })
+                </div>
+            </div>
+            <div id="able">
+
+                @Html.LabelFor(model => model.Loin)
+                <div>
+                    @Html.EditorFor(model => model.Loin, new { List = @Model.LoinRadioButtonsList })
+                </div>
+            </div>
+
+            <div id="able">
+
+                @Html.LabelFor(model => model.Flank)
+                <div>
+                    @Html.EditorFor(model => model.Flank, new { List = @Model.FlankRadioButtonsList })
+                </div>
+            </div>
+
+            <div id="able">
+                @Html.LabelFor(model => model.Brisket)
+                <div>
+                    @Html.EditorFor(model => model.Brisket, new { List = @Model.BrisketRadioButtonsList })
+                </div>
+            </div>
+
+            <div id="able">
+                @Html.LabelFor(model => model.Rib)
+                <div>
+                    @Html.EditorFor(model => model.Rib, new { List = @Model.RibRadioButtonsList })
+                </div>
+            </div>
+
+            <div id="able">
+                @Html.LabelFor(model => model.ShortRibDDL, new { @class = "ddl" })
+                <div>
+                    @Html.EnumDropDownListFor(model => model.ShortRibDDL)
+                </div>
+            </div>
+            <div id="able">
+                @Html.LabelFor(model => model.SoupBonesDDL, new { @class = "ddl" })
+                <div>
+                    @Html.EnumDropDownListFor(model => model.SoupBonesDDL)
+                </div>
+            </div>
+            <div id="able">
+                @Html.LabelFor(model => model.Chuck)
+                <div>
+                    @Html.EditorFor(model => model.Chuck, new { List = @Model.ChuckRadioButtonsList })
+                </div>
+            </div>
+            <div id="able">
+                @Html.LabelFor(model => model.FlatrionSteaksDDL, new { @class = "ddl" })
+                <div>
+                    @Html.EnumDropDownListFor(model => model.FlatrionSteaksDDL)
+                </div>
+                <span>
+                    (If yes: Chuck set to boneless roast)
+                </span>
+            </div>
+            <div id="able">
+                @Html.LabelFor(model => model.Arm)
+                <div>
+                    @Html.EditorFor(model => model.Arm, new { List = @Model.ArmRadioButtonsList })
+                </div>
+            </div>
+            <div id="able">
+                @Html.LabelFor(model => model.Pot)
+                <div>
+                    @Html.EditorFor(model => model.Pot, new { List = @Model.PotRadioButtonsList })
+                </div>
+            </div>
+            <div id="able">
+                @Html.LabelFor(model => model.StewMeat)
+                <div>
+                    @Html.EditorFor(model => model.StewMeat, new { List = @Model.StewMeatRadioButtonsList })
+                </div>
+            </div>
+            <div id="able">
+                @Html.LabelFor(model => model.Grind)
+                <div>
+                    @Html.EditorFor(model => model.Grind, new { List = @Model.GrindRadioButtonsList })
+                </div>
+            </div>
+            <div id="able">
+                @Html.LabelFor(model => model.Patties)
+                <div>
+                    @Html.EditorFor(model => model.Patties, new {List = @Model.PattiesRadioButtonsList})
+                </div>
+                <span class="text">
+                   (Patties cost an additional $0.50/pound)
+                </span>
+            </div>
+         
+
+                <div id="Total">
+                        @Html.LabelFor(model => model.TotalLbs)
+                        @Html.TextBoxFor(model => model.TotalLbs)
+
+                        @Html.LabelFor(model => model.PattiesPerPackage)
+                        @Html.TextBoxFor(model => model.PattiesPerPackage)
+
+                        @Html.LabelFor(model => model.TotalPackage)
+                        @Html.TextBoxFor(model => model.TotalPackage)
+
+                </div>
+            </div>
+
+
+
+        <div id="able">
+            @Html.LabelFor(model => model.OrganMeat)
+            <div>
+                <ul id="menuCheckBoxes">
+                    @foreach (var g in Model.OrganMeatTypeList)
+                    {
+                        <li>
+                            <input type="checkbox"
+                                   name="OrganMeatSelected" value="@g.Value" id="@g.Value"
+                                   @{if (Model.OrganMeatSelected.Contains(Convert.ToInt32(g.Value))) { <text> checked='checked' </text>  } } />
+
+                            <label class="customCheckbox" for="@g.Value">@g.Text</label>
+                        </li>
+                    }
+                </ul>
+
+            </div>
+        </div>
+            @Html.LabelFor(model => model.SpecialInstruction)
+            @Html.EditorFor(model => model.SpecialInstruction)
+    </fieldset>
+
+
+                  <div class="buttonRow border-bottom oms-button">
+                      <input type="submit" class="k-button" value="SAVE" />
+                  </div>
+}

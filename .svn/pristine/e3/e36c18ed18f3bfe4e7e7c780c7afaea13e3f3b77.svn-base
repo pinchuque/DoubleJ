@@ -1,0 +1,521 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{0AC63757-28B3-4864-9371-5EC2E3ED1638}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DoubleJ.Oms.Web</RootNamespace>
+    <AssemblyName>DoubleJ.Oms.Web</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <UseGlobalApplicationHostFile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Antlr3.Runtime, Version=3.3.1.7705, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\WebGrease.1.1.0\lib\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Elmah">
+      <HintPath>..\packages\elmah.corelibrary.1.2.2\lib\Elmah.dll</HintPath>
+    </Reference>
+    <Reference Include="Elmah.Mvc">
+      <HintPath>..\packages\Elmah.MVC.2.0.1\lib\net40\Elmah.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="jQuery.Validation.Unobtrusive.Native">
+      <HintPath>..\packages\jQuery.Validation.Unobtrusive.Native.MVC5.1.1.1.0\lib\net45\jQuery.Validation.Unobtrusive.Native.dll</HintPath>
+    </Reference>
+    <Reference Include="Kendo.Mvc">
+      <HintPath>..\ExternalDependencies\Telerik\Kendo.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="MuscovyTechnology.Mvc.Notification, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\ExternalDependencies\MuscovyTechnology\MuscovyTechnology.Mvc.Notification.dll</HintPath>
+    </Reference>
+    <Reference Include="MvcCheckBoxList">
+      <HintPath>..\packages\MvcCheckBoxList.1.4.5\lib\net45\MvcCheckBoxList.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Web.Common, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Ninject.Web.Common.3.2.1.0\lib\net45-full\Ninject.Web.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Web.Mvc, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Ninject.MVC3.3.2.1.0\lib\net45-full\Ninject.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Optimization">
+      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.0.0\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.4.5.6\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http">
+    </Reference>
+    <Reference Include="System.Net.Http.Formatting, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.4.0.20710.0\lib\net40\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest">
+    </Reference>
+    <Reference Include="System.Web.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.4.0.20710.0\lib\net40\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.4.0.20710.0\lib\net40\System.Web.Http.WebHost.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Reporting, Version=9.1.15.731, Culture=neutral, PublicKeyToken=a9d7983dfcc261be, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\ExternalDependencies\Telerik.2015\Telerik.Reporting.dll</HintPath>
+    </Reference>
+    <Reference Include="WebActivatorEx">
+      <HintPath>..\packages\WebActivatorEx.2.0\lib\net40\WebActivatorEx.dll</HintPath>
+    </Reference>
+    <Reference Include="WebGrease">
+      <HintPath>..\packages\WebGrease.1.1.0\lib\WebGrease.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\NinjectWebCommon.cs" />
+    <Compile Include="Areas\Internal\Controllers\CustomerController.cs" />
+    <Compile Include="Areas\Internal\Controllers\FulfillmentController.cs" />
+    <Compile Include="Areas\Internal\Controllers\LabelsController.cs" />
+    <Compile Include="Areas\Internal\Controllers\OrdersController.cs" />
+    <Compile Include="Areas\Internal\Controllers\ShopFloorController.cs" />
+    <Compile Include="Areas\Internal\InternalAreaRegistration.cs" />
+    <Compile Include="Areas\Internal\Controllers\ProductsController.cs" />
+    <Compile Include="Areas\Mobile\Controllers\MainController.cs" />
+    <Compile Include="Areas\Mobile\MobileAreaRegistration.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\NavigationController.cs" />
+    <Compile Include="Extensions\LabelExtensions.cs" />
+    <Compile Include="Extensions\TelerikExtensions.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reports\Model\ProductDetailItem.cs" />
+    <Compile Include="Reports\Model\ProductionManifestDetailModel.cs" />
+    <Compile Include="Reports\Model\ProductionManifestModel.cs" />
+    <Compile Include="Reports\Model\ProductItem.cs" />
+    <Compile Include="Reports\Model\ShippingManifestModel.cs" />
+    <Compile Include="Reports\Model\YieldReportItem.cs" />
+    <Compile Include="Reports\ReportService.cs" />
+    <Compile Include="Reports\Template\ProductionManifestDetailSuppressWeight.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\Template\ProductionManifestDetailSuppressWeight.Designer.cs">
+      <DependentUpon>ProductionManifestDetailSuppressWeight.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Reports\Template\ProductionManifestSuppressWeight.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\Template\ProductionManifestSuppressWeight.Designer.cs">
+      <DependentUpon>ProductionManifestSuppressWeight.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Reports\Template\ProductionManifest.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\Template\ProductionManifest.Designer.cs">
+      <DependentUpon>ProductionManifest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Reports\Template\ProductionManifestDetail.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\Template\ProductionManifestDetail.Designer.cs">
+      <DependentUpon>ProductionManifestDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Reports\Template\ShippingManifestSuppressWeight.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\Template\ShippingManifestSuppressWeight.Designer.cs">
+      <DependentUpon>ShippingManifestSuppressWeight.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Reports\Template\ShippingManifest.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\Template\ShippingManifest.Designer.cs">
+      <DependentUpon>ShippingManifest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Reports\Template\YieldReport.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\Template\YieldReport.Designer.cs">
+      <DependentUpon>YieldReport.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\WebApiConfig.cs" />
+    <Content Include="Content\Images\ButtonBackground.png" />
+    <Content Include="Content\Images\button_add.png" />
+    <Content Include="Content\Images\button_cancel.png" />
+    <Content Include="Content\Images\button_edit.png" />
+    <Content Include="Content\Images\button_remove.png" />
+    <Content Include="Content\Images\button_search.png" />
+    <Content Include="Content\Images\button_update.png" />
+    <Content Include="Content\Images\Cow.png" />
+    <Content Include="Content\Images\GlassTexture.png" />
+    <Content Include="Content\Images\Loading.gif" />
+    <Content Include="Content\Images\Logo.png" />
+    <Content Include="Content\Images\NutritionFactsTemplate.PNG" />
+    <Content Include="Content\mobile.css" />
+    <Content Include="Content\Images\PageBackground.png" />
+    <Content Include="Content\kendo.common.css" />
+    <Content Include="Content\kendo.default.css" />
+    <Content Include="Content\kendo.doublej.css" />
+    <Content Include="Content\Images\Notification\close.png" />
+    <Content Include="Content\Images\Notification\error.png" />
+    <Content Include="Content\Images\Notification\notice.png" />
+    <Content Include="Content\Images\Notification\success.png" />
+    <Content Include="Content\Images\Notification\warning.png" />
+    <Content Include="Content\Site.css" />
+    <Content Include="Global.asax" />
+    <Content Include="Areas\Internal\Views\Web.config" />
+    <Content Include="Areas\Internal\Views\Orders\Index.cshtml" />
+    <Content Include="Areas\Internal\Views\Products\Add.cshtml" />
+    <Content Include="Areas\Internal\Views\Shared\EditorTemplates\CheckBoxItem.cshtml" />
+    <Content Include="Areas\Internal\Views\Shared\EditorTemplates\ProductCodeItem.cshtml" />
+    <Content Include="Areas\Internal\Views\Products\Edit.cshtml" />
+    <Content Include="Areas\Internal\Views\Orders\Add.cshtml" />
+    <Content Include="Areas\Internal\Views\Shared\EditorTemplates\OrderAdd.cshtml" />
+    <Content Include="Areas\Internal\Views\Orders\Detail.cshtml" />
+    <Content Include="Areas\Internal\Views\Shared\EditorTemplates\OrderDetailProduct.cshtml" />
+    <Content Include="Areas\Internal\Views\Shared\EditorTemplates\OrderDetailCustomerLocation.cshtml" />
+    <Content Include="Areas\Internal\Views\Shared\EditorTemplates\BagTare.cshtml" />
+    <Content Include="Areas\Internal\Views\Labels\Index.cshtml" />
+    <Content Include="Areas\Internal\Views\Labels\_Bag.cshtml" />
+    <Content Include="Scripts\DoubleJ.Oms.Web.Global.js" />
+    <Content Include="Scripts\DoubleJ.Oms.Web.Internal.ColdWeightEntry.js" />
+    <Content Include="Scripts\DoubleJ.Oms.Web.Internal.CustomerProduct.js" />
+    <Content Include="Scripts\DoubleJ.Oms.Web.Internal.Labels.Edit.js" />
+    <Content Include="Scripts\DoubleJ.Oms.Web.Internal.Labels.js" />
+    <Content Include="Areas\Internal\Views\Orders\_CustomerLocationList.cshtml" />
+    <Content Include="Areas\Internal\Views\Products\Index.cshtml" />
+    <Content Include="Areas\Internal\Views\Products\_SearchResult.cshtml" />
+    <Content Include="Areas\Internal\Views\Orders\Edit.cshtml" />
+    <Content Include="Scripts\DoubleJ.Oms.Web.Internal.Orders.Search.js" />
+    <Content Include="Areas\Internal\Views\Orders\_SearchResult.cshtml" />
+    <Content Include="Areas\Internal\Views\Products\_SearchCriteria.cshtml" />
+    <Content Include="Areas\Internal\Views\Orders\_SearchCriteria.cshtml" />
+    <Content Include="Areas\Internal\Views\Labels\_Box.cshtml" />
+    <Content Include="Areas\Internal\Views\Labels\Edit.cshtml" />
+    <Content Include="Areas\Internal\Views\Shared\EditorTemplates\OrderEdit.cshtml" />
+    <Content Include="Areas\Internal\Views\Orders\ViewPastOrders.cshtml" />
+    <Content Include="Areas\Internal\Views\Orders\_EditCommon.cshtml" />
+    <Content Include="Areas\Internal\Views\Orders\_Detail.cshtml" />
+    <Content Include="Areas\Internal\Views\Customer\Edit.cshtml" />
+    <Content Include="Areas\Internal\Views\Customer\Index.cshtml" />
+    <Content Include="Areas\Internal\Views\Customer\_CustomerLocationEdit.cshtml" />
+    <Content Include="Areas\Internal\Views\Customer\_SearchCriteria.cshtml" />
+    <Content Include="Areas\Internal\Views\Customer\_SearchResult.cshtml" />
+    <Content Include="Areas\Internal\Views\ShopFloor\Index.cshtml" />
+    <Content Include="Areas\Internal\Views\ShopFloor\_LabelsSummary.cshtml" />
+    <Content Include="Areas\Internal\Views\Orders\_Report.cshtml" />
+    <Content Include="Areas\Internal\Views\Shared\DisplayTemplates\Reading.cshtml" />
+    <Content Include="Areas\Internal\Views\Customer\Add.cshtml" />
+    <Content Include="Areas\Mobile\Views\Web.config" />
+    <Content Include="Areas\Mobile\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Mobile\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\Mobile\Views\Main\Index.cshtml" />
+    <Content Include="Areas\Mobile\Views\Main\SnLookup.cshtml" />
+    <Content Include="Areas\Mobile\Views\Main\OrderFulfillment.cshtml" />
+    <Content Include="Areas\Mobile\Views\Main\OrderFulfillmentDestination.cshtml" />
+    <Content Include="Areas\Mobile\Views\Main\OrderFulfillmentComplete.cshtml" />
+    <Content Include="Areas\Mobile\Views\Main\PendingProducts.cshtml" />
+    <Content Include="Areas\Mobile\Views\Main\AllocatedProducts.cshtml" />
+    <Content Include="Areas\Mobile\Views\Main\ResetLocation.cshtml" />
+    <Content Include="Areas\Internal\Views\Fulfillment\Index.cshtml" />
+    <Content Include="Areas\Internal\Views\Fulfillment\SearchByOrder.cshtml" />
+    <Content Include="Areas\Internal\Views\Fulfillment\SearchByOrderResult.cshtml" />
+    <Content Include="Areas\Internal\Views\Fulfillment\SearchBySN.cshtml" />
+    <Content Include="Areas\Internal\Views\Fulfillment\SearchBySNResult.cshtml" />
+    <Content Include="Areas\Internal\Views\Fulfillment\ViewDetails.cshtml" />
+    <Content Include="Areas\Internal\Views\Customer\_EditCommon.cshtml" />
+    <Content Include="Areas\Internal\Views\ShopFloor\_ActiveOrders.cshtml" />
+    <Content Include="Areas\Internal\Views\Customer\_CustomerProducts.cshtml" />
+    <Content Include="Areas\Internal\Views\Shared\EditorTemplates\CustomerProductItem.cshtml" />
+    <Content Include="Areas\Internal\Views\Products\_EditCommon.cshtml" />
+    <Content Include="Areas\Internal\Views\Products\_EditCustomerData.cshtml" />
+    <Content Include="Areas\Internal\Views\Products\_Form.cshtml" />
+    <Content Include="Areas\Internal\Views\Customer\CustomerLocation.cshtml" />
+    <Content Include="Areas\Internal\Views\Products\_EditNutritionInfo.cshtml" />
+    <Content Include="Areas\Internal\Views\Shared\EditorTemplates\Quantity.cshtml" />
+    <Content Include="Areas\Internal\Views\Orders\_AnimalTracking.cshtml" />
+    <Content Include="Areas\Internal\Views\Orders\_AnimalTrackingGrid.cshtml" />
+    <Content Include="Areas\Internal\Views\Orders\_AnimalTrackingGridHalves.cshtml" />
+    <Content Include="Areas\Internal\Views\Orders\_AnimalTrackingGridQuarters.cshtml" />
+    <Content Include="Areas\Internal\Views\Orders\AnimalTracking.cshtml" />
+    <Content Include="Areas\Internal\Views\Shared\EditorTemplates\OwnerCustomerTemplate.cshtml" />
+    <Content Include="Areas\Internal\Views\Shared\EditorTemplates\RadioButtonList.cshtml" />
+    <Content Include="Areas\Internal\Views\Shared\EditorTemplates\SpeciesTemplate.cshtml" />
+    <Content Include="Areas\Internal\Views\Orders\_AnimalTrakingGridHalfAndTwoQuaters.cshtml" />
+    <Content Include="Areas\Internal\Views\Orders\_AnimalTrakingGridThreeQuatersAndQuater.cshtml" />
+    <None Include="Properties\PublishProfiles\DoubleJOms-Web.pubxml" />
+    <None Include="Properties\PublishProfiles\QA.pubxml" />
+    <Content Include="Scripts\DoubleJ.Oms.Web.Internal.Orders.js" />
+    <Content Include="Scripts\DoubleJ.Oms.Web.Internal.Product.js" />
+    <Content Include="Scripts\DoubleJ.Oms.Web.Internal.Products.Search.js" />
+    <None Include="Properties\PublishProfiles\Production.pubxml" />
+    <None Include="Scripts\jquery-2.1.1.intellisense.js" />
+    <Content Include="Scripts\jquery-2.1.1.js" />
+    <Content Include="Scripts\jquery-2.1.1.min.js" />
+    <Content Include="Scripts\jquery.serializeobject.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
+    <Content Include="Scripts\jquery-2.1.1.min.map" />
+    <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.validate.js" />
+    <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\kendo.all.min.js" />
+    <Content Include="Scripts\kendo.aspnetmvc.min.js" />
+    <Content Include="Scripts\kendo.web.min.js" />
+    <Content Include="Scripts\knockout-2.1.0.debug.js" />
+    <Content Include="Scripts\knockout-2.1.0.js" />
+    <Content Include="Scripts\modernizr-2.5.3.js" />
+    <Content Include="Scripts\MuscovyTechnology.Mvc.Notification.js" />
+    <Content Include="SiteTemplate.html" />
+    <Content Include="Test.html" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Views\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Navigation\_Site.cshtml" />
+    <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\Account\_Greeting.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\Currency.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\Date.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\DateTime.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\GridForeignKey.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\Integer.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\Number.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\Time.cshtml" />
+    <Content Include="Views\Shared\Error.cshtml" />
+    <None Include="Web.Production.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.QA.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DoubleJ.Oms.Domain\DoubleJ.Oms.Domain.csproj">
+      <Project>{79EFBE6A-1638-49CC-98F8-D072C1E20AF4}</Project>
+      <Name>DoubleJ.Oms.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DoubleJ.Oms.Model\DoubleJ.Oms.Model.csproj">
+      <Project>{f844ba84-af37-4476-b8ac-05270d78653a}</Project>
+      <Name>DoubleJ.Oms.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DoubleJ.Oms.Service\DoubleJ.Oms.Service.csproj">
+      <Project>{fdf9861a-e15b-4e44-9af5-e6fff007c502}</Project>
+      <Name>DoubleJ.Oms.Service</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DoubleJ.Oms.Domain\DoubleJ.Oms.Domain.csproj">
+      <Name>DoubleJ.Oms.Domain</Name>
+      <Project>{79EFBE6A-1638-49CC-98F8-D072C1E20AF4}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\DoubleJ.Oms.Model\DoubleJ.Oms.Model.csproj">
+      <Name>DoubleJ.Oms.Model</Name>
+      <Project>{f844ba84-af37-4476-b8ac-05270d78653a}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\DoubleJ.Oms.Service\DoubleJ.Oms.Service.csproj">
+      <Name>DoubleJ.Oms.Service</Name>
+      <Project>{fdf9861a-e15b-4e44-9af5-e6fff007c502}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+    <Folder Include="Areas\Mobile\Models\" />
+    <Folder Include="Content\Images\CustomerLogo\" />
+    <Folder Include="Documents\" />
+    <Folder Include="fonts\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\licenses.licx" />
+    <EmbeddedResource Include="Reports\Template\ProductionManifestDetailSuppressWeight.resx">
+      <DependentUpon>ProductionManifestDetailSuppressWeight.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\Template\ProductionManifestSuppressWeight.resx">
+      <DependentUpon>ProductionManifestSuppressWeight.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\Template\ProductionManifest.resx">
+      <DependentUpon>ProductionManifest.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\Template\ProductionManifestDetail.resx">
+      <DependentUpon>ProductionManifestDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\Template\ShippingManifestSuppressWeight.resx">
+      <DependentUpon>ShippingManifestSuppressWeight.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\Template\ShippingManifest.resx">
+      <DependentUpon>ShippingManifest.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\Template\YieldReport.resx">
+      <DependentUpon>YieldReport.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Production|AnyCPU'">
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'QA|AnyCPU'">
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <Optimize>false</Optimize>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>4854</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:4855/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target> -->
+</Project>

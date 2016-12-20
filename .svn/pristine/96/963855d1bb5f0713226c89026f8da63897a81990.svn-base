@@ -1,0 +1,9 @@
+﻿namespace DoubleJ.Oms.Domain.Definitions
+{
+    public enum TrackAnimal
+    {
+        Whole=1,
+        Half,
+        Quarter
+    };
+}

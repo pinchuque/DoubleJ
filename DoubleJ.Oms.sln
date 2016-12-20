@@ -1,0 +1,132 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DoubleJ.Oms.Model", "DoubleJ.Oms.Model\DoubleJ.Oms.Model.csproj", "{F844BA84-AF37-4476-B8AC-05270D78653A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DoubleJ.Oms.Service", "DoubleJ.Oms.Service\DoubleJ.Oms.Service.csproj", "{FDF9861A-E15B-4E44-9AF5-E6FFF007C502}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DoubleJ.Oms.Web", "DoubleJ.Oms.Web\DoubleJ.Oms.Web.csproj", "{0AC63757-28B3-4864-9371-5EC2E3ED1638}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExternalDependencies", "ExternalDependencies", "{9E67C5EF-0E12-496A-BE6D-86ACDE9423E7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Telerik", "Telerik", "{3F94AD03-7651-402A-8637-FF13E6B438FB}"
+	ProjectSection(SolutionItems) = preProject
+		ExternalDependencies\Telerik\Kendo.Mvc.dll = ExternalDependencies\Telerik\Kendo.Mvc.dll
+		ExternalDependencies\Telerik\Telerik.Reporting.dll = ExternalDependencies\Telerik\Telerik.Reporting.dll
+		ExternalDependencies\Telerik\Telerik.WinControls.dll = ExternalDependencies\Telerik\Telerik.WinControls.dll
+		ExternalDependencies\Telerik\Telerik.WinControls.GridView.dll = ExternalDependencies\Telerik\Telerik.WinControls.GridView.dll
+		ExternalDependencies\Telerik\Telerik.WinControls.Themes.Office2010Silver.dll = ExternalDependencies\Telerik\Telerik.WinControls.Themes.Office2010Silver.dll
+		ExternalDependencies\Telerik\Telerik.WinControls.Themes.TelerikMetro.dll = ExternalDependencies\Telerik\Telerik.WinControls.Themes.TelerikMetro.dll
+		ExternalDependencies\Telerik\Telerik.WinControls.Themes.TelerikMetroTouch.dll = ExternalDependencies\Telerik\Telerik.WinControls.Themes.TelerikMetroTouch.dll
+		ExternalDependencies\Telerik\Telerik.WinControls.Themes.VisualStudio2012Light.dll = ExternalDependencies\Telerik\Telerik.WinControls.Themes.VisualStudio2012Light.dll
+		ExternalDependencies\Telerik\Telerik.WinControls.UI.dll = ExternalDependencies\Telerik\Telerik.WinControls.UI.dll
+		ExternalDependencies\Telerik\Telerik.Windows.Controls.dll = ExternalDependencies\Telerik\Telerik.Windows.Controls.dll
+		ExternalDependencies\Telerik\Telerik.Windows.Controls.GridView.dll = ExternalDependencies\Telerik\Telerik.Windows.Controls.GridView.dll
+		ExternalDependencies\Telerik\Telerik.Windows.Controls.Input.dll = ExternalDependencies\Telerik\Telerik.Windows.Controls.Input.dll
+		ExternalDependencies\Telerik\Telerik.Windows.Controls.Navigation.dll = ExternalDependencies\Telerik\Telerik.Windows.Controls.Navigation.dll
+		ExternalDependencies\Telerik\Telerik.Windows.Data.dll = ExternalDependencies\Telerik\Telerik.Windows.Data.dll
+		ExternalDependencies\Telerik\TelerikCommon.dll = ExternalDependencies\Telerik\TelerikCommon.dll
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MuscovyTechnology", "MuscovyTechnology", "{87530285-013B-4485-9B7C-8FF76ED659FD}"
+	ProjectSection(SolutionItems) = preProject
+		ExternalDependencies\MuscovyTechnology\MuscovyTechnology.Mvc.Notification.dll = ExternalDependencies\MuscovyTechnology\MuscovyTechnology.Mvc.Notification.dll
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{8C6ADC71-687D-447D-B6EA-1B09D3390EFA}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DoubleJ.Oms.TestHarness", "DoubleJ.Oms.TestHarness\DoubleJ.Oms.TestHarness.csproj", "{BD720981-E70C-4F9D-A506-F5F372CC264D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Zyl", "Zyl", "{7FEAFF56-6BDC-4DB4-99B6-89BBF7F65AE4}"
+	ProjectSection(SolutionItems) = preProject
+		ExternalDependencies\Zyl\ZylSerialPort.dll = ExternalDependencies\Zyl\ZylSerialPort.dll
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DoubleJ.Oms.LabelManager", "DoubleJ.Oms.LabelManager\DoubleJ.Oms.LabelManager.csproj", "{E4945AD4-D9ED-41BB-BCDE-57159D75D35C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DoubleJ.Oms.Settings", "DoubleJ.Oms.Settings\DoubleJ.Oms.Settings.csproj", "{4130CD5D-FECF-41B6-A16F-727626AB0E28}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DoubleJ.Oms.DataAccess", "DoubleJ.Oms.DataAccess\DoubleJ.Oms.DataAccess.csproj", "{24D7F4B3-D4E2-43AF-B4A5-2CD9249C532C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DoubleJ.Oms.Domain", "DoubleJ.Oms.Domain\DoubleJ.Oms.Domain.csproj", "{79EFBE6A-1638-49CC-98F8-D072C1E20AF4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DoubleJ.Oms.Utils", "DoubleJ.Oms.Utils\DoubleJ.Oms.Utils.csproj", "{23531D58-568B-4918-8547-C1D50A7309D9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DoubleJ.Oms.WebScanner", "DoubleJ.Oms.WebScanner\DoubleJ.Oms.WebScanner.csproj", "{E4120F8C-9E5D-4E71-9E0B-099FCF4CCC5B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebScanner", "WebScanner\WebScanner.csproj", "{02A9CC26-3BB1-4E7C-949D-1C29982D1064}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F844BA84-AF37-4476-B8AC-05270D78653A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F844BA84-AF37-4476-B8AC-05270D78653A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F844BA84-AF37-4476-B8AC-05270D78653A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F844BA84-AF37-4476-B8AC-05270D78653A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FDF9861A-E15B-4E44-9AF5-E6FFF007C502}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDF9861A-E15B-4E44-9AF5-E6FFF007C502}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDF9861A-E15B-4E44-9AF5-E6FFF007C502}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDF9861A-E15B-4E44-9AF5-E6FFF007C502}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0AC63757-28B3-4864-9371-5EC2E3ED1638}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0AC63757-28B3-4864-9371-5EC2E3ED1638}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0AC63757-28B3-4864-9371-5EC2E3ED1638}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0AC63757-28B3-4864-9371-5EC2E3ED1638}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD720981-E70C-4F9D-A506-F5F372CC264D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD720981-E70C-4F9D-A506-F5F372CC264D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD720981-E70C-4F9D-A506-F5F372CC264D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD720981-E70C-4F9D-A506-F5F372CC264D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E4945AD4-D9ED-41BB-BCDE-57159D75D35C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4945AD4-D9ED-41BB-BCDE-57159D75D35C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4945AD4-D9ED-41BB-BCDE-57159D75D35C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4945AD4-D9ED-41BB-BCDE-57159D75D35C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4130CD5D-FECF-41B6-A16F-727626AB0E28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4130CD5D-FECF-41B6-A16F-727626AB0E28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4130CD5D-FECF-41B6-A16F-727626AB0E28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4130CD5D-FECF-41B6-A16F-727626AB0E28}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24D7F4B3-D4E2-43AF-B4A5-2CD9249C532C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24D7F4B3-D4E2-43AF-B4A5-2CD9249C532C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24D7F4B3-D4E2-43AF-B4A5-2CD9249C532C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24D7F4B3-D4E2-43AF-B4A5-2CD9249C532C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79EFBE6A-1638-49CC-98F8-D072C1E20AF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79EFBE6A-1638-49CC-98F8-D072C1E20AF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79EFBE6A-1638-49CC-98F8-D072C1E20AF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79EFBE6A-1638-49CC-98F8-D072C1E20AF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23531D58-568B-4918-8547-C1D50A7309D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23531D58-568B-4918-8547-C1D50A7309D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23531D58-568B-4918-8547-C1D50A7309D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23531D58-568B-4918-8547-C1D50A7309D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E4120F8C-9E5D-4E71-9E0B-099FCF4CCC5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4120F8C-9E5D-4E71-9E0B-099FCF4CCC5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4120F8C-9E5D-4E71-9E0B-099FCF4CCC5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4120F8C-9E5D-4E71-9E0B-099FCF4CCC5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02A9CC26-3BB1-4E7C-949D-1C29982D1064}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02A9CC26-3BB1-4E7C-949D-1C29982D1064}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02A9CC26-3BB1-4E7C-949D-1C29982D1064}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02A9CC26-3BB1-4E7C-949D-1C29982D1064}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3F94AD03-7651-402A-8637-FF13E6B438FB} = {9E67C5EF-0E12-496A-BE6D-86ACDE9423E7}
+		{87530285-013B-4485-9B7C-8FF76ED659FD} = {9E67C5EF-0E12-496A-BE6D-86ACDE9423E7}
+		{7FEAFF56-6BDC-4DB4-99B6-89BBF7F65AE4} = {9E67C5EF-0E12-496A-BE6D-86ACDE9423E7}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		VisualSVNWorkingCopyRoot = .
+	EndGlobalSection
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN - Subversion Support for Visual Studio
+	EndGlobalSection
+EndGlobal

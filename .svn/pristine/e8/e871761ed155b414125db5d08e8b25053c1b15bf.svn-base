@@ -1,0 +1,27 @@
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+
+namespace DoubleJ.Oms.Model.Models
+{
+    public class ProductCodeItem : CheckBoxItem
+    {
+        [StringLength(15)]
+        [DisplayName("Product Code")]
+        public string ProductCode { get; set; }
+
+        [StringLength(25)]
+        [DisplayName("Product Description")]
+        public string ProductDescription { get; set; }
+
+        [Range(typeof(decimal), "10000000000000", "99999999999999")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:0}")]
+        [DisplayName("GTIN")]
+        public decimal? Gtin { get; set; }
+
+        [DisplayName("Price per Pound")]
+        public decimal? PricePerPound { get; set; }
+        public string Upc { get; set; }
+    }
+
+    public class CustomerProductItem : ProductCodeItem { }
+}

@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<!-- For more information on using app.config transformation visit http://go.microsoft.com/fwlink/?LinkId=125889 -->
+<configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
+  <appSettings>
+    <add key="Environment" value="Release" xdt:Transform="Replace" xdt:Locator="Match(key)"/>
+  </appSettings>
+  <connectionStrings>
+    <add name="OmsContext" connectionString="Data Source=DJSERVER02;database=DoubleJOms;user id=sa;password=Tr1n1ty;" providerName="System.Data.SqlClient" xdt:Transform="Replace" />
+  </connectionStrings>
+</configuration>

@@ -1,0 +1,34 @@
+﻿@model IEnumerable<Order>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#tabstrip").kendoTabStrip({
+            animation: {
+                open: {
+                    effects: "fadeIn"
+                }
+            }
+        });
+        $('#tabstrip li').click();
+
+    });
+</script>
+<div id="tabstrip">
+    <ul>
+        @foreach (var item in Model)
+        {
+            <li>@item.Id</li>
+        }
+    </ul>
+    @foreach (var item in Model)
+    {
+        <div>@Html.Action("LoadOrder", item)</div>
+    }
+</div>
+
+<style>
+    #tabstrip > .k-tabstrip-items {
+        overflow-x: auto;
+        overflow-y: hidden;
+        white-space: nowrap;
+    }
+</style>

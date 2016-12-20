@@ -1,0 +1,20 @@
+﻿using System.ComponentModel;
+using DoubleJ.Oms.Domain.Definitions;
+
+namespace DoubleJ.Oms.Model.ViewModels.Internal
+{
+    public class CustomerSearchViewModel : SearchViewModel
+    {
+        [DisplayName("owner name")]
+        public string Name { get; set; }
+
+        [DisplayName("order number")]
+        public int? Order { get; set; }
+
+        [DisplayName("product code")]
+        public string Product { get; set; }
+
+        [DisplayName("owner type")]
+        public OmsCustomerType? CustomerType { get; set; }
+    }
+}

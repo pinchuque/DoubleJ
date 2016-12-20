@@ -1,0 +1,7 @@
+﻿@model ColdWeightSpeciesModel
+
+@(Html.Kendo().DropDownListFor(c => c)
+                    .DataValueField("SpeciesId")
+                    .DataTextField("SpeciesName")
+                .BindTo((IEnumerable<ColdWeightSpeciesModel>)ViewBag.Species)
+)

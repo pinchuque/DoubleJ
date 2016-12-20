@@ -1,0 +1,31 @@
+﻿@model DoubleJ.Oms.Model.ViewModels.Mobile.OrderFulfillmentViewModel
+<div id="order-fulfillment-post">
+    <span id="orderInfo">Order @Model.OrderId Something Something Owner Primary Ship to @Model.DestinationId</span>
+    <span style="color:red; font-size: 10pt;">@Model.Message</span>
+    <form name="form-sn-lookup" method="POST" action="OrderFulfillmentComplete?orderId=@(Model.OrderId)&destinationId=@(Model.DestinationId)">
+        <span id="serial-number">Serial Number</span><input id="lookup-input" type="text" name="serialNumber">   
+    </form>
+    <table>
+        <tr>
+            <td>Count:</td>
+            <td>@Model.Count</td>
+        </tr>
+        <tr>
+            <td>Expected:</td>
+            <td>@Model.Expected</td>
+        </tr>
+    </table>
+    @Html.ActionLink("View Pending", "PendingProducts", new {@Model.OrderId, @Model.DestinationId},  new {@class = "jbutton", @id = "view-pending"})
+    @Html.ActionLink("View Allocated", "AllocatedProducts", new {@Model.OrderId, @Model.DestinationId},  new { @class = "jbutton", @id = "view-allocated"})
+    @Html.ActionLink("Ship", "CompleteAction", new {@Model.OrderId, @Model.DestinationId},  new { @class = "jbutton", @id = "complete"})
+</div>
+@Html.ActionLink("Main Menu", "index", null,  new { @class = "jbutton", @id = "main-menu-link"})
+@Html.ActionLink("Fulfillment Main", "OrderFulfillment", null,  new { @class = "jbutton", @id = "fulfillment-main"})
+<script type="text/javascript">   
+     window.onload = function() {   
+         var id = document.getElementById('lookup-input');
+         if (id) {
+            id.focus();  
+         }   
+    }
+</script>

@@ -1,0 +1,155 @@
+﻿<UserControl x:Class="DoubleJ.Oms.LabelManager.UserControls.OrdersConstructor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+             xmlns:local="clr-namespace:DoubleJ.Oms.LabelManager.Models"
+             mc:Ignorable="d" 
+             d:DesignHeight="274" d:DesignWidth="707">
+    <UserControl.DataContext>
+        <local:OrdersConstructorViewModel/>
+    </UserControl.DataContext>
+    <UserControl.Resources>
+        <Style TargetType="{x:Type telerik:RadButton}" x:Key="DeleteButtonStyle">
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="Padding" Value="0,2"/>
+            <Setter Property="Background" Value="Red"/>
+        </Style>
+
+        <Style TargetType="{x:Type Separator}" x:Key="SeparatorStyle">
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="Margin" Value="5,0,80,0"/>
+            <Setter Property="Background" Value="LightGreen"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Separator}">
+                        <Border 
+                        BorderBrush="{TemplateBinding BorderBrush}" 
+                        BorderThickness="{TemplateBinding BorderThickness}" 
+                        Background="{TemplateBinding Background}" 
+                        Height="1" 
+                        SnapsToDevicePixels="true"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="{x:Type GridSplitter}" x:Key="GridSplitterStyle">
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="Margin" Value="0,5"/>
+            <Setter Property="Background" Value="LightGreen"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type GridSplitter}">
+                        <Border 
+                        BorderBrush="{TemplateBinding BorderBrush}" 
+                        BorderThickness="{TemplateBinding BorderThickness}" 
+                        Background="{TemplateBinding Background}" 
+                        Width="2"
+                        SnapsToDevicePixels="true"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="{x:Type Label}" x:Key="OnOrderLabel">
+            <Setter Property="Foreground" Value="LightGreen"/>
+            <Setter Property="FontSize" Value="16"/>
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <telerik:RadGridView ItemsSource="{Binding Constructor}" Style="{StaticResource DefaultGridStyle}" CanUserSortColumns="False" Margin="0,0,6,0">
+            <telerik:RadGridView.Columns>
+                <telerik:GridViewDataColumn DataMemberBinding="{Binding ProductName}">
+                    <telerik:GridViewDataColumn.Header>
+                        <TextBlock Text="Product Name" />
+                    </telerik:GridViewDataColumn.Header>
+                </telerik:GridViewDataColumn>
+                <telerik:GridViewDataColumn>
+                    <telerik:GridViewDataColumn.Header>
+                        <TextBlock Text="Qty" />
+                    </telerik:GridViewDataColumn.Header>
+                    <telerik:GridViewDataColumn.CellTemplate>
+                        <DataTemplate>
+                            <telerik:RadButton Style="{StaticResource OffButtonStyle}" Content="{Binding Qty, Mode=TwoWay}" Click="QtyButton_OnClick" />
+                        </DataTemplate>
+                    </telerik:GridViewDataColumn.CellTemplate>
+                </telerik:GridViewDataColumn>
+                <telerik:GridViewDataColumn>
+                    <telerik:GridViewDataColumn.Header>
+                        <TextBlock Text="Weight" />
+                    </telerik:GridViewDataColumn.Header>
+                    <telerik:GridViewDataColumn.CellTemplate>
+                        <DataTemplate>
+                            <telerik:RadButton Style="{StaticResource OffButtonStyle}" Content="{Binding Weight, Mode=TwoWay}" Click="WeightCustomButton_OnClick"/>
+                        </DataTemplate>
+                    </telerik:GridViewDataColumn.CellTemplate>
+                </telerik:GridViewDataColumn>
+                <telerik:GridViewDataColumn Width="*">
+                    <telerik:GridViewDataColumn.Header>
+                        <TextBlock Text="Ship To" />
+                    </telerik:GridViewDataColumn.Header>
+                    <telerik:GridViewDataColumn.CellTemplate>
+                        <DataTemplate>
+                            <telerik:RadComboBox 
+                                SelectedValuePath="LocationId"
+                                SelectionChanged="ShipTo_SelectionChanged"
+                                DisplayMemberPath="Name"
+                                ItemsSource="{Binding Path=DataContext.Locations, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
+                                SelectedValue="{Binding Id}"   />
+                        </DataTemplate>
+                    </telerik:GridViewDataColumn.CellTemplate>
+                </telerik:GridViewDataColumn>
+                <telerik:GridViewDataColumn Header="">
+                    <telerik:GridViewDataColumn.CellTemplate>
+                        <DataTemplate>
+                            <telerik:RadButton Content="ADD"
+                                               DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type telerik:GridViewRow}}, Path=DataContext}"
+                                               Style="{StaticResource OffButtonStyle}"
+                                               Click="AddButton_OnClick"/>
+                        </DataTemplate>
+                    </telerik:GridViewDataColumn.CellTemplate>
+                </telerik:GridViewDataColumn>
+            </telerik:RadGridView.Columns>
+        </telerik:RadGridView>
+        <GridSplitter Style="{StaticResource GridSplitterStyle}"/>
+        <StackPanel Grid.Column="1">
+            <Label Content="On Order" Style="{StaticResource OnOrderLabel}"/>
+            <Separator Style="{StaticResource SeparatorStyle}"/>
+            <ItemsControl  ItemsSource="{Binding Orders}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Content="{Binding ProductName}" />
+                            <Label Grid.Column="1">
+                                <Label.Content>
+                                    <TextBlock>
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="{}{0} x {1}lbs">
+                                                <Binding Path="Qty" />
+                                                <Binding Path="Weight" />
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                </Label.Content>
+                            </Label>
+                            <Label Grid.Column="2" Content="{Binding ShipTo}"/>
+                            <telerik:RadButton Grid.Column="3" Content="Remove"
+                                               DataContext="{Binding Id}"
+                                               Style="{StaticResource DeleteButtonStyle}" Click="RemoveButton_OnClick"/>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </Grid>
+</UserControl>

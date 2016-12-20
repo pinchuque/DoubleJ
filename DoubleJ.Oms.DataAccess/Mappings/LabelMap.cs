@@ -1,0 +1,106 @@
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Entity.ModelConfiguration;
+
+using DoubleJ.Oms.Domain.Entities;
+
+
+namespace DoubleJ.Oms.DataAccess.Mappings
+{
+    internal class LabelMap : EntityTypeConfiguration<Label>
+    {
+        public LabelMap()
+        {
+            ToTable("dbo.Label");
+            HasKey(x => x.Id);
+
+            Property(x => x.Id)
+                .HasColumnName("Id")
+                .IsRequired()
+                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+            Property(x => x.TypeId).HasColumnName("TypeId").IsRequired();
+            Property(x => x.CurrentLocationId).HasColumnName("CurrentLocationId").IsOptional();
+            Property(x => x.OrderDetailId).HasColumnName("OrderDetailId").IsRequired();
+            Property(x => x.ItemCode).HasColumnName("ItemCode").IsRequired().HasMaxLength(15);
+            Property(x => x.LotNumber).HasColumnName("LotNumber").IsRequired().HasMaxLength(15);
+            Property(x => x.Description).HasColumnName("Description").IsRequired().HasMaxLength(25);
+            Property(x => x.PoundWeight).HasColumnName("PoundWeight").IsRequired();
+            Property(x => x.KilogramWeight).HasColumnName("KilogramWeight").IsRequired();
+            Property(x => x.ProcessDate).HasColumnName("ProcessDate").IsRequired().HasMaxLength(10);
+            Property(x => x.SlaughterDate).HasColumnName("SlaughterDate").IsRequired().HasMaxLength(10);
+            Property(x => x.BestBeforeDate).HasColumnName("BestBeforeDate").IsRequired();
+            Property(x => x.SpeciesBugPath).HasColumnName("SpeciesBugPath").IsOptional().HasMaxLength(100);
+            Property(x => x.LogoPath).HasColumnName("LogoPath").IsOptional().HasMaxLength(100);
+            Property(x => x.BornIn).HasColumnName("BornIn").IsOptional().HasMaxLength(50);
+            Property(x => x.RaisedIn).HasColumnName("RaisedIn").IsOptional().HasMaxLength(20);
+            Property(x => x.ProductOf).HasColumnName("ProductOf").IsOptional().HasMaxLength(20);
+            Property(x => x.DistributedBy).HasColumnName("DistributedBy").IsOptional().HasMaxLength(30);
+            Property(x => x.GermanDescription).HasColumnName("GermanDescription").IsOptional().HasMaxLength(25);
+            Property(x => x.FrenchDescription).HasColumnName("FrenchDescription").IsOptional().HasMaxLength(25);
+            Property(x => x.ItalianDescription).HasColumnName("ItalianDescription").IsOptional().HasMaxLength(25);
+            Property(x => x.SwedishDescription).HasColumnName("SwedishDescription").IsOptional().HasMaxLength(25);
+            Property(x => x.IsPrinted).HasColumnName("IsPrinted").IsRequired();
+            Property(x => x.CreatedDate).HasColumnName("CreatedDate").IsRequired();
+            Property(x => x.LabelFile).HasColumnName("LabelFile").IsRequired();
+            Property(x => x.Primal).HasColumnName("Primal").IsOptional().HasMaxLength(50);
+            Property(x => x.JulianProductionDate).HasColumnName("JulianProductionDate").IsOptional().HasMaxLength(3);
+            Property(x => x.SubPrimal).HasColumnName("SubPrimal").IsOptional().HasMaxLength(50);
+            Property(x => x.Trim).HasColumnName("Trim").IsOptional().HasMaxLength(20);
+            Property(x => x.GradeName).HasColumnName("GradeName").IsOptional().HasMaxLength(20);
+            Property(x => x.SerialNumber).HasColumnName("SerialNumber").IsOptional().HasMaxLength(20);
+            Property(x => x.Organic).HasColumnName("Organic").IsOptional().HasMaxLength(100);
+            Property(x => x.CustomerProductCode).HasColumnName("CustomerProductCode").IsOptional().HasMaxLength(30);
+            Property(x => x.Customer).HasColumnName("Customer").IsOptional().HasMaxLength(50);
+            Property(x => x.Species).HasColumnName("Species").IsOptional().HasMaxLength(30);
+            Property(x => x.AnimalName).HasColumnName("AnimalName").IsOptional().HasMaxLength(30);
+            Property(x => x.Printer).HasColumnName("Printer").IsOptional().HasMaxLength(100);
+            Property(x => x.CustomerProductDescription)
+                .HasColumnName("VarCustomerProductValue")
+                .IsOptional()
+                .HasMaxLength(25);
+            Property(x => x.PackedFor).HasColumnName("PackedFor").IsRequired().HasMaxLength(50);
+            Property(x => x.Refrigeration).HasColumnName("Refrigeration").IsOptional().HasMaxLength(50);
+            Property(x => x.Gtin).HasColumnName("GTIN").IsRequired().HasColumnType("numeric");
+            Property(x => x.PricePerPound).HasColumnName("PricePerPound").IsOptional().HasColumnType("money");
+            Property(x => x.Price).HasColumnName("Price").IsOptional().HasColumnType("money");
+            Property(x => x.Price).HasColumnName("Price").IsOptional().HasColumnType("money");
+            Property(x => x.CustomerPO).HasColumnName("CustomerPO").IsOptional();
+            Property(x => x.TareWeight).HasColumnName("TareWeight").IsOptional();
+
+            #region NutritionInfo
+            Property(x => x.NutritionDescription).HasColumnName("NutritionDescription").IsOptional().HasMaxLength(25);
+            Property(x => x.NutritionServingSize).HasColumnName("NutritionServingSize").IsOptional().HasMaxLength(22);
+            Property(x => x.NutritionServingContainer).HasColumnName("NutritionServingContainer").IsOptional().HasMaxLength(12);
+            Property(x => x.NutritionCalories).HasColumnName("NutritionCalories").IsOptional();
+            Property(x => x.NutritionCaloriesFat).HasColumnName("NutritionCaloriesFat").IsOptional();
+            Property(x => x.NutritionTotalFat).HasColumnName("NutritionTotalFat").IsOptional();
+            Property(x => x.NutritionSatFat).HasColumnName("NutritionSatFat").IsOptional();
+            Property(x => x.NutritionTransFat).HasColumnName("NutritionTransFat").IsOptional();
+            Property(x => x.NutritionPolyFat).HasColumnName("NutritionPolyFat").IsOptional();
+            Property(x => x.NutritionMonoFat).HasColumnName("NutritionMonoFat").IsOptional();
+            Property(x => x.NutritionCholesterol).HasColumnName("NutritionCholesterol").IsOptional();
+            Property(x => x.NutritionSodium).HasColumnName("NutritionSodium").IsOptional();
+            Property(x => x.NutritionCarbs).HasColumnName("NutritionCarbs").IsOptional();
+            Property(x => x.NutritionProtein).HasColumnName("NutritionProtein").IsOptional();
+            Property(x => x.NutritionVitA).HasColumnName("NutritionVitA").IsOptional();
+            Property(x => x.NutritionVitC).HasColumnName("NutritionVitC").IsOptional();
+            Property(x => x.NutritionCalcium).HasColumnName("NutritionCalcium").IsOptional();
+            Property(x => x.NutritionIron).HasColumnName("NutritionIron").IsOptional();
+
+            #endregion
+
+            Property(x => x.CustomerName).HasColumnName("CustomerName").IsOptional().HasMaxLength(100);
+            Property(x => x.CustomerAddress1).HasColumnName("CustomerAddress1").IsOptional().HasMaxLength(100);
+            Property(x => x.CustomerAddress2).HasColumnName("CustomerAddress2").IsOptional().HasMaxLength(100);
+            Property(x => x.CustomerCity).HasColumnName("CustomerCity").IsOptional().HasMaxLength(50);
+            Property(x => x.CustomerStateCode).HasColumnName("CustomerStateCode").IsOptional().HasMaxLength(2);
+            Property(x => x.CustomerZipCode).HasColumnName("CustomerZipCode").IsOptional().HasMaxLength(10);
+            Property(x => x.CustomerPhone).HasColumnName("CustomerPhone").IsOptional().HasMaxLength(20);
+            Property(x => x.CustomerFax).HasColumnName("CustomerFax").IsOptional().HasMaxLength(20);
+            Property(x => x.CustomerEmail).HasColumnName("CustomerEmail").IsOptional();
+
+            HasRequired(a => a.LabelType).WithMany(b => b.Label).HasForeignKey(c => c.TypeId);
+            HasRequired(a => a.OrderDetail).WithMany(b => b.Label).HasForeignKey(c => c.OrderDetailId);
+            HasRequired(a => a.CurrentLocation).WithMany(b => b.Label).HasForeignKey(c => c.CurrentLocationId);
+        }
+    }
+}

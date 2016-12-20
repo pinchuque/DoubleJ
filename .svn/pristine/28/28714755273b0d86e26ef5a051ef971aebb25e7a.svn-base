@@ -1,0 +1,244 @@
+﻿html,
+body {
+   margin: 0;
+   padding: 0;
+   height:100%;
+   background-color: white;
+   font-size: 16pt;
+   font-family: "Trebuchet MS", Verdana, Helvetica, Sans-Serif;
+   color: #22593D;
+}
+
+#container {
+   min-height:100%;
+   position:relative;
+   text-align: center;
+   width: 320px;
+   height: 320px;
+   margin: 0 auto -20px auto;
+}
+#header {
+   padding-top:10px;
+   height: 30px;
+   font-size: 19pt; 
+   border-bottom: solid 2px black;
+   text-align: left;
+   width: 300px;
+   display: block;
+   margin: 0 auto 5px auto;  
+}
+#footer {
+   position:fixed;
+   bottom:0;
+   width: 100%;
+   height: 20px;
+   text-align: center;
+   font-size: 70%;
+   vertical-align:middle;
+}
+.jbutton {
+    display: block;
+    border: solid 2px black; 
+    background-color: #22593D;
+    width: 250px;
+    color: white;
+    text-decoration: none;
+    padding: 2px 6px 2px 6px;
+    margin: 7px auto 0 auto;
+   }
+#main-menu-link {
+    float: left; width: 70px; font-size: 10pt; height: 18px; margin: 0 10px 0 5px; position:absolute; bottom: 30px;
+}
+#fulfillment-main {
+    float: left; width: 90px; font-size: 9pt; height: 18px; bottom: 30px; position:absolute; left: 95px;
+}
+#main-menu-link-relative {
+    float: left; width: 70px; font-size: 10pt; height: 18px; margin: 0 5px 0 5px; bottom: 30px;
+}
+#fulfillment-main-relative {
+    float: left; width: 90px; font-size: 9pt; height: 18px;bottom: 30px; margin: 0;
+}
+#remove {
+    width: 90px;
+    line-height: 8px;
+}
+#remove2 {
+    width: 70px;
+    line-height: 8px;
+    border: solid 2px black; 
+    background-color: #22593D;
+    color: white;
+    text-decoration: none;
+    padding: 2px 6px 2px 6px;
+}
+/*Page 1 styles start*/
+#main-menu {
+    margin: 15px 0 0 0;
+    height: auto;
+}
+/*Page 2 styles start*/
+#sn-lookup {
+    margin: 15px 30px 0 0;
+    height: auto;
+}
+.reset-location {
+    margin: 17px auto 0 auto;
+    width: 100px;
+    height: 30px; 
+    white-space: normal;
+    font-size: 10pt;
+    padding: 6px 30px 11px 30px;
+}
+#serial-number {
+    margin: 0 0 0 10px;
+    float: left;
+}
+#lookup-input {
+    float: right;
+    width: 135px;
+    height: 20px;
+    padding: 5px 0 0 0;
+}
+#lookup-button {
+    float: right; font-size: 10pt; width:105px; margin-left: 140px;
+}
+#sn-lookup table{
+    text-align: center;
+    border: none;
+    font-size: 10pt;
+    margin: 0 auto 0 auto;
+}
+#sn-lookup table tr{
+    line-height: 10px;
+}
+#sn-lookup table td {
+    text-align: left;
+    width: 100px;
+    padding-left: 20px;
+}
+/*Order-fulfillment-get styles start*/
+#order-fulfillment-get {
+    margin: 15px 30px 0 0;
+    height: auto;
+}
+#go {
+    float: right; 
+    font-size: 10pt; 
+    width:105px;
+    color: #ccc;
+    margin-right: 6px;
+    background-color: #ccc;
+    border-color: #ccc;
+}
+#order-fulfillment-get select {
+    padding: 2px 2px 2px 2px;
+    border: 2px solid black;
+    height: 35px;
+    width: 140px;
+    margin-left: 5px;
+}
+/*order-fulfillment-post style starts here*/
+#order-fulfillment-post {
+    margin: 5px 30px 0 0;
+    height: auto;
+}
+#order-fulfillment-post input{
+   float: right; width: 135px; height: 25px; padding: 5px 0 0 0;
+}
+#order-fulfillment-post table {
+    text-align: center;
+    border: none;
+    font-size: 10pt;
+    margin: 10px auto 0 auto;
+}
+#order-fulfillment-post table tr {
+    line-height: 10px;
+}
+#order-fulfillment-post table td{
+    text-align: right;
+}
+#order-fulfillment-post table td:first-child {
+    text-align: right;
+}
+#view-pending {
+    float: left; width: 80px; font-size: 10pt; margin-left: 10px;  
+}
+#view-allocated {
+    float: right; width: 90px; font-size: 10pt; margin-right: 10px;
+}
+#complete {
+     width: 60px; font-size: 10pt; margin: 10px 15px 10px 0;
+}
+/*table-products style starts here*/
+#table-products {
+    margin: 5px 0 0 0;
+    height: auto;
+}
+#table-products #back {
+    width: 60px; font-size: 10pt; margin: 10px auto;
+}
+#table-products table {
+    text-align: left;
+    border: none;
+    font-size: 10pt;
+    margin: 0 0 0 10px;
+    width: 300px;
+}
+#orderInfo {
+    display: block; 
+    font-size: 10pt; 
+    text-align: left; 
+    line-height: 15px; 
+    margin: 0 0 10px 10px;
+}
+#table-header {
+    border-bottom: solid 1px black;
+    height: 20px;
+    font-size: 10pt;
+    text-align: left;
+    margin: 15px 10px 0 10px;
+}
+/*allocated-products style starts here*/
+#allocated-products {
+    margin: 5px 0 0 0;
+    height: auto;
+}
+#allocated-products span {
+    display: block; 
+    font-size: 10.5pt; 
+    text-align: left; 
+    line-height: 15px; 
+    margin: 0 0 10px 10px;
+    width: 90%;
+}
+#allocated-products #back {
+    float: left; width: 60px; font-size: 10pt; margin: 10px 106px;
+}
+#allocated-products table {
+    text-align: left;
+    border: none;
+    font-size: 10pt;
+    font-size: 10pt;
+    margin: 0 10px 0 10px;
+    border-collapse: collapse;
+    width: 94%;
+}
+#allocated-products table tr{
+    height: 10px;
+}
+#allocated-products table tr:first-child{
+    border-bottom: 2px solid #000;
+    line-height: 10px;
+}
+#remove-popup {
+    position:absolute;
+    width:170px;
+    height:150px;
+    border:5px solid #ff0000;
+    padding: 20px 20px 10px 20px;
+    right: 30%;
+    left: 10%;
+    background-color: #ffffff;
+    font-size: 10pt;
+    text-align: center;
+}

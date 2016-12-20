@@ -1,0 +1,25 @@
+﻿@model LabelGridViewModel
+
+@Html.HiddenFor(model => model.Locations.Count)
+@(Html.Kendo().Grid<LabelGridItem>()
+                  .Name("BoxLabelGrid")
+                  .Columns(columns =>
+                      {
+                          columns.Bound(i => i.ProductId).Visible(false);
+                          columns.Bound(i => i.ProductName);
+                          for (int j = 0; j < Model.Locations.Count; j++)
+                          {
+                            columns.Bound(i => i.Locations[j].Id)
+                                  .ClientTemplate(string.Format("#= Box_InitProductLocationCount(eval('Locations[{0}].Total'),eval('Locations[{0}].CompletedCount')) #", j))
+                                  .Title(@Model.Locations[j].Name).HtmlAttributes(new { style = "text-align:center;" });
+                          }
+                      })
+                  .Editable(editable => editable.Mode(GridEditMode.InLine))
+                  .Pageable()
+                  .Scrollable()
+                  .DataSource(dataSource => dataSource
+                                                .Ajax()
+                                                 .Model(model => model.Id(i => i.ProductId))
+                                                 .Read(read => read.Action("BoxLabelGrid_Read", "Labels", new { orderId = @Model.OrderId }))
+                  )
+)

@@ -1,0 +1,24 @@
+﻿<fieldset>
+    <legend>Matching Products</legend>
+
+    @(Html.Kendo().Grid<ProductSearchResultItem>()
+          .Name("ProductSearchResultGrid")
+          .Columns(columns =>
+          {
+              columns.Bound(product => product.Upc).Width(60);
+              columns.Bound(product => product.Description).Width(65);
+              columns.Bound(product => product.ProductId)
+                  .ClientTemplate("<a href='" + Url.Action("Edit", "Products") + "/#= ProductId #'" + " class='k-button k-button-icontext'><span class='k-icon k-edit'></span>edit</a>")
+                  .Title("").Width(60);
+          })
+          .Pageable()
+          .Sortable()
+          .Scrollable()
+          .DataSource(dataSource => dataSource
+              .Ajax()
+              .Model(model => model.Id(product => product.ProductId))
+              .Read(read => read.Action("SearchResultGrid_Read", "Products"))
+          )
+    )
+</fieldset>
+

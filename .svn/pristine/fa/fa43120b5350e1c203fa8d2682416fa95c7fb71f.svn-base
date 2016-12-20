@@ -1,0 +1,40 @@
+﻿using System;
+using System.Windows;
+using System.Windows.Controls;
+using DoubleJ.Oms.LabelManager.Extensions;
+
+namespace DoubleJ.Oms.LabelManager.UserControls
+{
+    /// <summary>
+    ///     Interaction logic for CustomBoxGrid.xaml
+    /// </summary>
+    public partial class CustomBoxGrid : UserControl
+    {
+        public event EventHandler OnCustomerLocationChanged;
+
+        private FrameworkElement _sideItem;
+
+        public CustomBoxGrid()
+        {
+            InitializeComponent();
+        }
+
+        private void Selector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var list = (ListView)sender;
+            var selectedItem = list.SelectedItem;
+            var listViewItem = (ListViewItem)list.ItemContainerGenerator.ContainerFromItem(selectedItem);
+
+            if (selectedItem == null)
+                return;
+
+            if (OnCustomerLocationChanged != null) OnCustomerLocationChanged(sender, EventArgs.Empty);
+
+
+            if (_sideItem != null)
+                LabelManagerExtensions.ApplyStyle<StackPanel>(StyleProperty, _sideItem, "Side", "CustomBagCaptionDefault");
+            _sideItem = listViewItem;
+            LabelManagerExtensions.ApplyStyle<StackPanel>(StyleProperty, listViewItem, "Side", "CustomBagCaptionSelected");
+        }
+    }
+}

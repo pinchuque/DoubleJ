@@ -1,0 +1,5 @@
+﻿<div id="main-menu">
+     @Html.ActionLink("Order Fulfillment", "OrderFulfillment", null,  new { @class = "jbutton"})
+     @Html.ActionLink("SN Lookup", "SnLookup", null,  new { @class = "jbutton"})
+</div>
+

@@ -1,0 +1,114 @@
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.IO;
+using System.Linq;
+using System.Web;
+
+using DoubleJ.Oms.Domain.Definitions;
+using DoubleJ.Oms.Domain.Entities;
+using DoubleJ.Oms.Model.Extensions;
+using DoubleJ.Oms.Model.Models;
+
+
+namespace DoubleJ.Oms.Model.ViewModels.Internal
+{
+    public class CustomerViewModel
+    {
+        public CustomerViewModel()
+        {
+        }
+
+        public CustomerViewModel(Customer customer, IEnumerable<CustomerProductItem> productData)
+            : this()
+        {
+            BagLabel = string.IsNullOrEmpty(customer.BagLabel) ? "bag.lbl" : customer.BagLabel;
+            BoxLabel = string.IsNullOrEmpty(customer.BoxLabel) ? "box.lbl" : customer.BoxLabel;
+            CustomerLocations = customer.CustomerLocation.Select(x => new CustomerLocationViewModel(x)).ToList();
+            CustomerName = customer.Name;
+            CustomerPo = customer.PONumber;
+            BestBeforeDays = customer.BestBeforeDays;
+            CustomerLogoFileName = Path.GetFileName(customer.LogoFileName);
+            CustomerType = customer.CustomerTypeId;
+            LabelDistributedBy = customer.DistributedBy;
+            OrderContactEmail = customer.With(x => x.User).Return(x => x.Email);
+            OrderContactFirstName = customer.With(x => x.User).Return(x => x.FirstName);
+            OrderContactLastName = customer.With(x => x.User).Return(x => x.LastName);
+            OrderContactPhone = customer.With(x => x.User).Return(x => x.Phone);
+            PortalPassword = customer.With(x => x.User).Return(x => x.Password);
+            UseLogoOnLabels = customer.LogoTypeId;
+
+            Id = customer.Id;
+            CustomerProductCodeList = productData;
+        }
+
+        [DisplayName("Products")]
+        public IEnumerable<CustomerProductItem> CustomerProductCodeList { get; set; }
+
+        [DisplayName("Owner Name")]
+        [Required]
+        public string CustomerName { get; set; }
+
+        [DisplayName("Owner Type")]
+        [Required]
+        public OmsCustomerType CustomerType { get; set; }
+
+        [DisplayName("Order Contact First Name")]
+        [Required]
+        public string OrderContactFirstName { get; set; }
+
+        [DisplayName("Order Contact Last Name")]
+        [Required]
+        public string OrderContactLastName { get; set; }
+
+        [DisplayName("Order Contact Email")]
+        [Required]
+        public string OrderContactEmail { get; set; }
+
+        [DisplayName("Portal Password")]
+        [MaxLength(10, ErrorMessage = "The field Portal Password must be a string with a maximum length of 10")]
+        public string PortalPassword { get; set; }
+       
+        [DisplayName("Order Contact Phone")]
+        public string OrderContactPhone { get; set; }
+
+        [DisplayName("Label' distributed by'")]
+        public string LabelDistributedBy { get; set; }
+
+        [DisplayName("Owner Logo")]
+        public HttpPostedFileBase CustomerLogo { get; set; }
+
+        public string CustomerLogoFileName { get; set; }
+
+        [DisplayName("Use Logo On Labels")]
+        public OmsLogoType UseLogoOnLabels { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:000000}")]
+        [DisplayName("Owner Id")]
+        public int Id { get; set; }
+
+        public List<CustomerLocationViewModel> CustomerLocations { get; set; }
+        public CustomerLocationViewModel CurrentEditLocation { get; set; }
+
+        [DisplayName("Bag Label")]
+        [Required]
+        public string BagLabel { get; set; }
+
+        [DisplayName("Box Label")]
+        [Required]
+        public string BoxLabel { get; set; }
+
+        [DisplayName("Owner P.O.#")]
+        public string CustomerPo { get; set; }
+
+        //[DisplayName("# Days (Best Before Date)"), Required(ErrorMessage = "required")]
+        public int? BestBeforeDays { get; set; }
+    }
+
+    public enum CustomerLocationAction
+    {
+        Add,
+        Update,
+        Remove
+    }
+}

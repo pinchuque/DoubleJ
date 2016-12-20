@@ -1,0 +1,30 @@
+﻿@model ProductViewModel
+
+@{
+    ViewBag.Title = "Add Product";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="content-container">
+    <div id="hud"></div>
+    <div id="content">
+        <h1>Add Product</h1>
+        @using (Html.BeginForm("Add", "Products", FormMethod.Post, new { id = "ProductEntry" }))
+        {
+            @Html.ValidationSummary(true)
+            @Html.Partial("_Form")
+            <div class="buttonRow oms-button">
+                @Html.ActionLink("Cancel", "Index", "Products", null, new { @class = "k-button" })
+                <input type="submit" id="btnSubmit" class="k-button" value="Save" />
+            </div>
+        }
+    </div>
+    <div style="clear: both;"></div>
+</div>
+@section SiteNavigation {
+    @Html.Action("_Site", "Navigation", new { area = "", selected = OmsSiteNavigation.Products })
+}
+
+@section Scripts {
+    <script src="@Url.Content("~/Scripts/DoubleJ.Oms.Web.Internal.Product.js")" type="text/javascript"></script>
+}

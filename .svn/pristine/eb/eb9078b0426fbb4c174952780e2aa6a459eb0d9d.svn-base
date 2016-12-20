@@ -1,0 +1,30 @@
+﻿<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.2//EN" "http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd">
+<html>
+    <head>
+        <meta name="mobileoptimized" content="0"> 
+        <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0"> 
+        <title>@ViewBag.Title</title>
+        <link href="@Url.Content("~/Content/mobile.css")" rel="stylesheet" type="text/css" />
+    </head>
+    <body>
+        <div id="container">
+            <div id="header">
+                @ViewBag.mainTitle
+            </div>
+            <div id="main-content">
+                @RenderBody()
+            </div>          
+        </div>
+        <div id="footer">Double J Meat Packing</div>
+    </body>
+</html>
+<script type="text/javascript">
+    var pendingProducts = document.getElementById('table-products');
+    var allocatedProducts = document.getElementById('allocated-products');
+    if (pendingProducts != null || allocatedProducts != null) {
+        var footer = document.getElementById('footer');
+        footer.style.position = "relative";
+        footer.style.width = "150px";
+        footer.style.margin = "25px auto";
+    }
+</script>

@@ -1,0 +1,36 @@
+﻿<Window x:Class="DoubleJ.Oms.LabelManager.UserControls.PrimalCutsList"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DoubleJ.Oms.LabelManager.UserControls"
+             xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+             mc:Ignorable="d" Name="PrimalCutsWindow"
+              Width="800" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <ListView Margin="5"  Name="PrimalCuts"  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Horizontal" Width="{Binding (FrameworkElement.ActualWidth), 
+                            RelativeSource={RelativeSource AncestorType=ScrollContentPresenter}}"
+                            ItemWidth="{Binding (ListView.View).ItemWidth, 
+                            RelativeSource={RelativeSource AncestorType=ListView}}"
+                            MinWidth="{Binding ItemWidth, RelativeSource={RelativeSource Self}}"
+                            ItemHeight="{Binding (ListView.View).ItemHeight, 
+                            RelativeSource={RelativeSource AncestorType=ListView}}"
+                            Margin="1" ScrollViewer.CanContentScroll="False"/>
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Button Margin="5" Height="50" Width="120"  Background="{Binding Path=BackgroundColor, Converter={StaticResource HexConverter}}"
+                                Tag="{Binding Path=Id}" Click="ButtonBase_OnClick">
+                        <Button.Content>
+                            <TextBlock Foreground="{Binding Path=TextColor, Converter={StaticResource HexConverter}}" Text="{Binding Name}"/>
+                        </Button.Content>
+                    </Button>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
+</Window>

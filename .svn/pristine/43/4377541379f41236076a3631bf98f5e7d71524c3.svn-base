@@ -1,0 +1,860 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Deployment.Application;
+using System.Globalization;
+using System.Linq;
+using System.Threading;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+
+using DoubleJ.Oms.DataAccess;
+using DoubleJ.Oms.Domain.Definitions;
+using DoubleJ.Oms.Domain.Entities;
+using DoubleJ.Oms.LabelManager.Extensions;
+using DoubleJ.Oms.LabelManager.Models;
+using DoubleJ.Oms.LabelManager.Utils;
+using DoubleJ.Oms.Model.Interfaces;
+using DoubleJ.Oms.Model.Models;
+using DoubleJ.Oms.Model.Repositories;
+using DoubleJ.Oms.Model.ViewModels.Internal;
+using DoubleJ.Oms.Service.Interfaces;
+using DoubleJ.Oms.Service.Services;
+using DoubleJ.Oms.Service.Services.Device;
+using DoubleJ.Oms.Service.Services.Internal;
+
+using Ninject.Parameters;
+
+using NLog;
+
+using Telerik.WinControls;
+using Telerik.Windows.Controls;
+using SWF = System.Windows.Forms;
+
+
+namespace DoubleJ.Oms.LabelManager
+{
+    /// <summary>
+    /// Interaction logic for LabelManagerWindow.xaml
+    /// </summary>
+    public partial class LabelManagerWindow
+    {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private readonly Zq375 _scale = new Zq375();
+        private readonly LabelManagerViewModel _viewModel;
+
+        private OmsLabelType _activeLabelType;
+        private LabelTypeMode? _labelTypeMode;
+
+        private ICustomerLocationRepository _customerLocationRepository;
+        private IOffalRepository _offalRepository;
+        private IOrderComboRepository _orderComboRepository;
+        private IOrderOffalRepository _orderOffalRepository;
+        private IOrderRepository _orderRepository;
+        private IProductRepository _productRepository;
+        private IColdWeightEntryRepository _coldWeightRepository;
+        private IOrderDetailRepository _orderDetailRepository;
+        private IAnimalOrderDetailRepository _animalOrderDetailRepository;
+        private IColdWeightEntryRepository _coldWeightEntryRepository;
+
+        private ILabelCreateService _labelCreateService;
+        private ILabelService _labelService;
+        private IOrderService _orderService;
+        private IOrderDetailService _orderDetailService;
+
+        private enum LabelTypeMode
+        {
+            FabLabel,
+            CustomBagLabel,
+            CustomBoxLabel,
+            OffalLabel
+        }
+
+        public LabelManagerWindow()
+        {
+            Init();
+
+            StyleManager.ApplicationTheme = new Windows8TouchTheme();
+
+            try
+            {
+                Title = "DoubleJ Label Manager v" + ApplicationDeployment.CurrentDeployment.CurrentVersion;
+                Logger.Debug("Thread id is " + Thread.CurrentThread.ManagedThreadId);
+            }
+            catch (Exception)
+            {
+                Title = "DoubleJ Label Manager";
+            }
+
+            InitializeComponent();
+
+            _viewModel = new LabelManagerViewModel();
+
+            InitializeOrders();
+            InitializeScale();
+
+            DataContext = _viewModel;
+
+            DetectLabelTypeOrDefault(Tabs);
+
+            _viewModel.StartListening();
+
+            GridBags.OnProductChanged += UnitProductChanged;
+            GridBoxes.OnProductChanged += UnitProductChanged;
+
+            GridCustomBoxes.OnCustomerLocationChanged += CustomerLocationChanged;
+
+            GridCustomBags.OnCutChanged += CutItemChanged;
+            GridCustomBags.OnSideChanged += SideChanged;
+            GridCustomBags.OnReprintLabelsForProduct += ReprintLabels;
+            GridCustomBags.OnRemoveLabelsForProduct += RemoveOrderDetail;
+        }
+
+        #region Main Logic
+
+        private void Init()
+        {
+            var context = new OmsContext();
+            _orderRepository = new OrderRepository(context);
+            _customerLocationRepository = new CustomerLocationRepository(context);
+            var customerRepository = new CustomerRepository(context);
+            _orderService = new OrderService(_orderRepository, customerRepository, _customerLocationRepository, _coldWeightRepository);
+            _orderDetailService = new OrderDetailService(_orderDetailRepository, _orderRepository, _productRepository, _customerLocationRepository, new SpeciesRepository(context));
+            _labelService = new LabelService();
+            _labelCreateService = new LabelCreateService();
+            _productRepository = new ProductRepository(context);
+            _coldWeightRepository = new ColdWeightEntryRepository(context);
+            _offalRepository = new OffalRepository(context);
+            _orderComboRepository = new OrderComboRepository(context);
+            _orderOffalRepository = new OrderOffalRepository(context);
+            _orderDetailRepository = new OrderDetailRepository(context);
+            _animalOrderDetailRepository = new AnimalOrderDetailRepository(context);
+            _coldWeightEntryRepository = new ColdWeightEntryRepository(context);
+        }
+
+        private void InitializeViewModel(int selectedOrderId)
+        {
+            var order = _orderRepository.Get(selectedOrderId);
+
+            BagsTab.Visibility = order.BagEnable ? Visibility.Visible : Visibility.Collapsed;
+
+            _viewModel.IsCustomOwner = order.Customer.CustomerTypeId == OmsCustomerType.Custom;
+            if (_viewModel.IsCustomOwner)
+            {
+                _viewModel.AnimalNumbers = _labelService.GetAnimalNumbers(selectedOrderId);
+                _viewModel.BoxesCustomList = _labelService.GetBoxesCustomList(selectedOrderId);
+            }
+            else
+            {
+                var labelGridItems = _labelService.GetLabelGridItems(selectedOrderId, !order.BagEnable);
+                _viewModel.BoxesList = new BindingList<LabelGridItem>(labelGridItems.Item1.OrderBy(x => x.ProductId).ToList());
+                if (order.BagEnable)
+                    _viewModel.BagsList = new BindingList<LabelGridItem>(labelGridItems.Item2.OrderBy(x => x.ProductId).ToList());
+            }
+
+            if (!order.BagEnable)
+                BoxTab.IsSelected = true;
+
+            BtnEditLabels.IsEnabled = !_viewModel.IsCustomOwner;
+
+            GridBags.Visibility = GetVisibility(!_viewModel.IsCustomOwner);
+            GridBoxes.Visibility = GetVisibility(!_viewModel.IsCustomOwner);
+
+            GridCustomBags.Visibility = GetVisibility(_viewModel.IsCustomOwner);
+            GridCustomBoxes.Visibility = GetVisibility(_viewModel.IsCustomOwner);
+
+            _viewModel.SpecialInstructions = order.SpecialInstructions;
+            _viewModel.CustomerComments = order.CustomerComments;
+            _viewModel.CombosSource = GetCombosSource(order);
+            _viewModel.OffalsSource = GetOffalsSource(order);
+            _viewModel.OrderSummary = GetOrderSummary(selectedOrderId);
+
+            DisplayScaleOutput(string.Empty);
+        }
+
+        private Visibility GetVisibility(bool visible)
+        {
+            return visible ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private void Refresh()
+        {
+            Init();
+
+            if (ComboOrder.SelectedIndex <= -1) return;
+
+            _viewModel.CurrentOrderId = (int)ComboOrder.SelectedValue;
+
+            var orders = _orderRepository.GetByStatus(new List<OmsStatus> { OmsStatus.InProcess }).ToList();
+            foreach (var order in orders)
+            {
+                _orderService.SetStatus(order.Id, OmsStatus.Parked);
+            }
+            _orderService.SetStatus(_viewModel.CurrentOrderId, OmsStatus.InProcess);
+
+            InitializeViewModel(_viewModel.CurrentOrderId);
+        }
+
+        private void OpenLog(object sender, RoutedEventArgs e)
+        {
+            Helpers.InstantiateRLogger();
+        }
+
+        private void CreateLabel(double weight, OmsScaleWeighStatus status = OmsScaleWeighStatus.Success, string formattedDisplay = null, int quantity = 1)
+        {
+            switch (_labelTypeMode.Value)
+            {
+                case LabelTypeMode.FabLabel:
+                    AddLabel(weight, status, formattedDisplay, quantity);
+                    break;
+                case LabelTypeMode.CustomBagLabel:
+                    AddBagLabel(weight, status, formattedDisplay, quantity);
+                    break;
+                case LabelTypeMode.CustomBoxLabel:
+                    AddBoxLabel(weight, status, formattedDisplay, quantity);
+                    break;
+                case LabelTypeMode.OffalLabel:
+                    AddOffallabel(weight, status, formattedDisplay: formattedDisplay, quantity: quantity);
+                    break;
+            }
+        }
+
+        #endregion
+
+        #region Orders
+
+        private void InitializeOrders()
+        {
+            try
+            {
+                _viewModel.Orders = GetOrders();
+            }
+            catch (Exception e)
+            {
+                RadMessageBox.Show(e.StackTrace, e.Message, SWF.MessageBoxButtons.OK, RadMessageIcon.Error);
+                throw;
+            }
+        }
+
+        private BindingList<SelectListItemModel> GetOrders()
+        {
+            Init();
+
+            var list = _labelService
+                .GetOrders()
+                .Select(x => new SelectListItemModel
+                {
+                    Id = x.Id,
+                    Name = string.Format("{0} {1}", x.Id.ToString(), x.Customer.Name)
+                }).ToList();
+
+
+            return new BindingList<SelectListItemModel>(list);
+        }
+
+        private void ComboOrder_SelectedIndexChanged(object sender, SelectionChangedEventArgs e)
+        {
+            RefreshTabs();
+            Refresh();
+        }
+
+        private void RefreshTabs()
+        {
+            _labelTypeMode = null;
+            _viewModel.SelectedCutItem = null;
+            _viewModel.SelectedProduct = null;
+            _viewModel.SelectedCustomerLocation = null;
+            _viewModel.SelectedSide = null;
+        }
+
+        private void CompleteOrderButton_Click(object sender, RoutedEventArgs e)
+        {
+            var result = RadMessageBox.Show("Once marked as completed labels can no longer be created for this order. \r\n\r\nAre you sure you want to mark the order as completed?", "Complete Order", SWF.MessageBoxButtons.YesNo, RadMessageIcon.Question);
+            if (result != SWF.DialogResult.Yes) return;
+
+            _orderService.SetStatus((int)ComboOrder.SelectedValue, OmsStatus.Completed);
+            GridCustomBags.CutComboBox.ItemsSource = null;
+            RefreshTabs();
+            InitializeOrders();
+        }
+
+        private void ParkOrderButton_Click(object sender, RoutedEventArgs e)
+        {
+            var result = RadMessageBox.Show("Parked orders cannot have labels generated for them. \r\n\r\nAre you sure you want to park this order?", "Park Order", SWF.MessageBoxButtons.YesNo, RadMessageIcon.Question);
+            if (result != SWF.DialogResult.Yes) return;
+
+            _orderService.SetStatus((int)ComboOrder.SelectedValue, OmsStatus.Parked);
+            InitializeOrders();
+        }
+
+        private OrderSummaryViewModel GetOrderSummary(int orderId)
+        {
+            var source = _labelService.Get(orderId);
+
+            return new OrderSummaryViewModel
+            {
+                Bags = source.BagTotal.NullableToString(),
+                Boxes = source.BoxTotal.NullableToString(),
+                CustomerName = source.CustomerName,
+                Locations = source.CustomerLocationsTotal.ToString(CultureInfo.InvariantCulture),
+                Pieces = source.PieceTotal.NullableToString(),
+                Title = "Order Summary"
+            };
+        }
+
+        #endregion
+
+        #region Scale
+
+        private void InitializeScale()
+        {
+            var isConnected = _scale.Connect();
+            _scale.Reading += RecordReading;
+            Logger.Debug("InitializeScale; IsConnected=" + isConnected);
+
+            _viewModel.WeightReceived += AddLabelHandler;
+            _viewModel.StartListening();
+        }
+
+        private void RecordReading(Zq375 scale, ReadingEventArgs eventargs)
+        {
+            Logger.Debug("Record Reading started....");
+            Logger.Debug("Thread id ( after call from zylsoft )  is " + Thread.CurrentThread.ManagedThreadId);
+
+            if (GridBoxes.Dispatcher.CheckAccess())
+            {
+                if (!_labelTypeMode.HasValue) return;
+
+                CreateLabel(eventargs.Weight.Gross, eventargs.Weight.Status, eventargs.Weight.FormattedDisplay);
+            }
+            else
+            {
+                if (!_labelTypeMode.HasValue) return;
+                GridBoxes.Dispatcher.Invoke(
+                    () =>
+                    {
+                        CreateLabel(eventargs.Weight.Gross, eventargs.Weight.Status, eventargs.Weight.FormattedDisplay);
+                    });
+            }
+            Logger.Debug("Record Reading ended....");
+        }
+
+        private void AddLabelHandler(object sender, EventArgs args)
+        {
+            if (GridBoxes.Dispatcher.CheckAccess())
+            {
+                if (!_labelTypeMode.HasValue) return;
+
+                CreateLabel(_viewModel.Weight);
+            }
+            else
+            {
+                if (!_labelTypeMode.HasValue) return;
+                GridBoxes.Dispatcher.Invoke(() =>
+                {
+                    CreateLabel(_viewModel.Weight);
+                });
+            }
+        }
+
+        #endregion
+
+        #region Offals
+
+        private OrdersConstructorViewModel GetOffalsSource(Order order)
+        {
+            var offalLabels = new BindingList<OrderConstructorViewModel>();
+            var countId = 0; 
+            foreach (var x in order.OrderDetail.Where(x => x.Product.IsOffal))
+            {
+                var label = _labelService.GetLabels(x.Id).LastOrDefault();
+                if (label != null)
+                    offalLabels.Add(new OrderConstructorViewModel
+                    {
+                    OrderDetailId = x.Id,
+                    ProductId = x.ProductId,
+                    ProductName = x.Product.EnglishDescription,
+                    LocationId = x.CustomerLocationId,
+                    ShipTo = x.CustomerLocation.Name,
+                    Weight = (decimal) LabelCreateService.GetGrossPoundWeight(label.PoundWeight, _activeLabelType, _orderDetailRepository.Get(x.Id)),
+                    Id = countId++
+                    });
+            }
+
+            var offals = _productRepository.GetOffalProducts()
+                .Select(x => new OrderConstructorViewModel
+                {
+                    ProductId = x.Id,
+                    ProductName = x.Upc
+                })
+                .ToList();
+
+            var locations = order.Customer
+                .CustomerLocation
+                .Select(x => new SelectListItemModel
+                {
+                    Id = x.Id,
+                    Name = x.Name
+                })
+                .ToList();
+
+            var model = new OrdersConstructorViewModel
+            {
+                ProductNameHeader = "Product Name",
+                WeightHeader = "Box Weight",
+                ShipToHeader = "Ship To",
+                QtyHeader = "Qty",
+                Orders = new BindingList<OrderConstructorViewModel>(offalLabels),
+                Constructor = new BindingList<OrderConstructorViewModel>(offals),
+                Locations = new BindingList<SelectListItemModel>(locations)
+            };
+
+            return model;
+        }
+
+        private void Offals_Add(object sender, OrderEventArgs e)
+        {
+            var newOrderDetails = AddOffallabel((double)e.Weight, OmsScaleWeighStatus.Success, e, quantity: e.Quantity);
+            foreach (var ordDet in newOrderDetails)
+            {
+                int count = _viewModel.OffalsSource.Orders.Count();
+                var label = _labelService.GetLabels(ordDet.Id).LastOrDefault();
+                _viewModel.OffalsSource.Orders.Add(new OrderConstructorViewModel
+                {
+                    OrderDetailId = ordDet.Id,
+                    LocationId = ordDet.CustomerLocationId,
+                    ProductId = ordDet.ProductId,
+                    ProductName = ordDet.Product.Upc,
+                    ShipTo = _customerLocationRepository.Get(e.LocationId).Name,
+                    Weight = (decimal) LabelCreateService.GetGrossPoundWeight(label.PoundWeight, label.TypeId, ordDet),
+                    Id = ++count
+                });
+            }
+        }
+
+        private List<OrderDetail> AddOffallabel(double poundWeight, OmsScaleWeighStatus status = OmsScaleWeighStatus.Success, OrderEventArgs e = null, string formattedDisplay = null, int quantity = 1)
+        {
+            if (status == OmsScaleWeighStatus.Success)
+            {
+                List<OrderDetail> orderDetails = new List<OrderDetail>();
+                for (int i = 0; i < quantity; i++)
+                {
+                    var od = new OrderDetail
+                    {
+                        CustomerLocationId = e.LocationId,
+                        OrderId = _viewModel.CurrentOrderId,
+                        ProductId = e.ProductId,
+                        SideTypeId = null,
+                        Product = _productRepository.GetOffalProduct(e.ProductId)
+                    };
+                    orderDetails.Add(od);
+                }
+                _orderDetailRepository.AddRange(orderDetails);
+                _orderDetailRepository.Save();
+                _labelCreateService.ProduceCustomBagLabels(orderDetails, (double)poundWeight, _activeLabelType);
+                DisplayScaleOutput(formattedDisplay ?? string.Empty);
+            
+                return orderDetails;
+            }
+            DisplayScaleOutput(String.Format("error reading scale. Scale Status: [{0}]", status), true);
+            return null;
+        }
+
+        private void Offals_Delete(object sender, OrderEventArgs e)
+        {
+            _orderDetailRepository.Remove(_orderDetailRepository.Get(e.OrderDetailId));
+            _orderDetailRepository.Save();
+            _viewModel.OffalsSource.Orders.Remove(_viewModel.OffalsSource.Orders.First(x => x.OrderDetailId == e.OrderDetailId));
+        }
+          
+        #endregion
+
+        #region Combos
+
+        private static OrdersConstructorViewModel GetCombosSource(Order order)
+        {
+            var orders = order.OrderCombos
+                .Select(x => new OrderConstructorViewModel
+                {
+                    Id = x.Id,
+                    ProductId = x.Product.Id,
+                    ProductName = x.Product.Upc,
+                    Qty = x.Quantity,
+                    LocationId = x.CustomerLocationId,
+                    ShipTo = x.CustomerLocation.Name,
+                    Weight = x.Weight
+                })
+                .ToList();
+
+            var combos = order.OrderDetail
+                .Where(x => x.Product.Upc.Contains("-Y"))
+                .Select(x => new OrderConstructorViewModel
+                {
+                    ProductId = x.Product.Id,
+                    ProductName = ProductService.GetFormattedProductName(x.Product),
+                    OrderDetailId = x.Id
+                })
+                .ToList();
+
+            var locations = order.Customer
+                .CustomerLocation
+                .Select(x => new SelectListItemModel
+                {
+                    Id = x.Id,
+                    Name = x.Name
+                })
+                .ToList();
+
+            var model = new OrdersConstructorViewModel
+            {
+                ProductNameHeader = "Product Name",
+                WeightHeader = "Weight",
+                ShipToHeader = "Ship To",
+                QtyHeader = "Qty",
+                Orders = new BindingList<OrderConstructorViewModel>(orders),
+                Constructor = new BindingList<OrderConstructorViewModel>(combos),
+                Locations = new BindingList<SelectListItemModel>(locations)
+            };
+
+            return model;
+        }
+
+        private void Combos_Add(object sender, OrderEventArgs e)
+        {
+            var orderId = _viewModel.CurrentOrderId;
+            var entity = new OrderCombo
+            {
+                Order = _orderRepository.Get(orderId),
+                Product = _productRepository.Get(e.ProductId),
+                CustomerLocation = _customerLocationRepository.Get(e.LocationId),
+                Quantity = e.Quantity,
+                Weight = e.Weight
+            };
+            _orderComboRepository.Add(entity);
+            _orderComboRepository.Save();
+            _viewModel.CombosSource.Orders.Add(new OrderConstructorViewModel
+            {
+                Id = entity.Id,
+                LocationId = e.LocationId,
+                ProductId = e.ProductId,
+                ProductName = entity.Product.Upc,
+                Qty = e.Quantity,
+                ShipTo = entity.CustomerLocation.Name,
+                Weight = e.Weight
+            });
+            _labelCreateService.ProduceLabel(e.OrderDetailId, Convert.ToDouble(e.Weight), OmsLabelType.Box, e.Quantity);
+        }
+
+        private void Combos_Delete(object sender, OrderEventArgs e)
+        {
+            _orderComboRepository.Remove(_orderComboRepository.Get(e.Id));
+            _orderComboRepository.Save();
+            _viewModel.CombosSource.Orders.Remove(_viewModel.CombosSource.Orders.First(x => x.Id == e.Id));
+        }
+
+        #endregion
+
+        #region Fabrication
+
+        private void AddLabel(double poundWeight, OmsScaleWeighStatus status, string formattedDisplay, int quantity)
+        {
+            if (status == OmsScaleWeighStatus.Success)
+            {
+                var item = _viewModel.SelectedProduct;
+                if (item != null && item.SelectedLocation != null)
+                {
+                    var product = item.Locations.First(x => x.LocationTemplateId == item.SelectedLocation);
+                    if (product.OrderDetailId.HasValue)
+                    {
+                        _labelCreateService.ProduceLabel((int)product.OrderDetailId, poundWeight, _activeLabelType, quantity);
+
+                        _viewModel.SelectedProduct.Locations.First(
+                            x => x.LocationTemplateId == _viewModel.SelectedProduct.SelectedLocation).CompletedCount +=
+                            quantity;
+
+                        DisplayScaleOutput(formattedDisplay ?? string.Empty);
+                    }
+                }
+                else
+                    DisplayScaleOutput(String.Format("a valid {0} Product must be selected.\r\n\r\nWeight measurement discarded.", _activeLabelType), true);
+            }
+            else
+                DisplayScaleOutput(String.Format("error reading scale. Scale Status: [{0}]", status), true);
+        }
+
+        private void UnitProductChanged(object sender, EventArgs e)
+        {
+            _labelTypeMode = LabelTypeMode.FabLabel;
+            _viewModel.SelectedProduct = (LabelGridItem)((ListView)sender).SelectedItem;
+        }
+
+        #endregion
+
+        #region Custom
+
+        private void AddBoxLabel(double poundWeight, OmsScaleWeighStatus status, string formattedDisplay, int quantity)
+        {
+            if (status == OmsScaleWeighStatus.Success)
+            {
+                var selectedLocation = _viewModel.SelectedCustomerLocation;
+                if (selectedLocation != null)
+                {
+                    var coldWeightDetail = _coldWeightEntryRepository.GetByOrderId(selectedLocation.OrderId)
+                        .ColdWeightEntryDetails.Single(c => c.Id == selectedLocation.ColdWeightDetailId);
+                    var orderDetails =
+                        coldWeightDetail.AnimalOrderDetails.Select(a => a.OrderDetail)
+                            .Where(o => o.SideTypeId == selectedLocation.Side)
+                            .ToList();
+                    var firstFromSide = orderDetails.First();
+                    _labelCreateService.ProduceLabel(firstFromSide.Id, poundWeight, _activeLabelType, quantity);
+                    selectedLocation.CompletedCount += quantity;
+                    var animalOrd = new AnimalOrderDetail
+                    {
+                        ColdWeightDetailId = coldWeightDetail.Id,
+                        OrderDetailId = firstFromSide.Id,
+                    };
+
+                    _animalOrderDetailRepository.Add(animalOrd);
+                    _animalOrderDetailRepository.Save();
+                }
+                DisplayScaleOutput(formattedDisplay ?? string.Empty);
+            }
+            else
+            {
+                DisplayScaleOutput(String.Format("error reading scale. Scale Status: [{0}]", status), true);
+            }
+        }
+
+        private void AddBagLabel(double poundWeight, OmsScaleWeighStatus status, string formattedDisplay, int quantity)
+        {
+            if (status == OmsScaleWeighStatus.Success)
+            {
+                var selectedSide = _viewModel.SelectedSide;
+                var selectedCut = _viewModel.SelectedCutItem;
+                if (selectedCut == null || selectedSide == null) return;
+                List<OrderDetail> orderDetails = new List<OrderDetail>();
+                List<AnimalOrderDetail> animalOrderDetails = new List<AnimalOrderDetail>();
+                for (int i = 0; i < quantity; i++)
+                {
+                    var od = new OrderDetail
+                    {
+                        CustomerLocationId = selectedSide.CustomerLocationId,
+                        OrderId = selectedSide.OrderId,
+                        ProductId = selectedCut.ProductId,
+                        SideTypeId = selectedSide.SideNumber,
+                        Product = _productRepository.Get(selectedCut.ProductId)
+                    };
+                    orderDetails.Add(od);
+                }
+
+                _orderDetailRepository.AddRange(orderDetails);
+                _orderDetailRepository.Save();
+                foreach (var od in orderDetails)
+                {
+                    _viewModel.SelectedSide.Products.Insert(0,(new CutItem
+                    {
+                        ProductId = selectedCut.ProductId,
+                        ProductName = selectedCut.ProductName,
+                        Weight = string.Format("{0} lbs", poundWeight),
+                        Id = Guid.NewGuid().ToString("D"),
+                        OrderDetailId = od.Id,
+                        CustomerLocationId = od.CustomerLocationId
+                    }));
+                    var animalOrd = new AnimalOrderDetail
+                    {
+                        ColdWeightDetailId = selectedSide.ColdWeightDetailId,
+                        OrderDetailId = od.Id,
+                    };
+
+                    animalOrderDetails.Add(animalOrd);
+
+                }
+                _labelCreateService.ProduceCustomBagLabels(orderDetails, poundWeight, _activeLabelType);
+                _animalOrderDetailRepository.AddRange(animalOrderDetails);
+                _animalOrderDetailRepository.Save();
+
+                DisplayScaleOutput(formattedDisplay ?? string.Empty);
+            }
+            else
+            {
+                DisplayScaleOutput(String.Format("error reading scale. Scale Status: [{0}]", status), true);
+            }
+        }
+
+        private void RemoveOrderDetail(object sender, EventArgs e)
+        {
+            _orderDetailService.Delete(_viewModel.SelectedCutItem.OrderDetailId);
+        }
+
+        private void ReprintLabels(object sender, EventArgs e)
+        {
+            foreach (var label in _labelService.GetLabels(_viewModel.SelectedCutItem.OrderDetailId))
+                _labelService.UpdateLabel(label.Id, label.PoundWeight, label.TypeId);
+        }
+
+        private void CustomerLocationChanged(object sender, EventArgs e)
+        {
+            _labelTypeMode = LabelTypeMode.CustomBoxLabel;
+            _viewModel.SelectedCustomerLocation = (LabelBoxItem)((ListView)sender).SelectedItem;
+        }
+
+        private void CutItemChanged(object sender, EventArgs e)
+        {
+            if (sender == null)
+            {
+                _labelTypeMode = null;
+                _viewModel.SelectedCutItem = null;
+                return;
+            }
+            if (_viewModel.SelectedSide != null)
+                _labelTypeMode = LabelTypeMode.CustomBagLabel;
+            var item = sender is ListViewItem;
+            if (item)
+                // Selected custom product in SIDE
+                _viewModel.SelectedCutItem = ((ListViewItem)sender).Content as CutItem;
+            else
+                // Selected custom product in FILTER
+                _viewModel.SelectedCutItem = (CutItem)((RadComboBox)sender).SelectedItem;
+        }
+
+        private void SideChanged(object sender, EventArgs e)
+        {
+            if (sender == null)
+            {
+                _labelTypeMode = null;
+                _viewModel.SelectedSide = null;
+                return;
+            }
+            if (_viewModel.SelectedCutItem != null)
+                _labelTypeMode = LabelTypeMode.CustomBagLabel;
+            var side = sender as SideWeightItem;
+            if (side != null)
+                _viewModel.SelectedSide = side;
+            var item =((ListViewItem)sender).Content is SideWeightItem;
+            if (item)
+                _viewModel.SelectedSide = ((ListViewItem)sender).Content as SideWeightItem;
+            else
+                _viewModel.SelectedSide = (SideWeightItem)((ListViewItem)sender).Content;
+        }
+
+        #endregion
+
+        #region UIEvents
+
+        private void EditLabelsButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            var selectedOrderId = (int)ComboOrder.SelectedValue;
+            var form = DIService.Resolve<EditLabelsWindow>(new ConstructorArgument("orderId", selectedOrderId));
+            form.Owner = this;
+            form.ShowDialog();
+            Refresh();
+        }
+
+        private void ShowNumericKeyboard(object sender, RoutedEventArgs e)
+        {
+            if (!_labelTypeMode.HasValue) return;
+
+            var num = new ManualWeightPanel(3, 10) { Owner = this };
+
+            num.SubmitNumber += (o, args) =>
+            {
+                CreateLabel(Convert.ToDouble(args.Value), quantity: Convert.ToInt32(string.IsNullOrWhiteSpace(args.Quantity) ? "1" : args.Quantity));
+            };
+            num.ShowDialog();
+        }
+
+        private void Tabs_OnSelectionChanged(object sender, RadSelectionChangedEventArgs e)
+        {
+            if (_viewModel != null && !_viewModel.IsCustomOwner)
+            {
+                var fabBagsTab = (UserControl)GridBags;
+                var fabBoxTab = (UserControl)GridBoxes;
+
+                List<Visual> foundElements = new List<Visual>();
+
+                fabBagsTab.FindDescendantsByType(typeof(TextBlock), "Location", foundElements);
+                fabBoxTab.FindDescendantsByType(typeof(TextBlock), "Location", foundElements);
+
+                GridBags.UnitProduct.SelectedValue = null;
+                GridBoxes.UnitProduct.SelectedValue = null;
+
+                foreach (var element in foundElements)
+                {
+                    var textBlock = element as TextBlock;
+                    if (textBlock == null)
+                        continue;
+                    textBlock.SetResourceReference(StyleProperty, "UnitCaptionDefault");
+                }
+            }
+
+           
+            DetectLabelTypeOrDefault(sender as RadTabControl);
+        }
+
+        private void DetectLabelTypeOrDefault(RadTabControl tabControl)
+        {
+            if (tabControl == null)
+                return;
+
+            switch (tabControl.SelectedIndex)
+            {
+                case 0:
+                    _activeLabelType = OmsLabelType.Bag;
+
+                    if (_viewModel.SelectedSide != null && _viewModel.SelectedCutItem != null)
+                        _labelTypeMode = LabelTypeMode.CustomBagLabel;
+                    else
+                        _labelTypeMode = null;
+                    break;
+                case 1:
+                    if (_viewModel != null && _viewModel.IsCustomOwner)
+                    {
+                        _labelService = new LabelService();
+                        _viewModel.BoxesCustomList = _labelService.GetBoxesCustomList(_viewModel.CurrentOrderId);
+                        _labelTypeMode = null;
+                    }
+                    _activeLabelType = OmsLabelType.Box; break;
+                case 3:
+                    _activeLabelType = OmsLabelType.Box; break;
+            }
+        }
+
+        private void LabelManagerWindow_OnClosing(object sender, CancelEventArgs e)
+        {
+            if (_scale != null) _scale.Dispose();
+            if (_orderRepository != null) _orderRepository.Dispose();
+            if (_customerLocationRepository != null) _customerLocationRepository.Dispose();
+            if (_productRepository != null) _productRepository.Dispose();
+            if (_offalRepository != null) _offalRepository.Dispose();
+            if (_orderComboRepository != null) _orderComboRepository.Dispose();
+            if (_orderOffalRepository != null) _orderOffalRepository.Dispose();
+            if (_viewModel != null) _viewModel.StopListening();
+
+            Logger.Debug("LabelManagerWindow_OnClosing");
+        }
+
+        private void DisplayScaleOutput(string output, bool isError = false)
+        {
+            Logger.Info("DisplayScaleOutput; output=\"" + output + "\"; isError=" + isError);
+
+            _viewModel.WeightErrorColor = new SolidColorBrush(isError ? Colors.Tomato : Colors.PaleGoldenrod);
+            _viewModel.WeightOutput = output;
+        }
+
+        private void OpenSettings(object sender, RoutedEventArgs e)
+        {
+            var pwd = new PasswordCheckWindow { Owner = this };
+            if (pwd.ShowDialog() != true) return;
+
+            _viewModel.StopListening();
+            var form = new SettingsWindow { Owner = this };
+            form.ShowDialog();
+            _viewModel.StartListening();
+        }
+
+        #endregion
+
+    }
+}

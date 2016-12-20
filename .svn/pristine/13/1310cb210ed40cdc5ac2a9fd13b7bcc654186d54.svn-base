@@ -1,0 +1,119 @@
+﻿@using System.Globalization
+@using MvcCheckBoxList.Model
+@model OrderReportViewModel
+
+@functions {
+    private IEnumerable<SelectListItem> GetDdlItemsFromEnum<T>(T item)
+    {
+        return (Enum.GetValues(typeof (T)).Cast<T>())
+            .ToSelectListItems(x => x.ToString()
+                , x => Convert.ToInt32(x).ToString(CultureInfo.InvariantCulture)
+                , x => Convert.ToInt32(x) == Convert.ToInt32(item)
+                );
+    }
+}
+
+<div id="orderReports">
+
+    <h1>Order Reports</h1>
+    <fieldset class="dataentry">
+        <legend>Summary</legend>
+        <div>
+            @Html.LabelFor(model => model.OrderId)
+            @Html.DisplayFor(model => model.OrderId)
+        </div>
+        <div>
+            @Html.LabelFor(model => model.CustomerName)
+            @Html.DisplayFor(model => model.CustomerName)
+        </div>
+        <div>
+            @Html.LabelFor(model => model.StatusName)
+            @Html.DisplayFor(model => model.StatusName)
+        </div>
+        <div>
+            @Html.LabelFor(model => model.RequestedProcessDate)
+            @Html.DisplayFor(model => model.RequestedProcessDate)
+        </div>
+        <div>
+            @Html.LabelFor(model => model.ExpectedHeadNumber)
+            @Html.DisplayFor(model => model.ExpectedHeadNumber)
+        </div>
+    </fieldset>
+
+
+    @using (Ajax.BeginForm("GenerateReport", new AjaxOptions
+    {
+        HttpMethod = "POST",
+        UpdateTargetId = "orderReports"
+    }))
+    {
+        @Html.HiddenFor(model => model.OrderId)
+        @Html.ValidationSummary()
+        <fieldset>
+            <legend>Report Options</legend>
+
+            <div>
+                @Html.LabelFor(x => x.ReportType)
+                @Html.DropDownListFor(model => model.ReportType, GetDdlItemsFromEnum(OrderReportViewModel.ReportReturnTypes.PDF))
+            </div>
+            <div>
+                @Html.LabelFor(x => x.UnitsType)
+                @Html.DropDownListFor(model => model.UnitsType, GetDdlItemsFromEnum(OrderReportViewModel.ReportUnitsType.Bags))
+            </div>
+            <div>
+                @Html.CheckBoxFor(m => m.SuppressWeights)
+                @Html.LabelFor(m => m.SuppressWeights)
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>Reports</legend>
+
+            @Html.CheckBoxListFor(x => x.ReportIds,
+                x => x.Reports,
+                x => x.Id,
+                x => x.Name,
+                x => Model.ReportIds.Contains(x.Id),
+                Position.Vertical)
+        </fieldset>
+
+    if (Model.ReportFiles != null && Model.ReportFiles.Any())
+    {
+        <fieldset>
+            <legend>Report Files</legend>
+            <table id="grid">
+                <thead>
+                    <tr>
+                        <th data-field="filename">File Name</th>
+                        <th data-field="Link"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.ReportFiles)
+                    {
+                        <tr>
+                            <td>@item.Key</td>
+                            <td><a href="@Url.Content(item.Value)" target="_blank" title="@item.Key">View</a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </fieldset>
+    }
+
+        <div class="buttonRow oms-button">
+            <input type="submit" id="btnGenerate" class="k-button" value="Generate" />
+        </div>
+    }
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $('#orderReports form').submit(function (e) {
+            $('#grid').hide();
+        });
+        $("#grid").kendoGrid({
+            height: 430,
+            sortable: true
+        });
+    });
+</script>

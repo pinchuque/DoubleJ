@@ -1,0 +1,179 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using DoubleJ.Oms.Domain.Definitions;
+using DoubleJ.Oms.Domain.Entities;
+using DoubleJ.Oms.Model.Interfaces;
+using DoubleJ.Oms.Model.ViewModels.Internal;
+using DoubleJ.Oms.Service.Interfaces;
+
+
+namespace DoubleJ.Oms.Service.Services.Internal
+{
+    public class OrderDetailService : IOrderDetailService
+    {
+        private readonly ICustomerLocationRepository _customerLocationRepository;
+        private readonly IOrderDetailRepository _orderDetailRepository;
+        private readonly IOrderRepository _orderRepository;
+        private readonly IProductRepository _productRepository;
+        private readonly ISpeciesRepository _speciesRepository;
+
+
+        public OrderDetailService(IOrderDetailRepository orderDetailRepository,
+            IOrderRepository orderRepository,
+            IProductRepository productRepository,
+            ICustomerLocationRepository customerLocationRepository, ISpeciesRepository speciesRepository)
+        {
+            _orderDetailRepository = orderDetailRepository;
+            _orderRepository = orderRepository;
+            _productRepository = productRepository;
+            _customerLocationRepository = customerLocationRepository;
+            _speciesRepository = speciesRepository;
+        }
+
+        public OrderDetailViewModel Get(int orderId, OmsEntryMode mode)
+        {
+            var order = _orderRepository.Get(orderId);
+
+            var viewModel = new OrderDetailViewModel
+            {
+                OmsEntryMode = mode,
+                OrderId = orderId,
+                CustomerId = order.CustomerId,
+                CustomerName = order.Customer.Name,
+                StatusName = order.Status.Name,
+                RequestedProcessDate = order.RequestedProcessDate,
+                ExpectedHeadNumber = order.ExpectedHeadNumber,
+                BagEnable = order.BagEnable,
+            };
+
+            return viewModel;
+        }
+
+        public IEnumerable<OrderDetailItem> GetItems(int orderId)
+        {
+            var orderDetails = _orderDetailRepository
+                .GetAllByOrder(orderId)
+                .ToArray();
+
+            var result = orderDetails
+                .Select(ord => new OrderDetailItem
+                {
+                    Id = ord.Id,
+                    OrderId = ord.OrderId,
+                    PieceQuantity = ord.PieceQuantity,
+                    ProductId = ord.ProductId,
+                    BagPieceQuantity = ord.Product.BagPieceQuantity,
+                    BoxBagQuantity = ord.Product.BoxBagQuantity,
+                    CustomerLocationId = ord.CustomerLocationId,
+                    CustomerLocation = new OrderDetailCustomerLocationItem
+                    {
+                        CustomerLocationId = ord.CustomerLocationId,
+                        CustomerLocationName = ord.CustomerLocation.Name
+                    },
+                    Product = new OrderDetailProductItem
+                    {
+                        ProductId = ord.ProductId,
+                        ProductName = ProductService.GetFormattedProductName(ord.Product)
+                    },
+                })
+                .ToArray();
+
+            return result;
+        }
+
+        public IEnumerable<OrderDetailProductItem> GetAllProducts(Order order)
+        {
+            var activeSpecies = order.ColdWeightEntries.SelectMany(x => x.ColdWeightEntryDetails).ToList();
+            var species = activeSpecies.Select(x => x.AnimalLabel.SpeciesId);
+            var result = _productRepository
+                .GetAll()
+                .Where(x => x.IsActive && x.CustomerTypeId == order.Customer.CustomerTypeId && species.Contains(x.SpeciesId.GetValueOrDefault()))
+                .Select(prod => new OrderDetailProductItem
+                {
+                    ProductId = prod.Id,
+                    ProductName = ProductService.GetFormattedProductName(prod)
+                })
+                .OrderBy(x => x.ProductName);
+            return result;
+        }
+
+        public IEnumerable<OrderDetailProductItem> GetProductsByCustomer(int customerId)
+        {
+            var result = _productRepository
+                .GetByCustomer(customerId)
+                .Select(prod => new OrderDetailProductItem
+                {
+                    ProductId = prod.Id,
+                    ProductName = ProductService.GetFormattedProductName(prod)
+                })
+                .OrderBy(x => x.ProductName);
+
+            return result;
+        }
+
+        public IEnumerable<OrderDetailCustomerLocationItem> GetCustomerLocations(int customerId)
+        {
+            var result = _customerLocationRepository
+                .FindAll(x => x.CustomerId == customerId)
+                .Select(location => new OrderDetailCustomerLocationItem
+                {
+                    CustomerLocationId = location.Id,
+                    CustomerLocationName = location.Name
+                });
+
+            return result;
+        }
+
+        private void FillOrderDetail(OrderDetail orderDetail, OrderDetailItem orderDetailItem)
+        {
+            orderDetail.ProductId = orderDetailItem.ProductId;
+            orderDetail.CustomerLocationId = orderDetailItem.CustomerLocationId;
+            orderDetail.PieceQuantity = Math.Abs(orderDetailItem.PieceQuantity);
+            orderDetail.BoxQuantity = CalculateBoxQuantity(Math.Abs(orderDetailItem.PieceQuantity),
+                Math.Abs(orderDetailItem.BagPieceQuantity), Math.Abs(orderDetailItem.BoxBagQuantity));
+        }
+
+        public int Add(OrderDetailItem orderDetailItem)
+        {
+            var orderDetail = new OrderDetail {OrderId = orderDetailItem.OrderId};
+
+            FillOrderDetail(orderDetail, orderDetailItem);
+
+            _orderDetailRepository.Add(orderDetail);
+            _orderDetailRepository.Save();
+
+            return orderDetail.Id;
+        }
+
+        public void Edit(OrderDetailItem orderDetailItem)
+        {
+            var orderDetail = _orderDetailRepository.Get(orderDetailItem.Id);
+
+            FillOrderDetail(orderDetail, orderDetailItem);
+
+            _orderDetailRepository.Save();
+        }
+
+        public void Delete(OrderDetailItem orderDetailItem)
+        {
+            Delete(orderDetailItem.Id);
+        }
+
+        public void Delete(int orderDetailId)
+        {
+            var orderDetail = _orderDetailRepository.Get(orderDetailId);
+            _orderDetailRepository.Remove(orderDetail);
+            _orderDetailRepository.Save();
+        }
+
+        private int CalculateBoxQuantity(int pieces, int piecesPerBag, int bagsPerBox)
+        {
+            if (piecesPerBag == 0 || bagsPerBox == 0) return 0;
+
+            var bagQuantity = (pieces + piecesPerBag - 1) / piecesPerBag;
+            return (bagQuantity + bagsPerBox) / bagsPerBox;
+        }
+        
+    }
+}

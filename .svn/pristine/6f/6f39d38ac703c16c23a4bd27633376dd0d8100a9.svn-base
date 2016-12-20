@@ -1,0 +1,12 @@
+﻿@model SiteNavigationViewModel
+<div id="navigation">
+    <ul>
+        @for (int i = 0; i < Model.Items.Count; i++)
+        {
+            <li class="@(Model.Items[i].IsSelected ? "selected" : "")"><a href="@Model.Items[i].Url" title="@Model.Items[i].Name"><span>@Model.Items[i].Name</span></a></li>   
+            if (i < Model.Items.Count - 1)
+            { <li>|</li> }
+        }
+    </ul>
+</div>
+

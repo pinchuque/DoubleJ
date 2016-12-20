@@ -1,0 +1,17 @@
+﻿@model OrderDetailViewModel
+
+@{
+    ViewBag.Title = "Order Detail Entry";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="content-container">
+    <div id="content-wide">
+        @Html.Partial("_Detail")
+    </div>
+</div>
+@section SiteNavigation {
+    @Html.Action("_Site", "Navigation", new { area = "", selected = OmsSiteNavigation.Orders })
+}
+
+

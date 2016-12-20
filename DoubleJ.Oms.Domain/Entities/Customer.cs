@@ -1,0 +1,44 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity.Spatial;
+using DoubleJ.Oms.Domain.Definitions;
+
+
+namespace DoubleJ.Oms.Domain.Entities
+{
+    public class Customer : EntityBase
+    {
+        public Customer()
+        {
+            LogoTypeId = OmsLogoType.None;
+            CustomerTypeId = OmsCustomerType.Fabrication;
+            IsActive = true;
+            CustomerLocation = new List<CustomerLocation>();
+            CustomerProductData = new List<CustomerProductData>();
+            Order = new List<Order>();
+        }
+
+        public string Name { get; set; }
+        public string PONumber { get; set; }
+        public bool IsArchived { get; set; }
+        public int UserId { get; set; }
+        public string DistributedBy { get; set; }
+        public OmsLogoType LogoTypeId { get; set; }
+        public string LogoFileName { get; set; }
+        public bool IsActive { get; set; }
+        public int? LegacyCustomerId { get; set; }
+        public string BagLabel { get; set; }
+        public string TrayLabel { get; set; }
+        public string BoxLabel { get; set; }
+        public int? BestBeforeDays { get; set; }
+        public OmsCustomerType CustomerTypeId { get; set; }
+
+        public virtual ICollection<CustomerLocation> CustomerLocation { get; set; }
+        public virtual ICollection<CustomerProductData> CustomerProductData { get; set; }
+        public virtual ICollection<Order> Order { get; set; }
+
+        public virtual User User { get; set; }
+        public virtual LogoType LogoType { get; set; }
+        public virtual CustomerType CustomerType { get; set; }
+    }
+}

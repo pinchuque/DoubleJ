@@ -1,0 +1,110 @@
+﻿@model ProductViewModel
+<fieldset class="dataentry">
+    <legend>General Information</legend>
+    <div>
+        @Html.LabelFor(m => m.Description)
+        @Html.EditorFor(m => m.Description)
+        @Html.ValidationMessageFor(m => m.Description)
+    </div>
+    <div>
+        @Html.LabelFor(m => m.CustomerType)
+        @Html.EnumDropDownListFor(m => m.CustomerType, "Both")
+    </div>
+    <div>
+        @Html.LabelFor(m => m.Upc)
+        @Html.EditorFor(m => m.Upc)
+        @Html.ValidationMessageFor(m => m.Upc)
+    </div>
+    <div>
+        @Html.LabelFor(model => model.DoubleJProductCode)
+        @Html.DisplayFor(model => model.DoubleJProductCode)
+    </div>
+    <div>
+        @Html.LabelFor(m => m.Gtin)
+        @Html.EditorFor(m => m.Gtin)
+        @Html.ValidationMessageFor(m => m.Gtin)
+    </div>
+    <div>
+        @Html.LabelFor(m => m.PricePerPound)
+        @Html.EditorFor(m => m.PricePerPound)
+        @Html.ValidationMessageFor(m => m.PricePerPound)
+    </div>
+</fieldset>
+
+<fieldset class="dataentry">
+    <legend>Packaging Information</legend>
+    <div>
+        @Html.LabelFor(m => m.BoxTypeId)
+        @Html.DropDownListFor(m => m.BoxTypeId, Model.BoxTypeNames)
+        @Html.ValidationMessageFor(m => m.BoxTypeId)
+    </div>
+    <div>
+        @Html.LabelFor(m => m.BagTypeId)
+        @Html.DropDownListFor(m => m.BagTypeId, Model.BagTypeNames)
+        @Html.ValidationMessageFor(m => m.BagTypeId)
+    </div>
+    <div>
+        @Html.LabelFor(m => m.BagPieceQuantity)
+        @Html.EditorFor(m => m.BagPieceQuantity)
+        @Html.ValidationMessageFor(m => m.BagPieceQuantity)
+    </div>
+    <div>
+        @Html.LabelFor(m => m.BoxBagQuantity)
+        @Html.EditorFor(m => m.BoxBagQuantity)
+        @Html.ValidationMessageFor(m => m.BoxBagQuantity)
+    </div>
+</fieldset>
+
+<fieldset class="dataentry">
+    <legend>Additional Descriptions</legend>
+    <div>
+        @Html.LabelFor(m => m.GermanDescription)
+        @Html.EditorFor(m => m.GermanDescription)
+        @Html.ValidationMessageFor(m => m.GermanDescription)
+    </div>
+    <div>
+        @Html.LabelFor(m => m.FrenchDescription)
+        @Html.EditorFor(m => m.FrenchDescription)
+        @Html.ValidationMessageFor(m => m.FrenchDescription)
+    </div>
+    <div>
+        @Html.LabelFor(m => m.ItalianDescription)
+        @Html.EditorFor(m => m.ItalianDescription)
+        @Html.ValidationMessageFor(m => m.ItalianDescription)
+    </div>
+    <div>
+        @Html.LabelFor(m => m.SwedishDescription)
+        @Html.EditorFor(m => m.SwedishDescription)
+        @Html.ValidationMessageFor(m => m.SwedishDescription)
+    </div>
+</fieldset>
+
+<fieldset class="dataentry">
+    <legend>Cut Information</legend>
+    @*<div>
+        @Html.LabelFor(m => m.PrimalCutId)
+        @Html.DropDownListFor(m => m.PrimalCutId, new SelectList(((IEnumerable<object>)ViewBag.PrimalCuts), "Id", "Name"), string.Empty)
+        @Html.ValidationMessageFor(m => m.PrimalCutId)
+    </div>
+    <div>
+        @Html.LabelFor(m => m.SubPrimalCutId)
+        @Html.DropDownListFor(m => m.SubPrimalCutId, new SelectList((IEnumerable<SubPrimalCut>)ViewBag.SubPrimalCuts, "Id", "Name"), string.Empty)
+        @Html.ValidationMessageFor(m => m.SubPrimalCutId)
+    </div>*@
+    <div>
+        @Html.LabelFor(m => m.TrimCutId)
+        @Html.DropDownListFor(m => m.TrimCutId, new SelectList((IEnumerable<TrimCut>)ViewBag.TrimCuts, "Id", "Name"), string.Empty)
+        @Html.ValidationMessageFor(m => m.TrimCutId)
+    </div>
+    <div>
+        @Html.LabelFor(m => m.SpeciesId)
+        @Html.DropDownListFor(m => m.SpeciesId, new SelectList((IEnumerable<Species>)ViewBag.Species, "Id", "Name"), string.Empty)
+        @Html.ValidationMessageFor(m => m.SpeciesId)
+    </div>
+    <div>
+        @Html.LabelFor(m => m.QualityGradeId)
+        @Html.DropDownListFor(m => m.QualityGradeId, new SelectList((IEnumerable<QualityGrade>)ViewBag.QualityGrades, "Id", "Name"), string.Empty)
+        @Html.ValidationMessageFor(m => m.QualityGradeId)
+    </div>
+</fieldset>
+

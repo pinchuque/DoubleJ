@@ -1,0 +1,34 @@
+﻿@{
+    ViewBag.Title = "Order Fulfillment";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div id="content-container">
+    <div id="content">
+        <h1>Order Fulfillment</h1>
+        <fieldset class="dataentry">
+            <legend style="display: none"></legend>
+            <div>
+                @Html.Partial("SearchByOrder")
+            </div>
+            <div>
+                @Html.Partial("SearchBySN")
+            </div>
+        </fieldset>
+    </div>
+    <div style="clear: both;"></div>
+</div>
+
+@section SiteNavigation {
+    @Html.Action("_Site", "Navigation", new { area = "", selected = OmsSiteNavigation.Fulfillment })
+}
+
+<script type="text/javascript">
+    function showSearchBySNResult(data) {
+        $('#searchBySNResult').html(data);
+        $('#searchByOrderResult').html('');
+    }
+    function showSearchByOrderResult(data) {
+        $('#searchByOrderResult').html(data);
+        $('#searchBySNResult').html('');
+    }
+</script>

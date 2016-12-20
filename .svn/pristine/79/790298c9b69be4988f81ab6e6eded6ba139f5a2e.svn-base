@@ -1,0 +1,72 @@
+﻿<Window x:Class="DoubleJ.Oms.LabelManager.EditLabelsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+        xmlns:converters="clr-namespace:DoubleJ.Oms.LabelManager.Converters"
+        xmlns:uc="clr-namespace:DoubleJ.Oms.LabelManager.UserControls"
+        Title="Edit Labels" Height="528" Width="890"
+        WindowStartupLocation="CenterOwner"
+        ShowInTaskbar="False" WindowStyle="ToolWindow">
+    <Window.Resources>
+        <converters:EnumToStringConverter x:Key="TypeConverter" />
+        <converters:ButtonsStateConverter x:Key="ButtonsStateConverter"/>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="3*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="2*"/>
+        </Grid.RowDefinitions>
+        <uc:OrderSummaryPanel Margin="3,10,3,3" DataContext="{Binding OrderSummary}" />
+        <Grid Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <telerik:RadButton
+                Width="95"
+                Height="60"
+                Click="ReprintButton_OnClick"
+                Margin="20,0,0,0"
+                Content="Re-print"
+                IsEnabled="{Binding Labels.Count, Converter={StaticResource ButtonsStateConverter}}"/>
+            <telerik:RadButton 
+                Width="95"
+                Height="60"
+                Click="RemoveButton_OnClick"
+                Margin="0,0,20,0"
+                Grid.Column="1"
+                Content="Remove"
+                IsEnabled="{Binding Labels.Count, Converter={StaticResource ButtonsStateConverter}}"/>
+            <telerik:RadButton
+                Width="95"
+                Height="60"
+                Click="CloseButton_OnClick"
+                Grid.Column="2"
+                Content="Close"/>
+        </Grid>
+        <telerik:RadGridView
+            Grid.Row="1"
+            Grid.ColumnSpan="2"
+            ShowGroupPanel="False"
+            x:Name="LabelsGrid"
+            ItemsSource="{Binding Labels}"
+            AutoGenerateColumns="False"
+            IsFilteringAllowed="False"
+            RowIndicatorVisibility="Collapsed">
+            <telerik:RadGridView.Columns>
+                <telerik:GridViewDataColumn IsVisible="False" DataMemberBinding="{Binding LabelId}"/>
+                <telerik:GridViewDataColumn Header="Printed" MinWidth="150" DataMemberBinding="{Binding PrintedDate}"/>
+                <telerik:GridViewDataColumn Header="Product" MinWidth="250" DataMemberBinding="{Binding ProductName}"/>
+                <telerik:GridViewDataColumn Header="Ship To" MinWidth="250" DataMemberBinding="{Binding LocationName}"/>
+                <telerik:GridViewDataColumn Header="Type" MinWidth="75" DataMemberBinding ="{Binding Path=LabelType, Converter={StaticResource TypeConverter}}"/>
+                <telerik:GridViewDataColumn Header="Weight (lbs)" MinWidth="100" DataMemberBinding="{Binding PoundWeight}"/>
+            </telerik:RadGridView.Columns>
+        </telerik:RadGridView>
+    </Grid>
+</Window>
+

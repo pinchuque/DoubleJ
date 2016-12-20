@@ -1,0 +1,2 @@
+ALTER TABLE dbo.Label
+ADD Printer VARCHAR(100) NULL

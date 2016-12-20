@@ -1,0 +1,45 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using DoubleJ.Oms.Domain.Definitions;
+using DoubleJ.Oms.Domain.Entities;
+using DoubleJ.Oms.Model.ViewModels.Internal;
+using DoubleJ.Oms.Model.ViewModels.Mobile;
+using DoubleJ.Oms.Service.Services.Internal;
+using ProductViewModel = DoubleJ.Oms.Model.ViewModels.Mobile.ProductViewModel;
+
+
+namespace DoubleJ.Oms.Service.Interfaces
+{
+    public interface ILabelService
+    {
+        List<Order> GetOrders();
+        LabelViewModel Get(int? orderId);
+        LabelGridViewModel GetLabelGridDefinition(int orderId);
+        IEnumerable<LabelGridItem> GetBagGridItems(int orderId);
+        IEnumerable<LabelGridItem> GetBoxGridItems(int orderId, bool bagSuppress = false);
+        Tuple<IEnumerable<LabelGridItem>, IEnumerable<LabelGridItem>> GetLabelGridItems(int orderId, bool bagSuppress);
+        IEnumerable<LabelEditItem> GetPrintedLabels(int orderId);
+        void UpdateLabel(int labelId, double poundWeight, OmsLabelType labelType = OmsLabelType.None);
+        void RemoveLabel(int labelId);
+        List<ProductViewModel> GetAllocatedProducts(int orderId);
+        List<ProductViewModel> GetPendingProducts(int orderId);
+        SnLookupViewModel GetBySn(string serialNumber);
+        void ResetLocation(string serialNumber);
+        IEnumerable<Order> GetByStatus(IEnumerable<OmsStatus> statuses);
+        List<CustomerLocation> GetOrderLocations(int orderId);
+        Order GetOrder(int orderId);
+        bool Associate(string serialNumber);
+        bool IsCompleted(int orderId, int locationId);
+        void Complete(int orderId);
+        List<ProductViewModel> GetPendingProducts(int orderId, int destinationId);
+        List<ProductViewModel> GetAllocatedProducts(int orderId, int destinationId);
+        BindingList<LabelBagItem> GetAnimalNumbers(int orderId);
+        BindingList<LabelBoxItem> GetBoxesCustomList(int orderId);
+        IEnumerable<SideWeightItem> GetSideWeigths(int coldWeightDetailId, int orderId);
+        List<CutItem> GetCustomProducts(int speciesId, int orderId, int primalCutId);
+        List<Label> GetLabels(int orderDetailId);
+        LabelReport GetLabelReports(int CustomerTypeId, DateTime date);
+        List<PrimalCut> GetPrimals(int speciesId, int orderId);
+    }
+}

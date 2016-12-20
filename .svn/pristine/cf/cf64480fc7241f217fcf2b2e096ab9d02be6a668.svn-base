@@ -1,0 +1,97 @@
+﻿@model ShopFloorViewModel
+@{
+    bool sw = false;
+}
+
+<div style="overflow: hidden">
+    <fieldset class="dataentry">
+        <legend>Order @Model.OrderId</legend>
+    </fieldset>
+
+    <table class="k-grid k-widget" style="width: 870px;">
+        <tr class="k-grid-header">
+            <th class="k-header" rowspan="3">Product Name</th>
+            <th class="k-header" colspan="@(Model.Locations.Count * 2)">Bags</th>
+            <th class="k-header" colspan="@(Model.Locations.Count * 2)">Boxes</th>
+        </tr>
+        <tr class="k-grid-header">
+            @for (int i = 0; i < 2; i++)
+            {
+                foreach (var location in Model.Locations)
+                {
+                <th class="k-header" colspan="2">@location.Value</th>
+                }
+            }
+        </tr>
+        <tr class="k-grid-header">
+            @for (int i = 0; i < Model.Locations.Count * 2; i++)
+            {
+                <th class="k-header">Completed</th>
+                <th class="k-header">Total</th>
+            }
+        </tr>
+        @foreach (var product in Model.Products)
+        {
+            sw = !sw;
+            <tr class="@(sw ? "" : "k-alt")">
+                <td>@product.Value</td>
+                @foreach (var location in Model.Locations)
+                {
+                    <td>@Model.GetCompleted(product.Key, location.Key, Model.Bags)</td>
+                    <td>@Model.GetTotal(product.Key, location.Key, Model.Bags)</td>
+                }
+                @foreach (var location in Model.Locations)
+                {
+                    <td>@Model.GetCompleted(product.Key, location.Key, Model.Boxes)</td>
+                    <td>@Model.GetTotal(product.Key, location.Key, Model.Boxes)</td>
+                }
+            </tr>
+        }
+    </table>
+    <br />
+    @if (Model.Offals.Any())
+    {
+        <table class="k-grid k-widget">
+            <tr class="k-header">
+                <th class="k-header" colspan="3">Offals</th>
+            </tr>
+            <tr class="k-grid-header">
+                <th class="k-header">Product Name</th>
+                <th class="k-header">Qty x Weight</th>
+                <th class="k-header">Ship To</th>
+            </tr>
+            @foreach (var row in Model.Offals)
+            {
+                sw = !sw;
+                <tr class="@(sw ? "" : "k-alt")">
+                    <td>@row.ProductName</td>
+                    <td>@row.QtyWeight</td>
+                    <td>@row.ShipTo</td>
+                </tr>
+            }
+        </table>
+    }
+    <br />
+    @if (Model.Combos.Any())
+    {
+        <table class="k-grid k-widget">
+            <tr class="k-header">
+                <th class="k-header" colspan="3">Combos</th>
+            </tr>
+            <tr class="k-grid-header">
+                <th class="k-header">Product Name</th>
+                <th class="k-header">Qty x Weight</th>
+                <th class="k-header">Ship To</th>
+            </tr>
+            @foreach (var row in Model.Combos)
+            {
+                sw = !sw;
+                <tr class="@(sw ? "" : "k-alt")">
+                    <td>@row.ProductName</td>
+                    <td>@row.QtyWeight</td>
+                    <td>@row.ShipTo</td>
+                </tr>
+            }
+        </table>
+    }
+</div>

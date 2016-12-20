@@ -1,0 +1,37 @@
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Entity.ModelConfiguration;
+
+using DoubleJ.Oms.Domain.Entities;
+
+
+namespace DoubleJ.Oms.DataAccess.Mappings
+{
+    internal class CustomerProductDataMap : EntityTypeConfiguration<CustomerProductData>
+    {
+        public CustomerProductDataMap()
+        {
+            ToTable("dbo.CustomerProductData");
+            HasKey(x => new {x.CustomerId, x.ProductId});
+
+            Property(x => x.CustomerId)
+                .HasColumnName("CustomerId")
+                .IsRequired()
+                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.ProductId)
+                .HasColumnName("ProductId")
+                .IsRequired()
+                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+            Property(x => x.ProductCode).HasColumnName("ProductCode").IsOptional().HasMaxLength(15);
+            Property(x => x.ProductDescription).HasColumnName("ProductDescription").IsOptional().HasMaxLength(25);
+            Property(x => x.Gtin).HasColumnName("GTIN").IsOptional().HasColumnType("numeric");
+            Property(x => x.PricePerPound).HasColumnName("PricePerPound").IsOptional().HasColumnType("money");
+            Property(x => x.BoxSizeId).HasColumnName("BoxSizeId").IsOptional();
+            Property(x => x.BagSizeId).HasColumnName("BagSizeId").IsOptional();
+            Property(x => x.BoxQuantity).HasColumnName("BoxQuantity").IsOptional();
+            Property(x => x.PieceQuantity).HasColumnName("PieceQuantity").IsOptional();
+
+            HasRequired(a => a.Customer).WithMany(b => b.CustomerProductData).HasForeignKey(c => c.CustomerId);
+            HasRequired(a => a.Product).WithMany(b => b.CustomerProductData).HasForeignKey(c => c.ProductId);
+        }
+    }
+}

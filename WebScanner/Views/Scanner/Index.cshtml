@@ -1,0 +1,241 @@
+﻿
+@{
+    ViewBag.Title = "Scanner";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script>
+    var ScannerViewModel = function(i) {
+        var self = this;
+
+        self.titleLabel = ko.observable("");
+        self.jobId = ko.observable("").extend({
+            required: {
+                params: true,
+                message: "Enter Job ID"
+            }
+        });
+        self.error = ko.observable("");
+        self.scanCode = ko.observable("");
+        self.codes = ko.observableArray();
+
+        self.onJobIdEntered = function() {
+            var errors = ko.validation.group(self.jobId, { deep: true });
+            if (errors().length > 0) {
+                self.error(errors());
+            } else {
+                self.error("");
+                self.titleLabel("Job: " + self.jobId());
+                $("#job-id-container").hide();
+                $("#scan-container").show();
+                $("#scan-code").focus();
+                $(document).off("click");
+                self.initFocusScan();
+            }
+        };
+
+        self.Init = function() {
+            ko.mapping.fromJS(
+            {
+                titleLabel: "Scan",
+                jobId: "",
+                scanCode: "",
+                error: "",
+                codes: []
+            }, {}, self);
+            $("#job-id").off("focusout");
+            $("#job-id").focus();
+            self.initFocusJob();
+            ko.validation.init({ decorateInputElement: true, insertMessages: false });
+            ko.applyBindingsWithValidation(self, $("#job-container")[0]);
+        };
+
+        $("#job-id").keyup(function(event) {
+            if (event.keyCode === 13) {
+                self.onJobIdEntered();
+            }
+        });
+
+        $("#scan-code").keyup(function(event) {
+            try {
+                if (event.keyCode === 13) {
+                    var c = 0;
+                    if (self.scanCode().length > 0) {
+                        $.each(self.codes(), function(key, value) {
+                            if (value.value === self.scanCode()) {
+                                c++;
+                            }
+                        });
+                        if (c === 0) {
+                            self.codes.push({
+                                value: self.scanCode(),
+                                removeCode: function(item) {
+                                    self.codes.remove(item);
+                                }
+                            });
+                        }
+                        self.scanCode("");
+                    };
+                }
+            } catch (err) {
+                alert(err.message + err.description);
+            }
+        });
+
+        self.initFocusJob = function() {
+            $(document).click(function() {
+                $("#job-id").focus();
+            });
+        };
+
+        self.initFocusScan = function() {
+            $(document).click(function() {
+                $("#scan-code").focus();
+            });
+        };
+
+        self.generateReport = function() {
+            try {
+                var rows = getRowsForReport();
+                if (rows.length > 0) {
+                    var date = new Date();
+
+                    function addZ(n) { return n < 10 ? '0' + n : '' + n; };
+
+                    var stringDate = addZ(date.getDate()).toString() + addZ(date.getMonth()).toString() + date.getFullYear().toString();
+                    var title = stringDate + "Job" + self.jobId();
+                    saveReport(rows, title);
+                    reInitValues();
+                }
+            } catch (err) {
+                alert("1" + err.message + err.description);
+            }
+        };
+
+        function reInitValues() {
+            $(document).off("click");
+            $("#scan-container").hide();
+            $("#job-id-container").show();
+            self.codes([]);
+            self.jobId("");
+            self.error("");
+            self.titleLabel("Scan");
+            self.scanCode("");
+            $(document).off("focusout");
+            $("#job-id").focus();
+            self.initFocusJob();
+        };
+
+        function saveReport(rows, title) {
+            try {
+                var workbook = new kendo.ooxml.Workbook({
+                    sheets: [
+                        {
+                            columns: [
+                                { autoWidth: true },
+                                { autoWidth: true }
+                            ],
+                            title: title,
+                            rows: rows
+                        }
+                    ]
+                });
+
+                kendo.saveAs({
+                    dataURI: workbook.toDataURL(),
+                    fileName: title + ".xlsx",
+                    proxyURL: "@Url.Action("Save", "Scanner")",
+                    forceProxy: true
+                });
+            } catch (err) {
+                alert("save report " + err.message + err.description);
+            }
+        };
+
+        function getRowsForReport() {
+            try {
+                var rows = [];
+            if (self.codes().length !== 0) {
+                var row1 = { cells: [] };
+                row1.cells.push({ value: "scan" });
+                $.each(self.codes(), function (index, val) {
+                    var scanData = val.value;
+                    var row2 = { cells: [] };
+                    var i = 1;
+                    row2.cells.push({ value: scanData });
+                    while (scanData !== "") {
+                        if (scanData.indexOf("(") !== -1) {
+                            var chapter = scanData.substring(scanData.indexOf("(") + 1,
+                                scanData.indexOf(")"));
+                            var scanData2 = scanData.substring(scanData.indexOf(")") + 1,
+                                scanData.length);
+                            var length = scanData2.indexOf("(") !== -1
+                                ? scanData2.indexOf("(")
+                                : scanData2.length;
+                            var value_ = scanData2.substring(0, length);
+                            row1.cells.push({ value: chapter });
+                            row2.cells.push({ value: value_ });
+                            scanData = scanData2.indexOf("(") !== -1
+                                ? scanData2.substring(scanData2.indexOf("("))
+                                : "";
+                            i++;
+                        } else {
+                            break;
+                        }
+                    }
+                    rows.push(row1);
+                    rows.push(row2);
+                });
+            }
+            return rows;
+        }
+            catch (err) {
+                alert("get rows for report" + err.message + err.description);
+            }
+        };
+    };
+
+    var viewModel;
+    $(function () {
+        viewModel = new ScannerViewModel();
+        viewModel.Init();
+    });
+</script>
+<div id="job-container">
+    <div class="scan-title">
+            <label id="scanner-header" data-bind="text: titleLabel">Scan</label>
+    </div>
+    <div id="job-id-container">
+        <div class="job-id-table">
+            <div class="job-id-row" >
+                <span class="job-id-label">Enter job ID</span>
+                <input type="text" id="job-id" title="Job ID"data-bind="textinput: jobId"/>
+            </div>
+        </div>
+        <div class="job-id-submit-container" >
+            <input type="button" value="Enter" data-bind="click: function () { onJobIdEntered() }" class="job-id-submit"/>
+        </div>
+        <div class="error-container">
+            <span data-bind="text: error"></span>
+        </div>
+    </div>
+    <div id="scan-container" style="display: none">
+        <div style="margin: 10px 10px; display: table; width: 100%">
+            <div style="display: table-row; width: 100%">
+                <span style="width: 120px; display: table-cell;">Scan Label:</span>
+                <input id="scan-code" type="text" title="Label" style="display: table-cell; width: 90%"
+                       data-bind="textinput: scanCode"/>
+            </div>
+        </div>
+        <div class="finish-scan-container">
+            <input id="finish-scan" type="button" value="Finish" data-bind="click: function () { generateReport() }" />
+        </div>
+        <div class="scan-codes-container" data-bind="foreach: codes">
+            <div class="scan-code">
+                <span class="scan-code-label" data-bind="text: value"></span>
+                <input type="button" class="remove-code"   data-bind="click: function () { removeCode(this) }" value="Delete"/>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+            </div>
+        </div>
+    </div>
+    <div id="save"></div>
+</div>
+

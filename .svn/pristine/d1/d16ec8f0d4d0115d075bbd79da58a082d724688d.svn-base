@@ -1,0 +1,29 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+using DoubleJ.Oms.Domain;
+using DoubleJ.Oms.Domain.Entities;
+using DoubleJ.Oms.Model.Interfaces;
+
+namespace DoubleJ.Oms.Model.Repositories
+{
+    public class UserRepository : GenericRepository<User>, IUserRepository
+    {
+        public UserRepository(IOmsContext context) : base(context)
+        {
+        }
+
+        public IEnumerable<User> GetAllActive()
+        {
+            return
+                FindAll(user => user.IsActive)
+                    .OrderBy(user => user.TypeId)
+                    .ThenBy(user => user.LastName)
+                    .ThenBy(user => user.FirstName);
+        }
+
+        public User GetByEmail(string email)
+        {
+            return FindAll(user => user.Email == email && user.IsActive).FirstOrDefault();
+        }
+    }
+}

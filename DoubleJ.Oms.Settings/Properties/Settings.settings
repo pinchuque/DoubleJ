@@ -1,0 +1,57 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="DoubleJ.Oms.Settings.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="ScaleId" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="SerialPort" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">3</Value>
+    </Setting>
+    <Setting Name="BeefFileName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">c:\ProdSupport\Graphics\beef.jpg</Value>
+    </Setting>
+    <Setting Name="BisonFileName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">c:\ProdSupport\Graphics\bison.jpg</Value>
+    </Setting>
+    <Setting Name="DoubleJLogoFileName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">c:\ProdSupport\Graphics\doublej.jpg</Value>
+    </Setting>
+    <Setting Name="NoLogoImageFileName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">c:\ProdSupport\Graphics\nologo.jpg</Value>
+    </Setting>
+    <Setting Name="OrganicFileName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">c:\ProdSupport\Graphics\organic.jpg</Value>
+    </Setting>
+    <Setting Name="FdaBugFileName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">c:\ProdSupport\Graphics\fda.jpg</Value>
+    </Setting>
+    <Setting Name="LabelBaseFolder" Type="System.String" Scope="User">
+      <Value Profile="(Default)">c:\ProdSupport\Labels\</Value>
+    </Setting>
+    <Setting Name="Password" Type="System.String" Scope="User">
+      <Value Profile="(Default)">admin</Value>
+    </Setting>
+    <Setting Name="ScaleIpAddress" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="ScalePort" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">10001</Value>
+    </Setting>
+    <Setting Name="ScaleRegExp" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="Printer" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="IsSecondaryLabel" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="SecondLabel" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="SecondaryPrinter" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+  </Settings>
+</SettingsFile>

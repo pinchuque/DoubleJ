@@ -1,0 +1,11 @@
+﻿<h1>Order Entry</h1>
+@using (Html.BeginForm("Edit", "Orders", FormMethod.Post, new { id = "OrderEntry" }))
+{
+    @Html.ValidationSummary(true)
+    @Html.EditorForModel("OrderEdit")
+              
+    <div class="buttonRow oms-button">
+        @Html.ActionLink("Cancel", "Index", "Orders", new { @class = "k-button" })
+        <input type="submit" id="btnSubmit" class="k-button" value="Save" />
+    </div>
+}

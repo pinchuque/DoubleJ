@@ -1,0 +1,66 @@
+﻿@model LabelViewModel
+
+@{
+    ViewBag.Title = "Labels - Edit Printed";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="content-container">
+    <div id="content">
+        <h1>Label Management - Edit Printed</h1>
+        <fieldset class="dataentry">
+            <legend>Order Information</legend>
+            <div>@Html.LabelFor(model => model.OrderId) @Html.DisplayFor(model => model.OrderId)</div>
+            <div>@Html.LabelFor(model => model.CustomerName) @Html.DisplayFor(model => model.CustomerName)</div>
+            <div>@Html.LabelFor(model => model.CustomerLocationsTotal) @Html.DisplayFor(model => model.CustomerLocationsTotal)</div>
+            <div>@Html.LabelFor(model => model.PieceTotal) @Html.DisplayFor(model => model.PieceTotal)</div>
+            <div>@Html.LabelFor(model => model.BagTotal) @Html.DisplayFor(model => model.BagTotal)</div>
+            <div>@Html.LabelFor(model => model.BoxTotal) @Html.DisplayFor(model => model.BoxTotal)</div>
+        </fieldset>
+        <fieldset>
+            <legend>Printed Labels</legend>
+            @(Html.Kendo().Grid<LabelEditItem>()
+                  .Name("LabelEditGrid")
+                  .Columns(columns =>
+                      {
+                          columns.Bound(label => label.PrintedDate).Format("{0:g}").Width(115);
+                          columns.Bound(label => label.ProductName).Width(65);
+                          columns.Bound(label => label.LocationName).Width(75);
+                          columns.Bound(label => label.LabelType).Width(35);
+                          columns.Bound(label => label.PoundWeight).ClientTemplate("<input id='PoundWeight#=LabelId #' class='pound-weight' value='#=PoundWeight #'>").Title("").Width(90);
+                          columns.Command(command =>
+                              {
+
+                                  command.Custom("reprint").Click("Reprint");
+                                  command.Custom("remove").Click("Remove");
+
+                              }).Width(128);
+                      })
+                  .Pageable()
+                  .Sortable()
+                  .Scrollable()
+                  .Events(events => events.DataBound("LabelEditGrid_DataBound"))
+                  .DataSource(dataSource => dataSource
+                                                .Ajax()
+                                                .Model(model => model.Id(label => label.LabelId))
+                                                .Read(read => read.Action("LabelEditGrid_Read", "Labels", new { id = @Model.OrderId }))
+                                                .Sort(sort => sort.Add(label => label.PrintedDate).Descending())
+
+
+
+                  )
+                  )
+        </fieldset>
+        <div class="buttonRow oms-button">
+            @Html.ActionLink("return", "Index", "Labels", new { @Model.OrderId }, new { @class = "k-button" })
+        </div>
+    </div>
+    <div style="clear: both;"></div>
+</div>
+@section SiteNavigation {
+    @Html.Action("_Site", "Navigation", new { area = "", selected = OmsSiteNavigation.Labels })
+}
+
+@section Scripts {
+    <script src="@Url.Content("~/Scripts/DoubleJ.Oms.Web.Internal.Labels.Edit.js")" type="text/javascript"></script>
+}

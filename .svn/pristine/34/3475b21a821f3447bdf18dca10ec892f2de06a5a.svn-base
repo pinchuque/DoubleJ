@@ -1,0 +1,58 @@
+﻿@using DoubleJ.Oms.Model.ViewModels.Internal;
+
+<script type="text/javascript">
+    function error_handler(e) {
+        if (e.errors) {
+            var message = "Errors:\n";
+            $.each(e.errors, function(key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function() {
+                        message += this + "\n";
+                    });
+                }
+            });
+            alert(message);
+        }
+    }
+</script>
+<div>
+    @(Html.Kendo().Grid<TareWeightViewModel>()
+          .Name("TareWeightsGrid")
+          .Columns(columns =>
+          {
+              columns.Bound(x => x.Id).Width(40);
+              columns.Bound(x => x.Name);
+              columns.Bound(x => x.CaseType).ClientTemplate("#=CaseType.Name#").EditorTemplateName("CaseTypeEditor");
+              columns.Bound(x => x.CustomerType).ClientTemplate("#=CustomerType.Name#").EditorTemplateName("CustomerTypeEditor");
+              columns.Bound(x => x.TareWeight_);
+              columns.Command(command =>
+              {
+                  command.Destroy();
+                  command.Edit();
+              });
+          })
+          .ToolBar(toolbar =>
+          {
+              toolbar.Create();
+          })
+          .Sortable()
+          .Editable(x => x.Mode(GridEditMode.InLine).DisplayDeleteConfirmation(false))
+          .Scrollable()
+          .DataSource(dataSource => dataSource
+              .Ajax()
+              .Events(events => events.Error("error_handler"))
+              .Model(model =>
+              {
+                  model.Field(x => x.Id).Editable(false);
+                  model.Id(x => x.Id);
+                  model.Field(x => x.TareWeight_).DefaultValue(0);
+                  model.Field(x => x.Name);
+                  model.Field(x => x.CustomerType).DefaultValue(ViewBag.DefaultCustomerType as CustomerTypeViewModel);
+                  model.Field(x => x.CaseType).DefaultValue(ViewBag.DefaultCaseType as CaseTypeViewModel);
+              }).Batch(true)
+              .Read(read => read.Action("GetTareWeightsResultGrid", "Admin"))
+              .Create(create => create.Action("CreateCaseSize", "Admin"))
+              .Update(update => update.Action("UpdateCaseSize", "Admin"))
+              .Destroy(destroy => destroy.Action("DeleteCaseSize", "Admin"))
+          ))
+</div>

@@ -1,0 +1,35 @@
+﻿@model ColdWeightEntryDetailItem
+@using DoubleJ.Oms.Utils.Extensions
+@(Html.Kendo().Grid<ColdWeightEntryDetailItem>
+  ()
+  .Name("AnimalTrackingGrid").AutoBind(Model.IsExist)
+  .Columns(columns =>
+  {
+  columns.Bound(coldWeight => coldWeight.Id).Visible(false);
+  columns.Bound(coldWeight => coldWeight.ColdWeightId).Visible(false);
+  columns.Bound(coldWeight => coldWeight.AnimalNumber).Width(40).Title("Back Tag");
+  columns.Bound(coldWeight => coldWeight.AnimalLabel).ClientTemplate("#=AnimalLabel.Name#").Width(130).Title("Animal Label");
+  columns.Bound(coldWeight => coldWeight.EarTag).Width(50);
+  //columns.Bound(coldWeight => coldWeight.IsOrganic).Width(56).ClientTemplate("# if(IsOrganic){#" + "Yes" + "#}else{#" + "No" + "#}#")
+  columns.Bound(coldWeight => coldWeight.TrackAnimalBySelectColumn).Title("Sectioning");
+  columns.Bound(coldWeight => coldWeight.HotWeight).Width(55);
+  columns.Bound(coldWeight => coldWeight.ColdWeight).Width(55);
+  columns.Bound(coldWeight => coldWeight.QualityGrade).ClientTemplate("#=QualityGrade.Name#").Title("Quality").Width(70);
+  columns.Bound(coldWeight => coldWeight.FirstCustomer).ClientTemplate("#=FirstCustomer.CustomerLocationName#").Width(90).Title("Customer");
+  columns.Command(command => command.Custom("X").Click("onRemove")).Width(40).HtmlAttributes(new { @class = "remove-animal-button", style = Model.IsEditable ?"": "display:none" });
+  })
+  .Editable(editing => editing.Mode(GridEditMode.InCell))
+  .Pageable()
+  .Scrollable()
+  .Sortable()
+  .DataSource(dataSource => dataSource.Ajax()
+  .Model(model =>
+  {
+  model.Id(coldWeight => coldWeight.Id);
+  model.Field(coldWeight => coldWeight.AnimalNumber).Editable(false);
+  })
+  .Read(read => read.Action("AnimalGrid_Read", "Orders", new { orderId = @Model.OrderId }))
+  .Update(update => update.Action("Editing_Update", "Orders"))
+  )
+  )
+

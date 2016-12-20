@@ -1,0 +1,33 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+
+using DoubleJ.Oms.Domain;
+using DoubleJ.Oms.Domain.Definitions;
+using DoubleJ.Oms.Domain.Entities;
+using DoubleJ.Oms.Model.Interfaces;
+
+
+namespace DoubleJ.Oms.Model.Repositories
+{
+    public class OrderRepository : GenericRepository<Order>, IOrderRepository
+    {
+        public OrderRepository(IOmsContext context)
+            : base(context)
+        {
+        }
+
+        public IEnumerable<Order> GetBySearchCriteria(int? customerId, int? orderId, OmsStatus? statusId, OmsCustomerType? customerType)
+        {
+            return Context.Order.Where(order => (!customerId.HasValue || order.CustomerId == customerId) &&
+            (!orderId.HasValue || order.Id == orderId) &&
+            (!statusId.HasValue || order.StatusId == statusId) &&
+            (!customerType.HasValue || order.Customer.CustomerTypeId == customerType.Value))
+                .OrderByDescending(o => o.RequestedProcessDate).ToList();
+        }
+
+        public IEnumerable<Order> GetByStatus(List<OmsStatus> statusList)
+        {
+            return FindAll(order => statusList.Contains(order.StatusId));
+        }
+    }
+}

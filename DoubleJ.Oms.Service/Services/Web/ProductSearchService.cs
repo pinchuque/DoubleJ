@@ -1,0 +1,42 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+
+using DoubleJ.Oms.Model.Interfaces;
+using DoubleJ.Oms.Model.ViewModels.Internal;
+using DoubleJ.Oms.Service.Interfaces.Web;
+
+
+namespace DoubleJ.Oms.Service.Services.Web
+{
+    public class ProductSearchService : IProductSearchService
+    {
+        private readonly IProductRepository _productRepository;
+
+        public ProductSearchService(IProductRepository productRepository)
+        {
+            _productRepository = productRepository;
+        }
+
+        public List<ProductSearchResultItem> Search(ProductSearchViewModel model)
+        {
+            var result = _productRepository
+                .GetByCustomerType(model.CustomerType)
+                .Where(x => (model.Id == null || x.Id == model.Id)
+                            && (model.Upc == null || x.Upc.ToLower().Contains(model.Upc.ToLower()))
+                            && (model.Description == null || x.EnglishDescription.ToLower().Contains(model.Description.ToLower()))
+                            && (model.SpeciesId == null || x.SpeciesId == model.SpeciesId)
+                            && (model.PrimalCutId == null || x.PrimalCutId == model.PrimalCutId)
+                            //&& (model.SubPrimalCutId == null || x.SubPrimalCutId == model.SubPrimalCutId)
+                            && (model.TrimCutId == null || x.TrimCutId == model.TrimCutId))
+                .Select(x => new ProductSearchResultItem
+                {
+                    ProductId = x.Id,
+                    Description = x.EnglishDescription,
+                    Upc = x.Upc
+                })
+                .ToList();
+
+            return result;
+        }
+    }
+}

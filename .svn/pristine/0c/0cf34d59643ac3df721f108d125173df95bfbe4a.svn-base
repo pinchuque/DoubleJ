@@ -1,0 +1,2 @@
+ALTER TABLE dbo.Label ADD SpeciesBugPath VARCHAR(100) NULL
+ALTER TABLE dbo.Label ADD Primal VARCHAR(20) NULL

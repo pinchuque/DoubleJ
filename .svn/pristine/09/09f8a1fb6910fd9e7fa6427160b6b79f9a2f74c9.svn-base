@@ -1,0 +1,62 @@
+﻿@model ColdWeightEntryDetailItem
+
+@{
+    ViewBag.Title = "Animal Tracking";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="content-container">
+    <div id="content-wide">
+        @Html.Partial("_AnimalTracking")
+    </div>
+</div>
+
+@section SiteNavigation {
+    @Html.Action("_Site", "Navigation", new { area = "", selected = OmsSiteNavigation.Orders })
+}
+
+@section Scripts {
+    <script src="~/Scripts/kendo.all.min.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        var addAnimalNumbers = '@Url.Action("AddDetail", "Orders")';
+        var getGrid = '@Url.Action("GetAnimalTrackingGrid", "Orders")';
+        var removeDetailUrl = '@Url.Action("RemoveDetail", "Orders")';
+        var removeAllDetailUrl = '@Url.Action("RemoveAllDetails", "Orders")';
+        var saveAnimalNumbers = '@Url.Action("SaveAnimalNumber", "Orders")';
+        var getProductUrl = '@Url.Action("GetProductQuantities", "Orders")';
+        isEdit = 'False';
+        nextTabUrl = '@Url.Action("Detail", "Orders")';
+    </script>
+
+    <script src="@Url.Content("~/Scripts/DoubleJ.Oms.Web.Internal.Orders.js")" type="text/javascript"></script>
+    <script type="text/javascript">
+        debugger;
+        InternalOrders.Init({
+            urls: {
+                getCustomerUrl: '@Url.Action("GetCustomerPreferences")'
+            },
+            elements: {
+                customerDropDown: $('#CustomerId'),
+                dateTypeInput: $("#BestBeforeDays"),
+                logoTypeInput: $('#LogoTypeId'),
+                bestBeforeDateDays: $("#BestBeforeDateDays")[0],
+                slaughterDate: $("#SlaughterDate"),
+            }
+        });
+
+        $(document).ready(function () {
+            $("#tabstrip").kendoTabStrip({
+                animation: {
+                    open: {
+                        effects: "fadeIn"
+                    }
+                }
+            });
+        });
+    </script>
+}
+
+
+
+

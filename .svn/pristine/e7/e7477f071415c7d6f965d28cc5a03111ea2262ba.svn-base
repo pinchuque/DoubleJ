@@ -1,0 +1,703 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+This file is used by the publish/package process of your Web project. You can customize the behavior of this process
+by editing this MSBuild file. In order to learn more about this please visit http://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <_PublishTargetUrl>C:\Publish\DoubleJWeb</_PublishTargetUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="Areas/Internal/Views/ColdWeight/Index.cshtml">
+      <publishTime>05/08/2014 03:19:58</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/ColdWeight/_ColdWeightEntryDetail.cshtml">
+      <publishTime>05/08/2014 03:19:58</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/ColdWeight/_ColdWeightEntryGrid.cshtml">
+      <publishTime>05/08/2014 03:19:58</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Customer/Add.cshtml">
+      <publishTime>03/24/2016 13:24:48</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Customer/CustomerLocation.cshtml">
+      <publishTime>03/23/2016 15:39:27</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Customer/Edit.cshtml">
+      <publishTime>03/01/2016 11:40:44</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Customer/Index.cshtml">
+      <publishTime>03/09/2016 11:27:52</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Customer/_CustomerLocationEdit.cshtml">
+      <publishTime>03/01/2016 11:40:44</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Customer/_CustomerProducts.cshtml">
+      <publishTime>03/01/2016 11:40:44</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Customer/_EditCommon.cshtml">
+      <publishTime>03/23/2016 15:39:08</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Customer/_SearchCriteria.cshtml">
+      <publishTime>03/10/2016 14:21:19</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Customer/_SearchResult.cshtml">
+      <publishTime>03/01/2016 11:40:44</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Fulfillment/Index.cshtml">
+      <publishTime>03/23/2016 15:41:30</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Fulfillment/SearchByOrder.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Fulfillment/SearchByOrderResult.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Fulfillment/SearchBySN.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Fulfillment/SearchBySNResult.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Fulfillment/ViewDetails.cshtml">
+      <publishTime>03/23/2016 15:41:30</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Labels/Edit.cshtml">
+      <publishTime>03/23/2016 15:41:31</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Labels/Index.cshtml">
+      <publishTime>03/23/2016 15:41:31</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Labels/_Bag.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Labels/_Box.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Orders/Add.cshtml">
+      <publishTime>03/28/2016 14:41:34</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Orders/AnimalTracking.cshtml">
+      <publishTime>03/28/2016 16:01:49</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Orders/CutSheetDetailGreed.cshtml">
+      <publishTime>01/03/2016 11:40:44</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Orders/Detail.cshtml">
+      <publishTime>03/01/2016 11:40:44</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Orders/Edit.cshtml">
+      <publishTime>03/21/2016 15:09:49</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Orders/Index.cshtml">
+      <publishTime>03/10/2016 14:21:21</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Orders/ViewPastOrders.cshtml">
+      <publishTime>03/01/2016 11:40:44</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Orders/_AnimalTracking.cshtml">
+      <publishTime>03/28/2016 14:39:59</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Orders/_AnimalTrackingGrid.cshtml">
+      <publishTime>03/01/2016 11:40:44</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Orders/_AnimalTrackingGridHalves.cshtml">
+      <publishTime>03/01/2016 11:40:44</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Orders/_AnimalTrackingGridQuarters.cshtml">
+      <publishTime>03/01/2016 11:40:44</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Orders/_AnimalTrakingGridHalfAndTwoQuaters.cshtml">
+      <publishTime>03/24/2016 14:07:44</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Orders/_AnimalTrakingGridThreeQuatersAndQuater.cshtml">
+      <publishTime>03/24/2016 14:07:42</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Orders/_CustomerLocationList.cshtml">
+      <publishTime>03/01/2016 11:40:44</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Orders/_CutSheet.cshtml">
+      <publishTime>01/03/2016 11:40:44</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Orders/_CutSheetGrid.cshtml">
+      <publishTime>01/03/2016 11:40:44</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Orders/_CutSheetGridHalves.cshtml">
+      <publishTime>01/03/2016 11:40:44</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Orders/_CutSheetGridQuarters.cshtml">
+      <publishTime>01/03/2016 11:40:44</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Orders/_Detail.cshtml">
+      <publishTime>03/22/2016 15:16:07</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Orders/_EditCommon.cshtml">
+      <publishTime>03/01/2016 11:40:44</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Orders/_Report.cshtml">
+      <publishTime>03/01/2016 11:40:44</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Orders/_SearchCriteria.cshtml">
+      <publishTime>03/10/2016 13:54:44</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Orders/_SearchResult.cshtml">
+      <publishTime>03/01/2016 11:40:44</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Orders/_ViewReports.cshtml">
+      <publishTime>05/08/2014 03:19:58</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Products/Add.cshtml">
+      <publishTime>03/23/2016 15:41:31</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Products/Edit.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Products/Index.cshtml">
+      <publishTime>03/23/2016 15:41:31</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Products/_EditCommon.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Products/_EditCustomerData.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Products/_EditNutritionInfo.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Products/_Form.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Products/_SearchCriteria.cshtml">
+      <publishTime>03/23/2016 15:41:31</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Products/_SearchResult.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Shared/DisplayTemplates/Reading.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Shared/EditorTemplates/BagTare.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Shared/EditorTemplates/CheckBoxItem.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Shared/EditorTemplates/CustomerProductItem.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Shared/EditorTemplates/OrderAdd.cshtml">
+      <publishTime>03/23/2016 15:41:31</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Shared/EditorTemplates/OrderDetailCustomerLocation.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Shared/EditorTemplates/OrderDetailProduct.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Shared/EditorTemplates/OrderDetailTare.cshtml">
+      <publishTime>05/08/2014 03:19:58</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Shared/EditorTemplates/OrderEdit.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Shared/EditorTemplates/OwnerCustomerTemplate.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Shared/EditorTemplates/Product.cshtml">
+      <publishTime>09/29/2014 09:13:27</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Shared/EditorTemplates/ProductCodeItem.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Shared/EditorTemplates/Quantity.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Shared/EditorTemplates/RadioButtonList.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Shared/EditorTemplates/SpeciesTemplate.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Shared/_Layout.cshtml">
+      <publishTime>03/23/2016 16:35:49</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/ShopFloor/Index.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/ShopFloor/_ActiveOrders.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/ShopFloor/_LabelsSummary.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/Web.config">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Areas/Internal/Views/_ViewStart.cshtml">
+      <publishTime>03/23/2016 16:35:02</publishTime>
+    </File>
+    <File Include="Areas/Mobile/Views/Main/AllocatedProducts.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Areas/Mobile/Views/Main/Index.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Areas/Mobile/Views/Main/OrderFulfillment.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Areas/Mobile/Views/Main/OrderFulfillmentComplete.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Areas/Mobile/Views/Main/OrderFulfillmentDestination.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Areas/Mobile/Views/Main/PendingProducts.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Areas/Mobile/Views/Main/ResetLocation.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Areas/Mobile/Views/Main/SnLookup.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Areas/Mobile/Views/Shared/_Layout.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Areas/Mobile/Views/Web.config">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Areas/Mobile/Views/_ViewStart.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="bin/Antlr3.Runtime.dll">
+      <publishTime>02/29/2016 16:16:18</publishTime>
+    </File>
+    <File Include="bin/bg-BG/Kendo.Mvc.resources.dll">
+      <publishTime>02/26/2016 05:25:06</publishTime>
+    </File>
+    <File Include="bin/cs-CZ/Kendo.Mvc.resources.dll">
+      <publishTime>02/26/2016 05:25:06</publishTime>
+    </File>
+    <File Include="bin/da-DK/Kendo.Mvc.resources.dll">
+      <publishTime>02/26/2016 05:25:06</publishTime>
+    </File>
+    <File Include="bin/de-DE/Kendo.Mvc.resources.dll">
+      <publishTime>02/26/2016 05:25:06</publishTime>
+    </File>
+    <File Include="bin/DoubleJ.Oms.DataAccess.dll">
+      <publishTime>03/28/2016 19:03:43</publishTime>
+    </File>
+    <File Include="bin/DoubleJ.Oms.Domain.dll">
+      <publishTime>03/23/2016 16:26:35</publishTime>
+    </File>
+    <File Include="bin/DoubleJ.Oms.Infrastructure.dll">
+      <publishTime>10/07/2014 08:04:02</publishTime>
+    </File>
+    <File Include="bin/DoubleJ.Oms.Model.dll">
+      <publishTime>03/28/2016 19:03:43</publishTime>
+    </File>
+    <File Include="bin/DoubleJ.Oms.Service.dll">
+      <publishTime>03/28/2016 19:03:44</publishTime>
+    </File>
+    <File Include="bin/DoubleJ.Oms.Settings.dll">
+      <publishTime>03/23/2016 16:26:34</publishTime>
+    </File>
+    <File Include="bin/DoubleJ.Oms.Utils.dll">
+      <publishTime>03/28/2016 19:03:43</publishTime>
+    </File>
+    <File Include="bin/DoubleJ.Oms.Web.dll">
+      <publishTime>03/28/2016 19:03:45</publishTime>
+    </File>
+    <File Include="bin/Elmah.dll">
+      <publishTime>02/29/2016 16:16:16</publishTime>
+    </File>
+    <File Include="bin/Elmah.Mvc.dll">
+      <publishTime>02/29/2016 16:16:20</publishTime>
+    </File>
+    <File Include="bin/EntityFramework.BulkInsert.dll">
+      <publishTime>02/29/2016 16:16:17</publishTime>
+    </File>
+    <File Include="bin/EntityFramework.dll">
+      <publishTime>02/29/2016 16:16:19</publishTime>
+    </File>
+    <File Include="bin/EntityFramework.SqlServer.dll">
+      <publishTime>02/29/2016 16:16:19</publishTime>
+    </File>
+    <File Include="bin/es-ES/Kendo.Mvc.resources.dll">
+      <publishTime>02/26/2016 05:25:06</publishTime>
+    </File>
+    <File Include="bin/fr-CA/Kendo.Mvc.resources.dll">
+      <publishTime>02/26/2016 05:25:06</publishTime>
+    </File>
+    <File Include="bin/fr-FR/Kendo.Mvc.resources.dll">
+      <publishTime>02/26/2016 05:25:06</publishTime>
+    </File>
+    <File Include="bin/it-IT/Kendo.Mvc.resources.dll">
+      <publishTime>02/26/2016 05:25:06</publishTime>
+    </File>
+    <File Include="bin/jQuery.Validation.Unobtrusive.Native.dll">
+      <publishTime>02/29/2016 16:16:17</publishTime>
+    </File>
+    <File Include="bin/Kendo.Mvc.dll">
+      <publishTime>03/23/2016 15:41:36</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Web.Infrastructure.dll">
+      <publishTime>02/29/2016 16:16:16</publishTime>
+    </File>
+    <File Include="bin/MuscovyTechnology.Mvc.Notification.dll">
+      <publishTime>02/29/2016 15:56:13</publishTime>
+    </File>
+    <File Include="bin/MvcCheckBoxList.dll">
+      <publishTime>02/29/2016 16:16:18</publishTime>
+    </File>
+    <File Include="bin/Newtonsoft.Json.dll">
+      <publishTime>02/29/2016 16:16:18</publishTime>
+    </File>
+    <File Include="bin/Ninject.dll">
+      <publishTime>02/29/2016 16:16:17</publishTime>
+    </File>
+    <File Include="bin/Ninject.Web.Common.dll">
+      <publishTime>02/29/2016 16:16:18</publishTime>
+    </File>
+    <File Include="bin/Ninject.Web.Mvc.dll">
+      <publishTime>02/29/2016 16:16:18</publishTime>
+    </File>
+    <File Include="bin/nl-NL/Kendo.Mvc.resources.dll">
+      <publishTime>02/26/2016 05:25:06</publishTime>
+    </File>
+    <File Include="bin/NLog.config">
+      <publishTime>06/25/2014 06:33:34</publishTime>
+    </File>
+    <File Include="bin/NLog.dll">
+      <publishTime>02/29/2016 16:16:19</publishTime>
+    </File>
+    <File Include="bin/pl-PL/Kendo.Mvc.resources.dll">
+      <publishTime>02/26/2016 05:25:06</publishTime>
+    </File>
+    <File Include="bin/pt-BR/Kendo.Mvc.resources.dll">
+      <publishTime>02/26/2016 05:25:06</publishTime>
+    </File>
+    <File Include="bin/pt-PT/Kendo.Mvc.resources.dll">
+      <publishTime>02/26/2016 05:25:06</publishTime>
+    </File>
+    <File Include="bin/ro-RO/Kendo.Mvc.resources.dll">
+      <publishTime>02/26/2016 05:25:06</publishTime>
+    </File>
+    <File Include="bin/ru-RU/Kendo.Mvc.resources.dll">
+      <publishTime>02/26/2016 05:25:06</publishTime>
+    </File>
+    <File Include="bin/sv-SE/Kendo.Mvc.resources.dll">
+      <publishTime>02/26/2016 05:25:06</publishTime>
+    </File>
+    <File Include="bin/System.Net.Http.Formatting.dll">
+      <publishTime>02/29/2016 16:16:17</publishTime>
+    </File>
+    <File Include="bin/System.Web.Helpers.dll">
+      <publishTime>02/29/2016 16:16:16</publishTime>
+    </File>
+    <File Include="bin/System.Web.Http.dll">
+      <publishTime>02/29/2016 16:16:17</publishTime>
+    </File>
+    <File Include="bin/System.Web.Http.WebHost.dll">
+      <publishTime>02/29/2016 16:16:18</publishTime>
+    </File>
+    <File Include="bin/System.Web.Mvc.dll">
+      <publishTime>02/29/2016 16:16:16</publishTime>
+    </File>
+    <File Include="bin/System.Web.Optimization.dll">
+      <publishTime>02/29/2016 16:16:17</publishTime>
+    </File>
+    <File Include="bin/System.Web.Razor.dll">
+      <publishTime>02/29/2016 16:16:17</publishTime>
+    </File>
+    <File Include="bin/System.Web.WebPages.Deployment.dll">
+      <publishTime>02/29/2016 16:16:17</publishTime>
+    </File>
+    <File Include="bin/System.Web.WebPages.dll">
+      <publishTime>02/29/2016 16:16:17</publishTime>
+    </File>
+    <File Include="bin/System.Web.WebPages.Razor.dll">
+      <publishTime>02/29/2016 16:16:17</publishTime>
+    </File>
+    <File Include="bin/Telerik.Reporting.dll">
+      <publishTime>02/29/2016 15:56:31</publishTime>
+    </File>
+    <File Include="bin/tr-TR/Kendo.Mvc.resources.dll">
+      <publishTime>02/26/2016 05:25:06</publishTime>
+    </File>
+    <File Include="bin/uk-UA/Kendo.Mvc.resources.dll">
+      <publishTime>02/26/2016 05:25:06</publishTime>
+    </File>
+    <File Include="bin/WebActivator.dll">
+      <publishTime>05/01/2014 05:03:38</publishTime>
+    </File>
+    <File Include="bin/WebActivatorEx.dll">
+      <publishTime>02/29/2016 16:16:18</publishTime>
+    </File>
+    <File Include="bin/WebGrease.dll">
+      <publishTime>02/29/2016 16:16:18</publishTime>
+    </File>
+    <File Include="bin/zh-CN/Kendo.Mvc.resources.dll">
+      <publishTime>02/26/2016 05:25:06</publishTime>
+    </File>
+    <File Include="bin/ZylSerialPort.dll">
+      <publishTime>02/29/2016 15:56:31</publishTime>
+    </File>
+    <File Include="Content/bootstrap.css">
+      <publishTime>03/21/2016 14:19:06</publishTime>
+    </File>
+    <File Include="Content/bootstrap.min.css">
+      <publishTime>03/21/2016 14:19:06</publishTime>
+    </File>
+    <File Include="Content/Images/ButtonBackground.png">
+      <publishTime>02/29/2016 15:57:04</publishTime>
+    </File>
+    <File Include="Content/Images/button_add.png">
+      <publishTime>02/29/2016 15:57:04</publishTime>
+    </File>
+    <File Include="Content/Images/button_cancel.png">
+      <publishTime>02/29/2016 15:57:02</publishTime>
+    </File>
+    <File Include="Content/Images/button_edit.png">
+      <publishTime>02/29/2016 15:57:02</publishTime>
+    </File>
+    <File Include="Content/Images/button_remove.png">
+      <publishTime>02/29/2016 15:57:04</publishTime>
+    </File>
+    <File Include="Content/Images/button_search.png">
+      <publishTime>02/29/2016 15:57:02</publishTime>
+    </File>
+    <File Include="Content/Images/button_update.png">
+      <publishTime>02/29/2016 15:57:02</publishTime>
+    </File>
+    <File Include="Content/Images/Cow.png">
+      <publishTime>02/29/2016 15:57:04</publishTime>
+    </File>
+    <File Include="Content/Images/GlassTexture.png">
+      <publishTime>02/29/2016 15:57:04</publishTime>
+    </File>
+    <File Include="Content/Images/Loading.gif">
+      <publishTime>02/29/2016 15:57:02</publishTime>
+    </File>
+    <File Include="Content/Images/Logo.png">
+      <publishTime>02/29/2016 15:57:02</publishTime>
+    </File>
+    <File Include="Content/Images/Notification/close.png">
+      <publishTime>02/29/2016 15:57:02</publishTime>
+    </File>
+    <File Include="Content/Images/Notification/error.png">
+      <publishTime>02/29/2016 15:57:02</publishTime>
+    </File>
+    <File Include="Content/Images/Notification/notice.png">
+      <publishTime>02/29/2016 15:57:02</publishTime>
+    </File>
+    <File Include="Content/Images/Notification/success.png">
+      <publishTime>02/29/2016 15:57:02</publishTime>
+    </File>
+    <File Include="Content/Images/Notification/warning.png">
+      <publishTime>02/29/2016 15:57:02</publishTime>
+    </File>
+    <File Include="Content/Images/NutritionFactsTemplate.PNG">
+      <publishTime>02/29/2016 15:57:04</publishTime>
+    </File>
+    <File Include="Content/Images/PageBackground.png">
+      <publishTime>02/29/2016 15:57:02</publishTime>
+    </File>
+    <File Include="Content/kendo.common.css">
+      <publishTime>02/29/2016 15:57:04</publishTime>
+    </File>
+    <File Include="Content/kendo.default.css">
+      <publishTime>02/29/2016 15:57:04</publishTime>
+    </File>
+    <File Include="Content/kendo.doublej.css">
+      <publishTime>02/29/2016 15:57:04</publishTime>
+    </File>
+    <File Include="Content/mobile.css">
+      <publishTime>02/29/2016 15:57:04</publishTime>
+    </File>
+    <File Include="Content/Site.css">
+      <publishTime>03/23/2016 15:41:31</publishTime>
+    </File>
+    <File Include="fonts/glyphicons-halflings-regular.eot">
+      <publishTime>03/23/2016 16:32:57</publishTime>
+    </File>
+    <File Include="fonts/glyphicons-halflings-regular.svg">
+      <publishTime>03/23/2016 16:32:57</publishTime>
+    </File>
+    <File Include="fonts/glyphicons-halflings-regular.ttf">
+      <publishTime>03/23/2016 16:32:57</publishTime>
+    </File>
+    <File Include="fonts/glyphicons-halflings-regular.woff">
+      <publishTime>03/23/2016 16:32:57</publishTime>
+    </File>
+    <File Include="Global.asax">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="NLog.config">
+      <publishTime>06/25/2014 06:33:34</publishTime>
+    </File>
+    <File Include="packages.config">
+      <publishTime>03/23/2016 16:21:39</publishTime>
+    </File>
+    <File Include="Scripts/bootstrap.js">
+      <publishTime>03/21/2016 14:19:05</publishTime>
+    </File>
+    <File Include="Scripts/bootstrap.min.js">
+      <publishTime>03/21/2016 14:19:05</publishTime>
+    </File>
+    <File Include="Scripts/DoubleJ.Oms.Web.Global.js">
+      <publishTime>02/29/2016 15:56:40</publishTime>
+    </File>
+    <File Include="Scripts/DoubleJ.Oms.Web.Internal.ColdWeightEntry.js">
+      <publishTime>02/29/2016 15:56:40</publishTime>
+    </File>
+    <File Include="Scripts/DoubleJ.Oms.Web.Internal.CustomerProduct.js">
+      <publishTime>02/29/2016 15:56:40</publishTime>
+    </File>
+    <File Include="Scripts/DoubleJ.Oms.Web.Internal.Labels.Edit.js">
+      <publishTime>02/29/2016 15:56:40</publishTime>
+    </File>
+    <File Include="Scripts/DoubleJ.Oms.Web.Internal.Labels.js">
+      <publishTime>02/29/2016 15:56:40</publishTime>
+    </File>
+    <File Include="Scripts/DoubleJ.Oms.Web.Internal.Orders.js">
+      <publishTime>03/28/2016 17:28:05</publishTime>
+    </File>
+    <File Include="Scripts/DoubleJ.Oms.Web.Internal.Orders.Search.js">
+      <publishTime>02/29/2016 15:56:40</publishTime>
+    </File>
+    <File Include="Scripts/DoubleJ.Oms.Web.Internal.Product.js">
+      <publishTime>02/29/2016 15:56:40</publishTime>
+    </File>
+    <File Include="Scripts/DoubleJ.Oms.Web.Internal.Products.Search.js">
+      <publishTime>02/29/2016 15:56:40</publishTime>
+    </File>
+    <File Include="Scripts/jquery-1.10.2.js">
+      <publishTime>03/21/2016 14:19:06</publishTime>
+    </File>
+    <File Include="Scripts/jquery-1.10.2.min.js">
+      <publishTime>03/21/2016 14:19:06</publishTime>
+    </File>
+    <File Include="Scripts/jquery-1.10.2.min.map">
+      <publishTime>03/21/2016 14:19:06</publishTime>
+    </File>
+    <File Include="Scripts/jquery-1.7.1.js">
+      <publishTime>05/08/2014 03:19:57</publishTime>
+    </File>
+    <File Include="Scripts/jquery-1.7.1.min.js">
+      <publishTime>05/08/2014 03:19:57</publishTime>
+    </File>
+    <File Include="Scripts/jquery-2.1.1.js">
+      <publishTime>02/29/2016 15:56:40</publishTime>
+    </File>
+    <File Include="Scripts/jquery-2.1.1.min.js">
+      <publishTime>02/29/2016 15:56:40</publishTime>
+    </File>
+    <File Include="Scripts/jquery-2.1.1.min.map">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Scripts/jquery.serializeobject.js">
+      <publishTime>02/29/2016 15:56:40</publishTime>
+    </File>
+    <File Include="Scripts/jquery.unobtrusive-ajax.js">
+      <publishTime>02/29/2016 15:56:40</publishTime>
+    </File>
+    <File Include="Scripts/jquery.unobtrusive-ajax.min.js">
+      <publishTime>02/29/2016 15:56:40</publishTime>
+    </File>
+    <File Include="Scripts/jquery.validate.js">
+      <publishTime>02/29/2016 15:56:40</publishTime>
+    </File>
+    <File Include="Scripts/jquery.validate.min.js">
+      <publishTime>02/29/2016 15:56:40</publishTime>
+    </File>
+    <File Include="Scripts/jquery.validate.unobtrusive.js">
+      <publishTime>02/29/2016 15:56:40</publishTime>
+    </File>
+    <File Include="Scripts/jquery.validate.unobtrusive.min.js">
+      <publishTime>02/29/2016 15:56:40</publishTime>
+    </File>
+    <File Include="Scripts/kendo.all.min.js">
+      <publishTime>03/23/2016 15:41:30</publishTime>
+    </File>
+    <File Include="Scripts/kendo.aspnetmvc.js">
+      <publishTime>05/08/2014 03:19:57</publishTime>
+    </File>
+    <File Include="Scripts/kendo.aspnetmvc.min.js">
+      <publishTime>02/29/2016 15:56:40</publishTime>
+    </File>
+    <File Include="Scripts/kendo.web.js">
+      <publishTime>05/08/2014 03:19:57</publishTime>
+    </File>
+    <File Include="Scripts/kendo.web.min.js">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Scripts/knockout-2.1.0.debug.js">
+      <publishTime>02/29/2016 15:56:40</publishTime>
+    </File>
+    <File Include="Scripts/knockout-2.1.0.js">
+      <publishTime>02/29/2016 15:56:40</publishTime>
+    </File>
+    <File Include="Scripts/modernizr-2.5.3.js">
+      <publishTime>02/29/2016 15:56:40</publishTime>
+    </File>
+    <File Include="Scripts/modernizr-2.6.2.js">
+      <publishTime>03/23/2016 16:37:03</publishTime>
+    </File>
+    <File Include="Scripts/MuscovyTechnology.Mvc.Notification.js">
+      <publishTime>02/29/2016 15:56:40</publishTime>
+    </File>
+    <File Include="SiteTemplate.html">
+      <publishTime>03/23/2016 15:41:31</publishTime>
+    </File>
+    <File Include="Test.html">
+      <publishTime>02/29/2016 15:56:40</publishTime>
+    </File>
+    <File Include="Views/Account/Login.cshtml">
+      <publishTime>03/23/2016 15:41:31</publishTime>
+    </File>
+    <File Include="Views/Account/_Greeting.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Views/Navigation/_Site.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Views/Shared/EditorTemplates/Currency.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Views/Shared/EditorTemplates/Date.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Views/Shared/EditorTemplates/DateTime.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Views/Shared/EditorTemplates/GridForeignKey.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Views/Shared/EditorTemplates/Integer.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Views/Shared/EditorTemplates/Number.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Views/Shared/EditorTemplates/Time.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Views/Shared/Error.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Views/Shared/_Layout.cshtml">
+      <publishTime>03/23/2016 15:52:50</publishTime>
+    </File>
+    <File Include="Views/Web.config">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Views/_ViewStart.cshtml">
+      <publishTime>02/29/2016 15:56:41</publishTime>
+    </File>
+    <File Include="Web.config">
+      <publishTime>03/23/2016 16:29:31</publishTime>
+    </File>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,212 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Web.Mvc;
+using DoubleJ.Oms.Domain.Definitions;
+using DoubleJ.Oms.Domain.Entities;
+using DoubleJ.Oms.Model.Extensions;
+using DoubleJ.Oms.Model.Models;
+using DoubleJ.Oms.Model.ViewModels.Internal;
+using DoubleJ.Oms.Service.Interfaces;
+using DoubleJ.Oms.Service.Interfaces.Web;
+using DoubleJ.Oms.Service.Services;
+using DoubleJ.Oms.Web.Extensions;
+using Kendo.Mvc.Extensions;
+using Kendo.Mvc.UI;
+
+using MuscovyTechnology.Mvc.Notification;
+
+
+namespace DoubleJ.Oms.Web.Areas.Internal.Controllers
+{
+    public class ProductsController : Controller
+    {
+        private readonly ILookupService _lookupService;
+        private readonly IProductSearchService _productSearchService;
+        private readonly IProductService _productService;
+
+        public ProductsController(
+            IProductSearchService productSearchService,
+            ILookupService lookupService,
+            IProductService productService)
+        {
+            _productSearchService = productSearchService;
+            _lookupService = lookupService;
+            _productService = productService;
+        }
+
+        public ProductSearchViewModel ProductSearchData
+        {
+            get { return SessionService.Get().ProductSearchViewModel; }
+            set { SessionService.Get().ProductSearchViewModel = value; }
+        }
+
+        [HttpGet]
+        public ActionResult Index()
+        {
+            FillLookups();
+            return View(ProductSearchData);
+        }
+
+        [HttpPost]
+        public ActionResult Index(ProductSearchViewModel model)
+        {
+            FillLookups();
+            if (ModelState.IsValid)
+            {
+                model.HasSessionCriteria = true;
+                ProductSearchData = model;
+            }
+
+            return View(model);
+        }
+
+        public ActionResult Reset()
+        {
+            ProductSearchData = new ProductSearchViewModel();
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult SearchResultGrid_Read([DataSourceRequest] DataSourceRequest request)
+        {
+            var data = _productSearchService.Search(ProductSearchData);
+            return Json(data.ToDataSourceResult(request));
+        }
+
+        [HttpGet]
+        public ActionResult Add()
+        {
+            FillLookups();
+            return View(_productService.Get());
+        }
+
+        [HttpPost]
+        public ActionResult Add(ProductViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                _productService.Add(viewModel);
+                this.ShowNotification(NotificationType.Success, "Product successfully added.", true);
+                return RedirectToAction("Index");
+            }
+
+            FillLookups();
+            return View(viewModel);
+        }
+
+        [HttpGet]
+        public ActionResult Edit(int id)
+        {
+            FillLookups();
+            return View(_productService.Get(id));
+        }
+
+        [HttpPost]
+        public ActionResult Edit(ProductViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                _productService.Edit(viewModel);
+                this.ShowNotification(NotificationType.Success, "Product successfully updated.", true);
+                return RedirectToAction("Index");
+            }
+
+            FillLookups();
+            return View(viewModel);
+        }
+
+        [HttpGet]
+        public ActionResult EditCustomerData(int productId)
+        {
+            var customers = _productService.GetAllCustomerData(productId);
+
+            return PartialView("_EditCustomerData", customers);
+        }
+
+        [HttpPost]
+        public ActionResult EditCustomerData(ProductDataViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                _productService.EditCustomerData(model.ProductId, model.CustomerProductCodeList);
+                this.ShowNotification(NotificationType.Success, "Product successfully updated.", true);
+                return RedirectToAction("Index");
+            }
+
+            FillLookups();
+            return PartialView("_EditCustomerData", model);
+        }
+
+        private void FillLookups()
+        {
+            ViewBag.PrimalCuts = _lookupService.GetPrimalCuts().Where(x => x.Id != default(int)).ToArray();
+            //ViewBag.SubPrimalCuts = _lookupService.GetSubPrimalCuts().Where(x => x.Id != default(int)).ToArray();
+            ViewBag.TrimCuts = _lookupService.GetTrimCuts().Where(x => x.Id != default(int)).ToArray();
+            ViewBag.Species= _lookupService.GetSpecies().Where(x => x.Id != default(int)).DistinctBy(x => x.BaseSpecies).ToList();
+            ViewBag.QualityGrades = _lookupService.GetQualityGrades().Where(x => x.Id != default(int)).ToArray();
+        }
+
+        [HttpGet]
+        public ActionResult GetBoxes(OmsCustomerType? customerType, bool isBoth)
+        {
+            var boxes = _productService.GetBoxTypes(customerType, isBoth);//.ToSelectListItems(x=>x.TypeName,y=>y.TypeId.ToString());
+            return Json(boxes,JsonRequestBehavior.AllowGet);
+        }
+        [HttpGet]
+        public ActionResult GetBags(OmsCustomerType? customerType, bool isBoth)
+        {
+            return Json(
+                new SelectList(_productService.GetBagTypes(customerType, isBoth).ToList(), "TypeId", "TypeName"),
+                JsonRequestBehavior.AllowGet);
+        }
+        [HttpGet]
+        public ActionResult EditNutritionInfo(int productId)
+        {
+            return PartialView("_EditNutritionInfo", _productService.GetNutritionInfo(productId));
+        }
+
+        [HttpPost]
+        public ActionResult EditNutritionInfo(NutritionInfoViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                _productService.EditNutritionInfo(model);
+                this.ShowNotification(NotificationType.Success, "Product successfully updated.", true);
+                return RedirectToAction("Index");
+            }
+
+            FillLookups();
+            return PartialView("_EditNutritionInfo", model);
+        }
+
+        public ActionResult ProductCustomerGrid_Read([DataSourceRequest] DataSourceRequest request, int productId)
+        {
+            var items = _productService.GetCustomerItems(productId).OrderByDescending(x => x.IsSelected).ToDataSourceResult(request).Data;
+            var result = Json(items, JsonRequestBehavior.AllowGet);
+
+            return result;
+        }
+
+        public ActionResult ProductCustomerGrid_Update([DataSourceRequest] DataSourceRequest request, int productId, ProductCodeItem customerItem)
+        {
+            if (customerItem != null && ModelState.IsValid)
+            {
+                _productService.Edit(productId, customerItem);
+            }
+
+            return Json(ModelState.ToDataSourceResult(), JsonRequestBehavior.AllowGet);
+        }
+    }
+
+    class SpeciesComparer :IEqualityComparer<Species>
+    {
+        public  bool Equals(Species x, Species y)
+        {
+            return x.BaseSpecies.Equals(y.BaseSpecies);
+        }
+
+        public  int GetHashCode(Species obj)
+        {
+            return obj.Id;
+        }
+    }
+}

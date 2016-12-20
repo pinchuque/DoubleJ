@@ -1,0 +1,481 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+using DoubleJ.Oms.Domain.Definitions;
+using DoubleJ.Oms.Domain.Entities;
+using DoubleJ.Oms.Model.Interfaces;
+using DoubleJ.Oms.Model.Models;
+using DoubleJ.Oms.Model.ViewModels.Internal;
+using DoubleJ.Oms.Service.Services;
+using Kendo.Mvc.Extensions;
+using Kendo.Mvc.UI;
+
+
+namespace DoubleJ.Oms.Web.Areas.Internal.Controllers
+{
+    public class CustomerController : Controller
+    {
+        private readonly ICustomerLocationRepository _customerLocationRepository;
+        private readonly ICustomerRepository _customerRepository;
+        private readonly ILogoTypeRepository _logoTypeRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly ICustomerProductDataRepository _customerProductDataRepository;
+
+        private readonly IProductRepository _productRepository;
+
+        public CustomerController(ICustomerRepository customerRepository,
+            ICustomerLocationRepository customerLocationRepository,
+            ILogoTypeRepository logoTypeRepository,
+            IUserRepository userRepository,
+            ICustomerProductDataRepository customerProductDataRepository,
+            IProductRepository productRepository)
+        {
+            _customerRepository = customerRepository;
+            _customerLocationRepository = customerLocationRepository;
+            _logoTypeRepository = logoTypeRepository;
+            _userRepository = userRepository;
+            _customerProductDataRepository = customerProductDataRepository;
+            _productRepository = productRepository;
+        }
+
+        public CustomerSearchViewModel CustomerSearchData
+        {
+            get { return SessionService.Get().CustomerSearchViewModel; }
+            set { SessionService.Get().CustomerSearchViewModel = value; }
+        }
+
+        [HttpGet]
+        public ActionResult Index()
+        {
+            return View(CustomerSearchData);
+        }
+
+        [HttpPost]
+        public ActionResult Index(CustomerSearchViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                model.HasSessionCriteria = true;
+                CustomerSearchData = model;
+            }
+
+            return View(model);
+        }
+
+        public ActionResult Reset()
+        {
+            CustomerSearchData = new CustomerSearchViewModel();
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult SearchResultGridRead([DataSourceRequest] DataSourceRequest request)
+        {
+            return Json(_customerRepository.Search(CustomerSearchData).ToDataSourceResult(request));
+        }
+
+        public ActionResult UpdateCustomer( //string update, string save, string cancel, string remove, CustomerLocationViewModel model, string cancelCustomer, 
+            string updateCustomer, CustomerViewModel customerModel)
+        {
+            FillLookups();
+
+            if (!ModelState.IsValid) return View("Edit", SessionService.Get().CustomerViewModel);
+            if (string.IsNullOrEmpty(updateCustomer)) return View("Edit");
+
+            var customer = _customerRepository.Get(customerModel.Id);
+            customer.BestBeforeDays = customerModel.BestBeforeDays;
+            customer.LogoTypeId = (OmsLogoType) Enum.Parse(typeof (OmsLogoType), customerModel.UseLogoOnLabels.ToString());
+            customer.Name = customerModel.CustomerName;
+            customer.PONumber = customerModel.CustomerPo;
+            customer.DistributedBy = customerModel.LabelDistributedBy;
+            customer.BoxLabel = customerModel.BoxLabel;
+            customer.BagLabel = customerModel.BagLabel;
+            customer.CustomerTypeId = customerModel.CustomerType;
+
+            customer.User.FirstName = customerModel.OrderContactFirstName;
+            customer.User.LastName = customerModel.OrderContactLastName;
+            customer.User.Email = customerModel.OrderContactEmail;
+            customer.User.Phone = customerModel.OrderContactPhone;
+            customer.User.Password = customerModel.PortalPassword;
+
+            bool isValidPicture;
+            string pictureName = GetLabelPath(customerModel.CustomerLogo, customer.Id, out isValidPicture);
+
+            if (!isValidPicture)
+            {
+                ModelState.AddModelError(string.Empty, pictureName);
+                return UpdateView(customerModel.Id);
+            }
+
+            customer.LogoFileName = pictureName;
+
+            _customerRepository.Update(customer);
+            _customerRepository.Save();
+
+            return UpdateView(customerModel.Id);
+        }
+
+        public ActionResult UpdateCustomerLocation(CustomerLocationViewModel model, CustomerLocationAction submit)
+        {
+            switch (submit)
+            {
+                case CustomerLocationAction.Add:
+                    if (ModelState.IsValid && model.IsValid())
+                    {
+                        var location = model.ToCustomerLocation();
+
+                        var customer = _customerRepository.Get(model.CustomerId);
+                        customer.CustomerLocation.Add(location);
+
+                        _customerRepository.Save();
+
+                        return Json(new {Success = true}, JsonRequestBehavior.AllowGet);
+                    }
+                    foreach (var pair in model.Validate())
+                    {
+                        ModelState.AddModelError(pair.Key, pair.Value);
+                    }
+                    break;
+
+                case CustomerLocationAction.Update:
+                    if (ModelState.IsValid && model.IsValid())
+                    {
+                        var location = _customerLocationRepository.Get(model.LocationId);
+                        location = model.ToCustomerLocation(location);
+
+                        _customerLocationRepository.Update(location);
+                        _customerLocationRepository.Save();
+
+                        return Json(new {Success = true}, JsonRequestBehavior.AllowGet);
+                    }
+                    foreach (var pair in model.Validate())
+                    {
+                        ModelState.AddModelError(pair.Key, pair.Value);
+                    }
+                    break;
+
+                case CustomerLocationAction.Remove:
+                    try
+                    {
+                        var customerLocation = _customerLocationRepository.Get(model.LocationId);
+                        _customerLocationRepository.Remove(customerLocation);
+                        _customerLocationRepository.Save();
+
+                        return Json(new {Success = true}, JsonRequestBehavior.AllowGet);
+                    }
+                    catch
+                    {
+                        ModelState.Clear();
+                        ModelState.AddModelError("", "Location can not be deleted");
+
+                        return PartialView("CustomerLocation", model);
+                    }
+            }
+
+            return PartialView("CustomerLocation", model);
+        }
+
+        private static string SafeDirectory(string path)
+        {
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            return path;
+        }
+
+        [HttpGet]
+        public ActionResult Add()
+        {
+            FillLookups();
+            return View(new AddCustomerViewModel());
+        }
+
+        private string GetLabelPath(HttpPostedFileBase customerLogo, int customerId, out bool isValidPicture)
+        {
+            if (isValidPicture = customerLogo == null)
+                return null;
+
+            if (customerLogo.ContentLength >= 5250000) 
+                return "File size must be less than 5mb.";
+
+            string[] allowedFormats = {".jpg", ".png", ".gif", ".jpeg"};
+
+            var filename = Path.GetFileName(customerLogo.FileName);
+            var uploadedFileExtension = Path.GetExtension(filename);
+            if (uploadedFileExtension == null || !customerLogo.ContentType.Contains("image") ||
+                !allowedFormats.Any(x => string.Equals(x, uploadedFileExtension, StringComparison.InvariantCultureIgnoreCase)))
+                return string.Format("\"{0}\" logo image  extension is not allowed", uploadedFileExtension);
+            try
+            {
+                using (var image = Image.FromStream(customerLogo.InputStream, true, true))
+                {
+                    if (image.Width > 100 || image.Height > 100)
+                        return string.Format("Logo image dimensions {0} x {1} are incorrect", image.Width, image.Height);
+                    var fileName = customerId + uploadedFileExtension;
+                    var pathOnServer = Path.Combine(SafeDirectory(ConfigurationManager.AppSettings["CustomerLogoFolder"]), fileName);
+                    var pathInProject = Path.Combine(SafeDirectory(Server.MapPath("~/Content/Images/CustomerLogo/")), fileName);
+                    customerLogo.SaveAs(pathOnServer);
+                    customerLogo.SaveAs(pathInProject);
+                    isValidPicture = true;
+                    return pathOnServer;
+                }
+            }
+            catch (Exception)
+            {
+                isValidPicture = false;
+                return "The file received is not a valid image";
+            }
+        }
+
+        [HttpPost]
+        public ActionResult Add(AddCustomerViewModel model)
+        {
+            FillLookups();
+
+            if (ModelState.IsValid && model.Location.IsValid())
+            {
+                var newCustomerId = _customerRepository.GetAll().Last().Id + 1;
+                bool isValidPicture;
+                string pictureName = GetLabelPath(model.CustomerLogo, newCustomerId, out isValidPicture);
+
+                if (!isValidPicture)
+                {
+                    ModelState.AddModelError(string.Empty, pictureName);
+                    return View("Add", model);
+                }
+
+                var user = new User
+                {
+                    FirstName = model.OrderContactFirstName,
+                    LastName = model.OrderContactLastName,
+                    Email = model.OrderContactEmail,
+                    Phone = model.OrderContactPhone,
+                    Password = model.PortalPassword,
+                    IsActive = true,
+                    TypeId = 2
+                };
+
+                _userRepository.Add(user);
+                _userRepository.Save();
+
+                var customer = new Customer
+                {
+                    BestBeforeDays = model.BestBeforeDays,
+                    LogoTypeId = model.UseLogoOnLabels,
+                    LogoFileName = pictureName,
+                    Name = model.CustomerName,
+                    CustomerTypeId = model.CustomerType,
+                    PONumber = model.CustomerPo,
+                    DistributedBy = model.LabelDistributedBy,
+                    BoxLabel = model.BoxLabel,
+                    BagLabel = model.BagLabel,
+                    User = user,
+                    UserId = user.Id
+                };
+
+                _customerRepository.Add(customer);
+                _customerRepository.Save();
+
+                var products =_productRepository.GetByCustomerType(model.CustomerType).ToList();
+                var customerProducts = new List<CustomerProductData>();
+
+                foreach (var product in products)
+                {
+                    customerProducts.Add(new CustomerProductData
+                    {
+                        CustomerId = customer.Id,
+                        ProductId = product.Id,
+                        ProductCode = product.Code,
+                        ProductDescription = product.EnglishDescription,
+                        Gtin = product.Gtin,
+                        PricePerPound = product.PricePerPound
+                    });
+                }
+                _customerProductDataRepository.AddRange(customerProducts);
+                _customerProductDataRepository.Save();
+
+                    if (model.Location.IsExists())
+                    {
+                        var location = model.Location.ToCustomerLocation();
+                        location.CustomerId = customer.Id;
+
+                        _customerLocationRepository.Add(location);
+                        _customerLocationRepository.Save();
+                    }
+                    return RedirectToAction("EditCustomer", new { customerId = customer.Id });
+                }
+
+                foreach (var pair in model.Location.Validate())
+                {
+                    ModelState.AddModelError(pair.Key, pair.Value);
+                }
+
+                return View(model);
+        }
+
+        public ActionResult Edit(string add, string remove, int customerId)
+        {
+            FillLookups();
+
+            if (!string.IsNullOrEmpty(add))
+            {
+                SessionService.Get().CustomerViewModel.CurrentEditLocation = new CustomerLocationViewModel
+                {
+                    CustomerId = customerId
+                };
+
+                return View(SessionService.Get().CustomerViewModel);
+            }
+
+            return View();
+        }
+
+        public ActionResult EditCustomer(int? customerId, int? locationId)
+        {
+            FillLookups();
+
+            if (customerId != null)
+            {
+                return UpdateView(customerId.Value);
+            }
+
+            if (locationId != null)
+            {
+                var customerViewModel = SessionService.Get().CustomerViewModel;
+                customerViewModel.CurrentEditLocation = customerViewModel.CustomerLocations.FirstOrDefault(l => l.LocationId == locationId);
+                return View("Edit", customerViewModel);
+            }
+
+            return View("Edit");
+        }
+
+        private ActionResult UpdateView(int customerId, string message = null)
+        {
+            var customer = _customerRepository.Get(customerId);
+            var customerViewModel = new CustomerViewModel(customer, _customerRepository.GetProductDataByCustomer(customerId));
+
+            SessionService.Get().CustomerViewModel = customerViewModel;
+            ViewBag.Message = message;
+
+            return View("Edit", customerViewModel);
+        }
+
+        public ActionResult Products_Read([DataSourceRequest] DataSourceRequest request)
+        {
+            return Json(SessionService.Get().CustomerViewModel.CustomerProductCodeList.ToDataSourceResult(request));
+        }
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult Products_Update([DataSourceRequest] DataSourceRequest request, CustomerProductItem product)
+        {
+            if (product != null && ModelState.IsValid)
+            {
+                var customerId = SessionService.Get().CustomerViewModel.Id;
+                var cpd = _customerProductDataRepository.GetByProduct(product.Id).SingleOrDefault(p => p.CustomerId == customerId);
+                if (product.IsSelected)
+                {
+                    var target = new CustomerProductData
+                    {
+                        CustomerId = customerId,
+                        ProductId = product.Id,
+                        ProductCode = product.ProductCode,
+                        ProductDescription = product.ProductDescription,
+                        Gtin = product.Gtin,
+                        PricePerPound = product.PricePerPound
+                    };
+                    if (cpd != null)
+                        _customerProductDataRepository.Remove(cpd);
+                    _customerProductDataRepository.Add(target);
+                }
+                else
+                {
+                    _customerProductDataRepository.Remove(cpd);
+                }
+                _customerProductDataRepository.Save();
+            }
+
+            return Json(ModelState.ToDataSourceResult());
+        }
+
+        public ActionResult CustomerLocations([DataSourceRequest] DataSourceRequest request)
+        {
+            return Json(SessionService.Get().CustomerViewModel.CustomerLocations.ToDataSourceResult(request));
+        }
+
+        private void FillLookups()
+        {
+            ViewBag.LogoType = _logoTypeRepository.GetAll();
+        }
+
+        public ActionResult EditCustomerLocation(int locationId)
+        {
+            FillLookups();
+            var customerViewModel = SessionService.Get().CustomerViewModel;
+            customerViewModel.CurrentEditLocation = customerViewModel.CustomerLocations.FirstOrDefault(l => l.LocationId == locationId);
+            return View("Edit", customerViewModel);
+        }
+
+        public ActionResult ProcessProducts(CustomerViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var customer = _customerRepository.Get(viewModel.Id);
+                if (customer != null && viewModel.CustomerProductCodeList != null)
+                {
+                    //customer.CustomerProductData.Clear();
+                    //_customerRepository.Update(customer);
+                    //_customerRepository.Save();
+
+                    var productCodeItems = viewModel.CustomerProductCodeList.Where(x => x.IsSelected).ToArray();
+                    //foreach (var item in productCodeItems)
+                    //{
+                    //    _customerProductDataRepository.Add(new CustomerProductData
+                    //    {
+                    //        CustomerId = viewModel.Id,
+                    //        ProductId = item.Id,
+                    //        ProductCode = item.ProductCode,
+                    //        ProductDescription = item.ProductDescription,
+                    //        Gtin = item.Gtin,
+                    //        PricePerPound = item.PricePerPound
+                    //    });
+                    //}
+
+                    //_customerProductDataRepository.Save();
+                }
+
+                return RedirectToAction("EditCustomer", new { customerId = viewModel.Id });
+            }
+
+            return View("Edit", viewModel);
+        }
+
+        public ActionResult CustomerLocation(int? locationId = null)
+        {
+            if (locationId.HasValue)
+            {
+                SessionService.Get().CustomerViewModel.CurrentEditLocation = SessionService.Get().CustomerViewModel.CustomerLocations.FirstOrDefault(l => l.LocationId == locationId);
+            }
+            else
+            {
+                SessionService.Get().CustomerViewModel.CurrentEditLocation = new CustomerLocationViewModel
+                {
+                    CustomerId = SessionService.Get().CustomerViewModel.Id,
+                };
+            }
+
+            SessionService.Get().CustomerViewModel.CurrentEditLocation = SessionService.Get().CustomerViewModel.CurrentEditLocation ?? new CustomerLocationViewModel
+            {
+                CustomerId = SessionService.Get().CustomerViewModel.Id,
+            };
+
+            return View("CustomerLocation", SessionService.Get().CustomerViewModel.CurrentEditLocation);
+        }
+    }
+}

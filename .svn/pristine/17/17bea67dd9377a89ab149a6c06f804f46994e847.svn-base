@@ -1,0 +1,91 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using DoubleJ.Oms.Domain.Entities;
+
+namespace DoubleJ.Oms.Model.ViewModels.Internal
+{
+    public class OrderReportViewModel
+    {
+        public OrderReportViewModel()
+        {
+            ReportIds = new List<int>();
+            Reports = new List<OrderReport>
+                          {
+                              new OrderReport
+                                  {
+                                      Id = (int)ReportTypes.ProductionManifest,
+                                      Name = "Production Manifest"
+                                  },
+                              new OrderReport
+                                  {
+                                      Id = (int)ReportTypes.ProductionDetail,
+                                      Name = "Production Detail"
+                                  },
+                              new OrderReport
+                                  {
+                                      Id = (int)ReportTypes.ShippingManifest,
+                                      Name = "Shipping Manifest"
+                                  },
+                              new OrderReport
+                                  {
+                                      Id = (int)ReportTypes.YieldReport,
+                                      Name = "Yield Report"
+                                  }
+                          };
+        }
+
+        [Display(Name = "Order Number")]
+        public int OrderId { get; set; }
+
+        public int CustomerId { get; set; }
+
+        [Display(Name = "Owner")]
+        public string CustomerName { get; set; }
+
+        [Display(Name = "Status")]
+        public string StatusName { get; set; }
+
+        [Display(Name = "Requested Process Date")]
+        public DateTime RequestedProcessDate { get; set; }
+
+        [Display(Name = "Expected Head Number")]
+        public int ExpectedHeadNumber { get; set; }
+
+        public IList<int> ReportIds { get; set; }
+        public IList<OrderReport> Reports { get; set; }
+
+        [Display(Name = "Output format")]
+        public int ReportType { get; set; }
+
+        [Display(Name = "Reporting units")]
+        public int UnitsType { get; set; }
+
+        [DisplayName("Suppress Weights")]
+        public bool SuppressWeights { get; set; }
+
+        public Dictionary<string, string> ReportFiles { get; set; } 
+
+        public enum ReportReturnTypes
+        {
+            PDF = 1,
+            Excel = 2,
+        }
+
+        public enum ReportTypes
+        {
+            ProductionManifest = 1,
+            ProductionDetail = 2,
+            ShippingManifest = 3,
+            YieldReport = 4,
+        }
+
+        public enum ReportUnitsType
+        {
+            Boxes,
+            Bags,
+            Pieces
+        }
+    }
+}

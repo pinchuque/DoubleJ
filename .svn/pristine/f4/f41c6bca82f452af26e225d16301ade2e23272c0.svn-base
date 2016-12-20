@@ -1,0 +1,31 @@
+﻿@model CustomerSearchViewModel
+
+@using (Html.BeginForm("Index", "Customer", FormMethod.Post, new { id = "OrderSearchForm" }))
+{
+    @Html.ValidationSummary(true)
+
+    <fieldset class="dataentry search-critieria">
+        <legend>Search</legend>
+        <div>
+            @Html.LabelFor(model => model.Name)
+            @Html.TextBoxFor(model => model.Name)
+        </div>
+        <div>
+            @Html.LabelFor(model => model.CustomerType)
+            @Html.EnumDropDownListFor(m => m.CustomerType, "Search All", new { @class = "form-control" })
+        </div>
+        <div>
+            @Html.LabelFor(model => model.Order)
+            @Html.TextBoxFor(model => model.Order)
+        </div>
+        <div>
+            @Html.LabelFor(model => model.Product)
+            @Html.TextBoxFor(model => model.Product)
+        </div>
+        <div class="buttonRow border-bottom oms-button">
+            @Html.ActionLink("Reset", "Reset", null, new { @class = "k-button" })
+            <input type="submit" value="Search" class="k-button" />
+        </div>
+    </fieldset>
+    
+}

@@ -1,0 +1,7 @@
+﻿@model int?
+
+@(Html.Kendo().DropDownList().Name("ProductId")
+          .BindTo(((IEnumerable<OrderDetailProductItem>)ViewBag.Products)
+          .ToSelectListItems(product => product.ProductName, product => product.ProductId.ToString(), product => false, " ", ""))
+          .Events(e => e.Change("orderDetailProductChange"))
+)

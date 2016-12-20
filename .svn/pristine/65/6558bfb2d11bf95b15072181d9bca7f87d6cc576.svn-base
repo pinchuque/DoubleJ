@@ -1,0 +1,18 @@
+using System.Collections.Generic;
+
+namespace DoubleJ.Oms.Domain.Entities
+{
+    public class AnimalLabel : EntityBase
+    {
+        public AnimalLabel()
+        {
+            ColdWeightEntryDetails = new List<ColdWeightEntryDetail>();
+        }
+        public string Name { get; set; }
+        public int SpeciesId { get; set; }
+        public bool IsOrganic { get; set; }
+        public virtual Species Species{ get; set; }
+
+        public virtual ICollection<ColdWeightEntryDetail> ColdWeightEntryDetails { get; set; } 
+    }
+}

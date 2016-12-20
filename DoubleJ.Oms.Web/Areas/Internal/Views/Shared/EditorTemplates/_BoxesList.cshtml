@@ -1,0 +1,7 @@
+﻿@model CaseSize
+
+@(Html.Kendo().DropDownListFor(m => m)
+            .DataValueField("Id")
+            .DataTextField("Name")
+            .BindTo((IEnumerable<DoubleJ.Oms.Domain.Entities.CaseSize>)ViewBag.Boxes)
+    )

@@ -1,0 +1,55 @@
+﻿@using DoubleJ.Oms.Model.ViewModels.Internal;
+
+<script type="text/javascript">
+    function labels_error_handler(e) {
+        if (e.errors) {
+            var message = "Errors:\n";
+            $.each(e.errors, function(key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function() {
+                        message += this + "\n";
+                    });
+                }
+            });
+            alert(message);
+        }
+    }
+</script>
+<div>
+    @(Html.Kendo().Grid<AnimalLabelsViewModel>()
+          .Name("ManageLabelsGrid")
+          .Columns(columns =>
+          {
+              columns.Bound(x => x.Id).Width(40);
+              columns.Bound(x => x.Name);
+              columns.Bound(x => x.Species).ClientTemplate("#=Species.Name#").EditorTemplateName("SpeciesEditor");
+              columns.Bound(x => x.IsOrganic);
+              columns.Command(command =>
+              {
+                  command.Destroy();
+                  command.Edit();
+              });
+          })
+          .ToolBar(toolbar =>
+          {
+              toolbar.Create();
+          })
+          .Sortable()
+          .Editable(x => x.Mode(GridEditMode.InLine).DisplayDeleteConfirmation(false))
+          .Scrollable()
+          .DataSource(dataSource => dataSource
+              .Ajax()
+              .Events(events => events.Error("labels_error_handler"))
+              .Model(model =>
+              {
+                  model.Field(x => x.Id).Editable(false);
+                  model.Id(x => x.Id);
+                  model.Field(x => x.IsOrganic).DefaultValue(false);
+                  model.Field(x => x.Species).DefaultValue(ViewBag.DefaultLabelType as SpeciesViewModel);
+              }).Batch(true)
+              .Read(read => read.Action("GetAnimalLabelsResultGrid", "Admin"))
+              .Create(create => create.Action("CreateAnimalLabel", "Admin"))
+              .Update(update => update.Action("UpdateAnimalLabel", "Admin"))
+              .Destroy(destroy => destroy.Action("DeleteAnimalLabel", "Admin"))
+          ))
+</div>

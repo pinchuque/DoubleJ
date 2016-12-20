@@ -1,0 +1,21 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using DoubleJ.Oms.Domain.Definitions;
+using DoubleJ.Oms.Domain.Entities;
+using DoubleJ.Oms.Model.Models;
+using DoubleJ.Oms.Model.ViewModels.Internal;
+
+namespace DoubleJ.Oms.Model.Interfaces
+{
+    public interface ICustomerRepository : IGenericRepository<Customer>
+    {
+        IEnumerable<Customer> GetAllActive();
+        List<CustomerSearchResult> Search(CustomerSearchViewModel model);
+        IEnumerable<Customer> SearchCustomers(string name, string productCode, int? orderNumber, OmsCustomerType? customerType);
+        IQueryable<CustomerProductItem> GetProductDataByCustomer(int customerId);
+        IEnumerable<ProductCodeItem> GetCustomersProductData(int productId);
+        IEnumerable<ProductCodeItem> GetCustomersProductData();
+        IEnumerable<ProductCodeItem> GetCustomerProductItems(int productId);
+    }
+}

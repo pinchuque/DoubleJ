@@ -1,0 +1,25 @@
+﻿<fieldset>
+    <legend>Matching Orders</legend>
+
+    @(Html.Kendo().Grid<OrderSearchResultItem>()
+                  .Name("OrderSearchResultGrid")
+                  .Columns(columns =>
+                      {
+                          columns.Bound(order => order.OrderId).Width(40);
+                          columns.Bound(order => order.CustomerName).Width(60);
+                          columns.Bound(order => order.RequestedProcessDate).Format("{0:d}").Width(60);
+                          columns.Bound(order => order.StatusName).Width(60);
+                          columns.Bound(order => order.OrderId).ClientTemplate("<a href='" + Url.Action("Edit", "Orders") + "/#= OrderId #'" + " class='k-button k-button-icontext'><span class='k-icon k-edit'></span>edit</a>").Title("").Width(50);
+                      })
+                  .Pageable()
+                  .Sortable()
+                  .Scrollable()
+                  .DataSource(dataSource => dataSource
+                                .Ajax()
+                                .Model(model => model.Id(order => order.OrderId))
+                                .Read(read => read.Action("SearchResultGrid_Read", "Orders"))
+
+                  )
+                  )
+</fieldset>
+

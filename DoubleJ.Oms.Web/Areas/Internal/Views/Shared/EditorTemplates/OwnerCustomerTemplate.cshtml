@@ -1,0 +1,7 @@
+﻿@model OrderDetailCustomerLocationItem
+
+@(Html.Kendo().DropDownListFor(m => m)
+            .DataValueField("CustomerLocationId")
+            .DataTextField("CustomerLocationName")
+            .BindTo((IEnumerable<OrderDetailCustomerLocationItem>)ViewBag.CustomerLocations)
+)

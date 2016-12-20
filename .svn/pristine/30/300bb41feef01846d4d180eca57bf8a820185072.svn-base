@@ -1,0 +1,9 @@
+﻿namespace DoubleJ.Oms.Domain.Definitions
+{
+    public enum OmsLabelType
+    {
+        Bag = 1,
+        Box = 2,
+        None = 0,
+    }
+}

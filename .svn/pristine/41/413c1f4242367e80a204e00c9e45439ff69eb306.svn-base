@@ -1,0 +1,102 @@
+﻿using System;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+
+using DoubleJ.Oms.LabelManager.Models;
+
+using Telerik.Windows.Controls;
+
+
+namespace DoubleJ.Oms.LabelManager.UserControls
+{
+    /// <summary>
+    ///     Interaction logic for OrdersConstructor.xaml
+    /// </summary>
+    public partial class OrdersConstructor
+    {
+        public OrdersConstructor()
+        {
+            InitializeComponent();
+        }
+
+        public event EventHandler<OrderEventArgs> AddOrder;
+
+        protected virtual void OnAddOrder(OrderEventArgs e)
+        {
+            var handler = AddOrder;
+            if (handler != null) handler(this, e);
+        }
+
+        public event EventHandler<OrderEventArgs> DeleteOrder;
+
+        protected virtual void OnDeleteOrder(OrderEventArgs e)
+        {
+            var handler = DeleteOrder;
+            if (handler != null) handler(this, e);
+        }
+
+        private void WeightCustomButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            var num = new NumericKeyboard(2, 10);
+            num.SubmitNumber += (o, args) => ((ContentControl)sender).Content = args.Value;
+            num.ShowDialog();
+        }
+
+        private void QtyButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            var num = new NumericKeyboard(0, 10);
+            num.SubmitNumber += (o, args) => ((ContentControl)sender).Content = args.Value;
+            num.ShowDialog();
+        }
+
+        private void AddButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            var item = ((Control)e.Source).DataContext as OrderConstructorViewModel;
+            if (item == null) return;
+
+            OnAddOrder(new OrderEventArgs
+            {
+                Id = item.Id,
+                ProductId = item.ProductId,
+                LocationId = item.LocationId,
+                OrderDetailId = item.OrderDetailId,
+                Quantity = item.Qty,
+                Weight = item.Weight,
+                ProductName = item.ProductName
+            });
+        }
+
+        private void RemoveButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            var dataContext = (OrdersConstructorViewModel)DataContext;
+            var id = (int)((Control)sender).DataContext;
+            var item = dataContext.Orders.FirstOrDefault(x => x.Id == id);
+            if (item == null) return;
+
+            OnDeleteOrder(new OrderEventArgs
+            {
+                Id = id,
+                ProductId = item.ProductId,
+                LocationId = item.LocationId,
+                Quantity = item.Qty,
+                Weight = item.Weight,
+                OrderDetailId = item.OrderDetailId
+            });
+        }
+
+        private void ShipTo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var dataContext = (OrdersConstructorViewModel)DataContext;
+            var combo = (RadComboBox)sender;
+            var selectedItem = (SelectListItemModel)combo.SelectedItem;
+
+            var id = selectedItem == null ? 0 : selectedItem.Id;
+            var location = dataContext.Locations.FirstOrDefault(x => x.Id == id);
+            if (location == null || combo.DataContext == null) return;
+
+            ((OrderConstructorViewModel)(combo.DataContext)).ShipTo = location.Name;
+            ((OrderConstructorViewModel)(combo.DataContext)).LocationId = location.Id;
+        }
+    }
+}

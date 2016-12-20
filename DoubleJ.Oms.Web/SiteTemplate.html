@@ -1,0 +1,61 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <link href="Content/Site.css" rel="stylesheet" />
+</head>
+<body>
+  <div id="container">
+      <div id="header" class="ui-grid-b">
+          <div class="ui-block-a"><img src="Content/Images/LOGO.png"/></div>
+          <div id="site-title" class="ui-block-b">DOUBLE J ORDER PROCESSING SYSTEM</div>
+          <div class="ui-block-c" id="greeting">LOGGED IN AS: <span id="greeting-name">Sean Orion</span>
+              <a href="#" class="logout">log out</a>
+          </div>
+      </div>
+      
+      <div id="navigation">
+      <ul>
+        <li class="selected"><a href="/GentleHeartsPortal/Schedule" title="Schedule"><span>Cold Weights</span></a></li>   
+        <li>|</li>
+        <li class=""><a href="/GentleHeartsPortal/Event" title="Events"><span>Owners</span></a></li>   
+          <li>|</li>
+        <li class=""><a href="/GentleHeartsPortal/Report" title="Reports"><span>Products</span></a></li>   
+          <li>|</li>
+        <li class=""><a href="/GentleHeartsPortal/User" title="User Management"><span>Orders</span></a></li>   
+          <li>|</li>
+        <li class=""><a href="/GentleHeartsPortal/Lookup" title="Lookup Values"><span>Labels</span></a></li>   
+       </ul>
+    </div>
+      <div id="content-container">
+        <div id="content">
+          <h1>Product Entry</h1>
+          <form>
+            <fieldset id="fieldset1">
+              <legend>Description</legend>
+              <div><label>Product Name</label><input type="text" id="text1"/></div>
+              <div><label>Product Name</label><input type="text" id="text2"/></div>
+            </fieldset>
+            <fieldset>
+              <legend>Schedule</legend>
+              <table>
+                <tr><th></th><th>Estimated</th><th>Received</th></tr>
+                <tr><td>Received Date</td><td><input type="text" /></td><td><input type="text" /></td></tr>
+                <tr><td>Sla Date</td><td><input type="text" /></td><td><input type="text" /></td></tr>
+              </table>
+            </fieldset>
+            <input type="button" class="button" value="Login" />
+
+          </form>
+
+        </div>
+        <div style="clear:both;"></div>
+      </div>
+      <div id="footer">
+		Copyright © Double J Meat Packing, 2012
+	</div>
+    <img src="Content/Images/Cow.png" style="position: absolute; bottom: 0px; right: 0px;"/> 
+  </div>
+
+</body>
+</html>

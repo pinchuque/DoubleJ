@@ -1,0 +1,4 @@
+REM /t 
+REM /e  
+REM   
+cacls c:\example\folder /t /e /g Everyone:f

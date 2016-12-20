@@ -1,0 +1,30 @@
+﻿@using DoubleJ.Oms.Domain.Entities
+@using DoubleJ.Oms.Model.Extensions
+@model Order
+<script type="text/javascript">
+    function checkSelect() {
+        var selected = document.getElementById("select");
+        if (selected.options[selected.selectedIndex].value == "") {
+            document.getElementById('go').style.color = '#ccc';
+            document.getElementById('go').style.backgroundColor = '#ccc';
+            document.getElementById('go').disabled = true;
+        } else {
+            document.getElementById('go').style.color = '#FFF';
+            document.getElementById('go').style.backgroundColor = '#22593D';
+            document.getElementById('go').disabled = false;
+        }
+    }
+</script>
+<div id="order-fulfillment-get">
+    @using (Html.BeginForm("OrderFulfillment", "Main", FormMethod.Post, new {id = "OrderSearchForm"}))
+    {
+        @Html.ValidationSummary(true)
+        <div>@Html.Label("Select Order") @Html.DropDownList("orderId", ((IEnumerable<Order>)ViewBag.CompletedOrders).ToSelectListItems(order => order.Id.ToString(), order => order.Id.ToString(), order => false, " ", ""),
+                                                            new {id = "select", onchange = "checkSelect()"})
+        </div>
+        <input id="go" type="submit" value="Go" class="jbutton" disabled>
+    }
+ </div>
+
+@Html.ActionLink("Main Menu", "index", null,  new { @class = "jbutton",  @id = "main-menu-link"})
+

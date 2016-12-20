@@ -1,0 +1,45 @@
+﻿@using DoubleJ.Oms.Web.Extensions
+@model OrderSearchViewModel
+<script>
+    function customerChanged(data) {
+        if (data.sender.dataItem() != undefined) {
+            $("#CustomerId").val(data.sender.dataItem().Id);
+        } else {
+            $("#CustomerId").val(0);
+        }
+    }
+</script>
+@using (Html.BeginForm("Index", "Orders", FormMethod.Post, new { id = "OrderSearchForm" }))
+{
+    @Html.ValidationSummary(true)
+    
+    <div>
+        @Html.LabelFor(model => model.CustomerId)
+        @Html.Kendo().AutoCompleteFor(x=>x.CustomerName).DataTextField("Name").DataSource(x=>x.Read("GetCustomers", "Orders")).Filter(FilterType.StartsWith).Placeholder("Type Customer Name").Events(x=>x.Change("customerChanged")).HtmlAttributes(new {style = "width:200px;background-color:transpanent;"})
+       @Html.HiddenFor(x=>x.CustomerId)
+       
+    </div>
+    <div>
+        @Html.LabelFor(model => model.CustomerType)
+        @Html.EnumDropDownListFor(m => m.CustomerType, "Search All", new { @class = "form-control" })
+    </div>
+    <div>
+        @Html.LabelFor(model => model.OrderId) 
+        @Html.TextBoxFor(model => model.OrderId)
+    </div>
+    <div>
+        @Html.LabelFor(model => model.StatusId) 
+        @Html.DropDownListFor(model => model.StatusId, new SelectList((IEnumerable<Status>)ViewBag.Statuses, "Id", "Name"), string.Empty)
+    </div>
+    
+    <div class="buttonRow border-bottom oms-button">
+        @Html.ActionLink("reset", "Reset", null, new { @class = "k-button" })
+        <input type="submit" class="k-button" value="search" />
+    </div>
+}
+<script>
+    $(document).ready(function() {
+        $("#CustomerName").removeClass('k-input').parent().removeClass("k-widget k-autocomplete k-header");
+        $("#CustomerName").width('200px');
+    });
+</script>

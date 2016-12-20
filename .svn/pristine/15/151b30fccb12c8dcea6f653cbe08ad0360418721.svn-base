@@ -1,0 +1,139 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{79EFBE6A-1638-49CC-98F8-D072C1E20AF4}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DoubleJ.Oms.Domain</RootNamespace>
+    <AssemblyName>DoubleJ.Oms.Domain</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Definitions\OmsChuckType.cs" />
+    <Compile Include="Definitions\OmsCurrentLocation.cs" />
+    <Compile Include="Definitions\OmsCustomerType.cs" />
+    <Compile Include="Definitions\OmsCutSheetDDL.cs" />
+    <Compile Include="Definitions\OmsLabelType.cs" />
+    <Compile Include="Definitions\OmsLogoType.cs" />
+    <Compile Include="Definitions\OmsOrganMeatType.cs" />
+    <Compile Include="Definitions\OmsPackageSize.cs" />
+    <Compile Include="Definitions\OmsRibType.cs" />
+    <Compile Include="Definitions\OmsScaleWeighStatus.cs" />
+    <Compile Include="Definitions\OmsSideType.cs" />
+    <Compile Include="Definitions\OmsSiteNavigation.cs" />
+    <Compile Include="Definitions\OmsStatus.cs" />
+    <Compile Include="Definitions\OmsSteakType.cs" />
+    <Compile Include="Definitions\TrackAnimalBy.cs" />
+    <Compile Include="Entities\AnimalOrderDetail.cs" />
+    <Compile Include="Entities\BagSize.cs" />
+    <Compile Include="Entities\BoxSize.cs" />
+    <Compile Include="Entities\ChuckType.cs" />
+    <Compile Include="Entities\ColdWeightEntry.cs" />
+    <Compile Include="Entities\ColdWeightEntryDetail.cs" />
+    <Compile Include="Entities\CurrentLocationType.cs" />
+    <Compile Include="Entities\Customer.cs" />
+    <Compile Include="Entities\CustomerLocation.cs" />
+    <Compile Include="Entities\CustomerProductData.cs" />
+    <Compile Include="Entities\CustomerType.cs" />
+    <Compile Include="Entities\CutSheetDetail.cs" />
+    <Compile Include="Entities\EntityBase.cs" />
+    <Compile Include="Entities\IEntity.cs" />
+    <Compile Include="Entities\Label.cs" />
+    <Compile Include="Entities\LabelType.cs" />
+    <Compile Include="Entities\LogoType.cs" />
+    <Compile Include="Entities\Offal.cs" />
+    <Compile Include="Entities\Order.cs" />
+    <Compile Include="Entities\OrderCombo.cs" />
+    <Compile Include="Entities\OrderDetail.cs" />
+    <Compile Include="Entities\OrderOffal.cs" />
+    <Compile Include="Entities\OrderReport.cs" />
+    <Compile Include="Entities\OrganMeatType.cs" />
+    <Compile Include="Entities\OrganMeatValue.cs" />
+    <Compile Include="Entities\PackageSize.cs" />
+    <Compile Include="Entities\PrimalCut.cs" />
+    <Compile Include="Entities\Product.cs" />
+    <Compile Include="Entities\QualityGrade.cs" />
+    <Compile Include="Entities\Refrigeration.cs" />
+    <Compile Include="Entities\Region.cs" />
+    <Compile Include="Entities\RibType.cs" />
+    <Compile Include="Entities\Scale.cs" />
+    <Compile Include="Entities\SideType.cs" />
+    <Compile Include="Entities\SiteNavigation.cs" />
+    <Compile Include="Entities\Species.cs" />
+    <Compile Include="Entities\Status.cs" />
+    <Compile Include="Entities\SteakType .cs" />
+    <Compile Include="Entities\SubPrimalCut.cs" />
+    <Compile Include="Entities\TrimCut.cs" />
+    <Compile Include="Entities\User.cs" />
+    <Compile Include="Entities\UserType.cs" />
+    <Compile Include="IOmsContext.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Dto\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.Config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

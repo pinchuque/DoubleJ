@@ -1,0 +1,99 @@
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
+using System.Linq;
+using System.Windows.Forms;
+
+using DoubleJ.Oms.LabelManager.Models;
+using DoubleJ.Oms.LabelManager.Utils;
+using DoubleJ.Oms.Model.ViewModels.Internal;
+using DoubleJ.Oms.Service.Interfaces;
+
+using Telerik.WinControls;
+using Telerik.Windows.Controls;
+
+using RoutedEventArgs = System.Windows.RoutedEventArgs;
+
+
+namespace DoubleJ.Oms.LabelManager
+{
+    /// <summary>
+    ///     Interaction logic for EditLabelsWindow.xaml
+    /// </summary>
+    public partial class EditLabelsWindow
+    {
+        private readonly EditLabelsViewModel _viewModel;
+        private readonly ILabelService _labelService;
+
+        public EditLabelsWindow(int orderId, ILabelService labelService)
+        {
+            _labelService = labelService;
+            StyleManager.ApplicationTheme = new Windows8TouchTheme();
+
+            InitializeComponent();
+
+            _viewModel = new EditLabelsViewModel
+            {
+                OrderId = orderId,
+                Labels = new BindingList<LabelEditItem>(_labelService.GetPrintedLabels(orderId).OrderByDescending(x=>x.PrintedDate.Date).ThenByDescending(x=>x.PrintedDate.TimeOfDay).ToList()),
+                OrderSummary = InitializeOrderSummary(orderId)
+            };
+            DataContext = _viewModel;
+        }
+
+        public EditLabelsWindow(int orderId, List<LabelEditItem> labels, ILabelService labelService)
+        {
+            _labelService = labelService;
+            StyleManager.ApplicationTheme = new Windows8TouchTheme();
+
+            InitializeComponent();
+
+            _viewModel = new EditLabelsViewModel
+            {
+                OrderId = orderId,
+                Labels = new BindingList<LabelEditItem>(labels.OrderByDescending(x => x.PrintedDate.Date).ThenByDescending(x => x.PrintedDate.TimeOfDay).ToList()),
+                OrderSummary = InitializeOrderSummary(orderId)
+            };
+            DataContext = _viewModel;
+        }
+        private OrderSummaryViewModel InitializeOrderSummary(int orderId)
+        {
+            var source = _labelService.Get(orderId);
+            return new OrderSummaryViewModel
+            {
+                Bags = source.BagTotal.NullableToString(),
+                Boxes = source.BoxTotal.NullableToString(),
+                CustomerName = source.CustomerName,
+                Locations = source.CustomerLocationsTotal.ToString(CultureInfo.InvariantCulture),
+                Pieces = source.PieceTotal.NullableToString(),
+                Title = string.Format("Order {0} Summary", orderId)
+            };
+        }
+
+        private void CloseButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void RemoveButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            var result = RadMessageBox.Show("Once a label is removed it can not be recovered. \r\n\r\nRemove this label?", "Remove Label", MessageBoxButtons.YesNo, RadMessageIcon.Question);
+            if (result != System.Windows.Forms.DialogResult.Yes) return;
+
+            var currentItem = (LabelEditItem)LabelsGrid.SelectedItem;
+
+            _viewModel.Labels.Remove(currentItem);
+            _labelService.RemoveLabel(currentItem.LabelId);
+            _viewModel.Labels.ResetBindings();
+        }
+
+        private void ReprintButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            var result = RadMessageBox.Show("Once a label is updated and reprinted the original label value cannot be restored. \r\n\r\nRe-print this label?", "Re-print Label", MessageBoxButtons.YesNo, RadMessageIcon.Question);
+            if (result != System.Windows.Forms.DialogResult.Yes) return;
+
+            var currentItem = (LabelEditItem)LabelsGrid.SelectedItem;
+            _labelService.UpdateLabel(currentItem.LabelId, currentItem.PoundWeight, currentItem.LabelType);
+        }
+    }
+}

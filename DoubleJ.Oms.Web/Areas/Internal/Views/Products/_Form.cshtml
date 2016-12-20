@@ -1,0 +1,200 @@
+﻿@model ProductViewModel
+<style>
+    #fieldlist {
+        margin: 0;
+        padding: 0;
+    }
+
+        #fieldlist li {
+            list-style: none;
+            padding-bottom: .7em;
+            text-align: left;
+        }
+
+        #fieldlist label {
+            display: block;
+            padding-bottom: .3em;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 12px;
+            color: #444;
+        }
+
+        #fieldlist li.status {
+            text-align: center;
+        }
+
+        #fieldlist li .k-widget:not(.k-tooltip),
+        #fieldlist li .k-textbox {
+            margin: 0 5px 5px 0;
+        }
+
+    .confirm {
+        padding-top: 1em;
+    }
+
+    .valid {
+        color: green;
+    }
+
+    .invalid {
+        color: red;
+    }
+
+    #fieldlist li input[type="checkbox"] {
+        margin: 0 5px 0 0;
+    }
+
+    span.k-widget.k-tooltip-validation {
+        display: inline-block;
+        width: 160px;
+        text-align: left;
+        border: 0;
+        padding: 0;
+        margin: 0;
+        background: none;
+        box-shadow: none;
+        color: red;
+    }
+
+    .k-tooltip-validation .k-warning {
+        display: none;
+    }
+</style>
+<fieldset class="dataentry">
+    <legend>General Information</legend>
+    <div>
+        @Html.LabelFor(m => m.Description)
+        @Html.EditorFor(m => m.Description)
+        @Html.ValidationMessageFor(m => m.Description)
+    </div>
+    <div>
+        @Html.LabelFor(m => m.CustomerType)
+        @Html.EnumDropDownListFor(m => m.CustomerType, "Both")
+    </div>
+    <div>
+        @Html.LabelFor(m => m.Upc)
+        @Html.EditorFor(m => m.Upc)
+        @Html.ValidationMessageFor(m => m.Upc)
+    </div>
+    <div>
+        @Html.LabelFor(model => model.DoubleJProductCode)
+        @Html.DisplayFor(model => model.DoubleJProductCode)
+    </div>
+    <div>
+        @Html.LabelFor(m => m.Gtin)
+        @Html.EditorFor(m => m.Gtin)
+        @Html.ValidationMessageFor(m => m.Gtin)
+    </div>
+    <div>
+        @Html.LabelFor(m => m.PricePerPound)
+        @Html.EditorFor(m => m.PricePerPound)
+        @Html.ValidationMessageFor(m => m.PricePerPound)
+    </div>
+</fieldset>
+
+<fieldset class="dataentry" id="packaging">
+    <legend>Packaging Information</legend>
+    <div>
+        @Html.LabelFor(m => m.BoxTypeId)
+        @Html.Kendo().DropDownListFor(x => x.BoxTypeId).Name("BoxTypeId").HtmlAttributes(new { required = "required", data_required_msg = "Select box" }).DataSource(x => x.Read(read => read.Action("GetBoxes", "Products").Data("getDataToFetchBoxes"))).DataValueField("TypeId").DataTextField("TypeName")
+        @Html.ValidationMessageFor(m => m.BoxTypeId)
+    </div>
+    <div>
+        @Html.LabelFor(m => m.BagTypeId)
+        @Html.Kendo().DropDownListFor(x => x.BagTypeId).Name("BagTypeId").HtmlAttributes(new { required = "required", data_required_msg = "Select bag" }).DataSource(x => x.Read(read => read.Action("GetBags", "Products").Data("getDataToFetchBags"))).DataValueField("Value").DataTextField("Text")
+        @Html.ValidationMessageFor(m => m.BagTypeId)
+    </div>
+    <div>
+        @Html.LabelFor(m => m.BagPieceQuantity)
+        @Html.EditorFor(m => m.BagPieceQuantity)
+        @Html.ValidationMessageFor(m => m.BagPieceQuantity)
+    </div>
+    <div>
+        @Html.LabelFor(m => m.BoxBagQuantity)
+        @Html.EditorFor(m => m.BoxBagQuantity)
+        @Html.ValidationMessageFor(m => m.BoxBagQuantity)
+    </div>
+</fieldset>
+
+<fieldset class="dataentry">
+    <legend>Additional Descriptions</legend>
+    <div>
+        @Html.LabelFor(m => m.GermanDescription)
+        @Html.EditorFor(m => m.GermanDescription)
+        @Html.ValidationMessageFor(m => m.GermanDescription)
+    </div>
+    <div>
+        @Html.LabelFor(m => m.FrenchDescription)
+        @Html.EditorFor(m => m.FrenchDescription)
+        @Html.ValidationMessageFor(m => m.FrenchDescription)
+    </div>
+    <div>
+        @Html.LabelFor(m => m.ItalianDescription)
+        @Html.EditorFor(m => m.ItalianDescription)
+        @Html.ValidationMessageFor(m => m.ItalianDescription)
+    </div>
+    <div>
+        @Html.LabelFor(m => m.SwedishDescription)
+        @Html.EditorFor(m => m.SwedishDescription)
+        @Html.ValidationMessageFor(m => m.SwedishDescription)
+    </div>
+</fieldset>
+
+<fieldset class="dataentry">
+    <legend>Cut Information</legend>
+    <div>
+        @Html.LabelFor(m => m.PrimalCutId)
+        @Html.DropDownListFor(m => m.PrimalCutId, new SelectList(((IEnumerable<object>)ViewBag.PrimalCuts), "Id", "Name"), string.Empty)
+        @Html.ValidationMessageFor(m => m.PrimalCutId)
+    </div>
+    <div>
+        @Html.LabelFor(m => m.TrimCutId)
+        @Html.DropDownListFor(m => m.TrimCutId, new SelectList((IEnumerable<TrimCut>)ViewBag.TrimCuts, "Id", "Name"), string.Empty)
+        @Html.ValidationMessageFor(m => m.TrimCutId)
+    </div>
+    <div>
+        @Html.LabelFor(m => m.SpeciesId)
+        @Html.DropDownListFor(m => m.SpeciesId, new SelectList((IEnumerable<Species>)ViewBag.Species, "Id", "Name"), string.Empty)
+        @Html.ValidationMessageFor(m => m.SpeciesId)
+    </div>
+   
+</fieldset>
+<script>
+    var isBoth = false;
+    $(document).ready(function () {
+        var typeId = $(this).val();
+        if (typeId === "") {
+            isBoth = true;
+            $("#BoxTypeId").data("kendoDropDownList").dataSource.read();
+            $("#BagTypeId").data("kendoDropDownList").dataSource.read();
+
+        }
+    });
+    $("#CustomerType").change(function () {
+        var typeId = $(this).val();
+        if (typeId === "") {
+            isBoth = true;
+            $("#BoxTypeId").data("kendoDropDownList").dataSource.read();
+            $("#BagTypeId").data("kendoDropDownList").dataSource.read();
+
+        } else {
+                isBoth = false;
+                $("#BoxTypeId").data("kendoDropDownList").dataSource.read();
+                $("#BagTypeId").data("kendoDropDownList").dataSource.read();
+        }
+    });
+    function getDataToFetchBoxes() {
+        return {
+            isBoth: isBoth,
+            customerType: $("#CustomerType").val()
+        }
+    };
+    function getDataToFetchBags() {
+        return {
+            isBoth: isBoth,
+            customerType: $("#CustomerType").val()
+        }
+    };
+
+</script>

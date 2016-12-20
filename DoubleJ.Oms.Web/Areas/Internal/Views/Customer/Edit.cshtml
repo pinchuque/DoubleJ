@@ -1,0 +1,43 @@
+﻿@model CustomerViewModel
+@{
+    ViewBag.Title = "Owner Entry - Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="content-container">
+    <div id="tabstrip">
+        <ul>
+            <li class="k-state-active">General</li>
+            <li>Product Details</li>
+        </ul>
+        <div>
+            @Html.Partial("_EditCommon")
+        </div>
+        <div style="min-height: 360px;">
+            @Html.Partial("_CustomerProducts")
+        </div>
+    </div>
+    <div style="clear: both;"></div>
+</div>
+
+
+@section SiteNavigation {
+    @Html.Action("_Site", "Navigation", new { area = "", selected = OmsSiteNavigation.Customers })
+}
+
+@section Scripts {
+    <script src="~/Scripts/kendo.all.min.js" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/DoubleJ.Oms.Web.Internal.CustomerProduct.js")" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#tabstrip").kendoTabStrip({
+                animation: {
+                    open: {
+                        effects: "fadeIn"
+                    }
+                }
+            });
+        });
+    </script>
+}

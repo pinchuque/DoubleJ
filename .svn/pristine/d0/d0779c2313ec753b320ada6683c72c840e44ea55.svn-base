@@ -1,0 +1,20 @@
+﻿@model int
+
+@(Html.Kendo().Grid<OrderSearchResultItem>().Name("OrderSearchResultGrid")
+    .Columns(columns =>
+    {
+        columns.Bound(order => order.OrderId).Width(40);
+        columns.Bound(order => order.CustomerName).Width(60);
+        columns.Bound(order => order.RequestedProcessDate).Format("{0:d}").Width(60);
+        columns.Bound(order => order.StatusName).Width(60);
+        columns.Command(com => com.Custom("Select").Click("cloneDetails")).Width(50);
+    })
+    .Pageable()
+    .Sortable()
+    .Scrollable()
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .Model(model => model.Id(order => order.OrderId))
+        .Read(read => read.Action("GetByCustomer", "Orders", new { CustomerId = Model }))
+    )
+)

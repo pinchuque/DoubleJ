@@ -1,0 +1,28 @@
+﻿@model LabelGridViewModel
+
+@Html.HiddenFor(model => model.Locations.Count)
+@(Html.Kendo().Grid<LabelGridItem>()
+                  .Name("BagLabelGrid")
+                  .Columns(columns =>
+                      {
+                          columns.Command(command => command.Custom("SetFocus").Text("set focus").Click("SelectRow")).Width(90).HtmlAttributes(new { style = "text-align:center;" });
+                          columns.Bound(i => i.ProductId).Visible(false);
+                          columns.Bound(i => i.ProductName);
+                          for (int j = 0; j < Model.Locations.Count; j++)
+                          {
+                            
+                                  columns.Bound(i => i.Locations[j].Id)
+                                        .ClientTemplate(string.Format("#= Cell_FormatProductLocationCount(eval('Locations[{0}].Total'),eval('Locations[{0}].CompletedCount')) #", j))
+                                        .Title(@Model.Locations[j].Name);
+                          }
+                      })
+                  .Editable(editable => editable.Mode(GridEditMode.InLine))
+                  .Pageable()
+                  .Scrollable()
+                  .DataSource(dataSource => dataSource
+                                                .Ajax()
+                                                 .Model(model => model.Id(i => i.ProductId))
+                                                 .Read(read => read.Action("BagLabelGrid_Read", "Labels", new { orderId = @Model.OrderId }))
+                  )
+       )
+

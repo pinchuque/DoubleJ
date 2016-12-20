@@ -1,0 +1,171 @@
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using DoubleJ.Oms.Domain.Entities;
+using DoubleJ.Oms.Model.Annotations;
+
+namespace DoubleJ.Oms.Model.ViewModels.Internal
+{
+    public class LabelGridItem : INotifyPropertyChanged
+    {
+        private int? _selectedLocation;
+        private int _productId;
+        private string _productName;
+        private string _upc;
+        private string _englishDescription;
+        public int ProductId
+        {
+            get { return _productId; }
+            set
+            {
+                if (value == _productId) return;
+                _productId = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string UPC
+        {
+            get { return _upc; }
+            set
+            {
+                _upc = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string EnglishDescription
+        {
+            get { return _englishDescription; }
+            set
+            {
+                _englishDescription = value;
+                OnPropertyChanged();
+            }
+        }
+        
+        
+        public string ProductName
+        {
+            get { return _productName; }
+            set
+            {
+                if (value == _productName) return;
+                _productName = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int? SelectedLocation
+        {
+            get { return _selectedLocation; }
+            set
+            {
+                if (value == _selectedLocation) return;
+                _selectedLocation = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public class LocationTemplate : INotifyPropertyChanged
+        {
+            private int? _id;
+            private int? _orderDetailId;
+            private int? _completedCount;
+            private int? _total;
+            private string _bagBoxShort;
+            private string _bagBox;
+            private int _locationTemplateId;
+            public int? Id
+            {
+                get { return _id; }
+                set
+                {
+                    if (value == _id) return;
+                    _id = value;
+                    OnPropertyChanged();
+                }
+            }
+            public int? OrderDetailId
+            {
+                get { return _orderDetailId; }
+                set
+                {
+                    if (value == _orderDetailId) return;
+                    _orderDetailId = value;
+                    OnPropertyChanged();
+                }
+            }
+            public int? CompletedCount
+            {
+                get { return _completedCount; }
+                set
+                {
+                    if (value == _completedCount) return;
+                    _completedCount = value;
+                    OnPropertyChanged();
+                }
+            }
+            public int? Total
+            {
+                get { return _total; }
+                set
+                {
+                    if (value == _total) return;
+                    _total = value;
+                    OnPropertyChanged();
+                }
+            }
+            public string BagBoxShort
+            {
+                get { return _bagBoxShort; }
+                set
+                {
+                    if (value == _bagBoxShort) return;
+                    _bagBoxShort = value;
+                    OnPropertyChanged();
+                }
+            }
+            public string BagBox
+            {
+                get { return _bagBox; }
+                set
+                {
+                    if (value == _bagBox) return;
+                    _bagBox = value;
+                    OnPropertyChanged();
+                }
+            }
+            public int LocationTemplateId
+            {
+                get { return _locationTemplateId; }
+                set
+                {
+                    if (value == _locationTemplateId) return;
+                    _locationTemplateId = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            public event PropertyChangedEventHandler PropertyChanged;
+
+            [NotifyPropertyChangedInvocator]
+            protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+            {
+                PropertyChangedEventHandler handler = PropertyChanged;
+                if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        public ObservableCollection<LocationTemplate> Locations { get; set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
+}

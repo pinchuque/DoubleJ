@@ -1,0 +1,92 @@
+﻿@model ProductDataViewModel
+<div id="customerData">
+    <h1>Edit Product</h1>
+    @using (Html.BeginForm("EditCustomerData"))
+    {
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(x => x.ProductId)
+        <fieldset class="dataentry">
+            <legend>Owner Availability</legend>
+            @if (Model.CustomerProductCodeExists)
+            {
+                <div>
+                    @Html.LabelFor(model => model.CustomerProductCodeList)
+                    <ul class="checkboxList">
+                        <li>
+                            @Html.CheckBox("SelectAllCustomers", Model.CustomerProductCodeList.All(p => p.IsSelected))
+                            <label for="SelectAllCustomers" style="margin-left: 4px;">Select All</label>
+                        </li>
+                        @Html.EditorFor(model => model.CustomerProductCodeList)
+                    </ul>
+                </div>
+
+                //Html.Kendo().MobileListView<ProductCodeItem>()
+                //    .Name("listView")
+                //    .TemplateId("template")
+                //    .EndlessScroll(true)
+                //    .ScrollTreshold(30)
+                //    .DataSource(dataSource =>
+                //        dataSource
+                //            .Read("ProductCustomerGrid_Read", "Products", new {productId = @Model.ProductId})
+                //            .PageSize(20));
+            }
+
+
+
+        </fieldset>
+        if (Model.CustomerProductCodeExists)
+        {
+            <div class="buttonRow oms-button">
+                @Html.ActionLink("cancel", "Index", "Products", null, new {@class = "k-button"})
+                <input type="submit" id="btnSubmit" class="k-button" value="save" />
+            </div>
+        }
+        @*<script type="text/x-kendo-tmpl" id="template">
+            
+                
+        <table>
+            <tbody>
+                <tr>
+                    <td rowspan="4" style="vertical-align: top;">
+                        
+                        <input id="item_Name" name="item.Name" type="hidden" value="${Name}">
+                        <input checked="checked" id="item_IsSelected" name="item.IsSelected" type="checkbox" value="${IsSelected}">
+                        <label for="item_IsSelected">${Name}</label>
+                    </td>
+                    <td>
+                        <input class="short" data-val="true" data-val-length="The field Product Code must be a string with a maximum length of 15." data-val-length-max="15" id="item_ProductCode" name="item.ProductCode" placeholder="enter product code" type="text" value="${ProductCode}">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input data-val="true" data-val-length="The field Product Description must be a string with a maximum length of 20." data-val-length-max="20" id="item_ProductDescription" name="item.ProductDescription" placeholder="enter product description" style="width: 200px;" type="text" value="${ProductDescription}">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input class="text-box single-line" data-val="true" data-val-number="The field GTIN must be a number." data-val-range="The field GTIN must be between 10000000000000 and 99999999999999." data-val-range-max="99999999999999" data-val-range-min="10000000000000" id="item_Gtin" name="item.Gtin" placeholder="enter customer GTIN" style="width: 200px;" type="text" value="${Gtin}">
+                </tr>
+                <tr>
+                    <td>
+                        <input data-val="true" data-val-number="The field Price per Pound must be a number." id="item_PricePerPound" name="item.PricePerPound" placeholder="enter customer price per pound" style="width: 200px;" type="text" value="${PricePerPound}">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+        
+        </script>*@
+    }
+</div>
+@*<script src="@Url.Content("~/Scripts/DoubleJ.Oms.Web.Internal.Product.js")" type="text/javascript"></script>
+<script>
+    CustomersInfo.Init({
+        urls: {
+            update: '@Url.Action("ProductCustomerGrid_Read", "Products", new { productId = @Model.ProductId })',
+        },
+        elements: {
+            pager: $("#listView"),
+            template: $("#template"),
+        }
+    })
+</script>*@

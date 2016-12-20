@@ -1,0 +1,108 @@
+﻿@model CustomerViewModel
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    function error_handler(e) {
+        if (e.errors) {
+            var message = "Errors:\n";
+            $.each(e.errors, function(key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function() {
+                        message += this + "\n";
+                    });
+                }
+            });
+            alert(message);
+        }
+    }
+    $(document).ready(function() {
+        $("#FieldFilter").keyup(function() {
+            var value = $("#FieldFilter").val();
+            grid = $("#Products_Awailability").data("kendoGrid");
+
+            if (value) {
+                grid.dataSource.filter({ field: "ProductDescription", operator: "contains", value: value });
+            } else {
+                grid.dataSource.filter({});
+            }
+        });
+    });
+</script>
+<style>
+    .text-box.single-line {
+        width: 100%!important;
+    }
+</style>
+<div id="customer-products" >
+    @using (Html.BeginForm("ProcessProducts", "Customer", FormMethod.Post))
+    {
+        @Html.HiddenFor(x => x.Id)
+        @Html.HiddenFor(x => x.BoxLabel)
+        @Html.HiddenFor(x => x.BagLabel)
+        <fieldset class="dataentry">
+            <legend>Product Availability</legend>
+            @Html.LabelFor(model => model.CustomerProductCodeList)
+
+            @(Html.Kendo().Grid<DoubleJ.Oms.Model.Models.CustomerProductItem>()
+                              .Name("Products_Awailability").HtmlAttributes(new { style = "height: 500px;margin-bottom:100px" })
+                              .ToolBar(toolbar =>
+                                    {
+                                        toolbar.Template(@<text>
+                                            <div class="toolbar">
+
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></span>
+                                                            <input type="text" class="form-control" id='FieldFilter' placeholder="Search for...">
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </text>);
+                                    })
+                              .Columns(columns =>
+                              {
+                                  columns.Bound(x => x.Id).Visible(false).Width(40);
+                                  columns.Bound(x => x.ProductCode).Width(90);
+                                  columns.Bound(x => x.ProductDescription);
+                                  columns.Bound(x => x.PricePerPound).Width(100);
+                                  columns.Bound(x => x.IsSelected).Width(100);
+                                  columns.Bound(x => x.BagSize).ClientTemplate("#=BagSize != null ? BagSize.Name :''#").EditorTemplateName("_BagsList").Width(110);
+                                  columns.Bound(x => x.BoxSize).ClientTemplate("#=BoxSize!= null? BoxSize.Name :''#").EditorTemplateName("_BoxesList").Width(110);
+                                  columns.Command(command =>
+                                  {
+                                      command.Edit();
+                                  });
+                              })
+                              .Sortable()
+                              .Editable(x => x.Mode(GridEditMode.InLine))
+                              .Scrollable()
+                              .DataSource(dataSource => dataSource
+                                  .Ajax()
+                                  .Events(events => events.Error("error_handler"))
+                                  .Model(model =>
+                                  {
+                                      model.Field(x => x.Id).Editable(false);
+                                      model.Id(x => x.Id);
+                                      model.Field(x => x.ProductCode).Editable(false);
+                                      model.Field(x => x.Name);
+                                      model.Field(x => x.IsSelected);
+                                      model.Field(x => x.PricePerPound);
+                                      model.Field(x => x.ProductDescription);
+                                      model.Field(x => x.Gtin);
+                                      model.Field(x => x.Upc);
+                                  }).Batch(true)
+                                  .Read(read => read.Action("Products_Read", "Customer"))
+                                  .Update(update => update.Action("Products_Update", "Customer"))
+                                  .PageSize(20)
+                              )
+                              .Pageable()
+            )
+        </fieldset>
+
+    }
+
+</div>

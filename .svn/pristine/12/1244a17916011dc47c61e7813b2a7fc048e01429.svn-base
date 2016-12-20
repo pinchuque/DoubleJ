@@ -1,0 +1,22 @@
+﻿@model ProductCodeItem
+
+<li style="margin-bottom: 20px">
+    @Html.HiddenFor(model => model.Id)
+    @Html.HiddenFor(model => model.Name)
+    <div>
+        @Html.CheckBoxFor(model => model.IsSelected)
+        @Html.LabelFor(model => model.IsSelected, @Model.Name)
+    </div>
+    <div>
+        @Html.TextBoxFor(model => model.ProductCode, new { placeholder = "enter product code", @class = "short" })
+    </div>
+    <div>
+        @Html.TextBoxFor(model => model.ProductDescription, new { placeholder = "enter product description", style = "width: 200px;" })
+    </div>
+    <div>
+        @Html.EditorFor(model => model.Gtin, new { htmlAttributes = new { placeholder = "enter owner GTIN", style = "width: 200px;" } })
+    </div>
+    <div>
+        @Html.TextBoxFor(model => model.PricePerPound, new { placeholder = "enter owner price per pound", style = "width: 200px;" })
+    </div>
+</li>

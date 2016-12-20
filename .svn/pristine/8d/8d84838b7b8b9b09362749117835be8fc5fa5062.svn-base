@@ -1,0 +1,192 @@
+﻿@model CustomerViewModel
+
+@using (Html.BeginForm("UpdateCustomer", "Customer", FormMethod.Post, new {enctype = "multipart/form-data"}))
+{
+    @Html.HiddenFor(m => m.Id)
+
+    <h1>Owner Entry</h1>
+    @Html.ValidationSummary(true)
+
+    <fieldset class="dataentry">
+        <legend>General</legend>
+        <div>
+            @Html.LabelFor(model => model.CustomerName)
+            @Html.TextBoxFor(model => model.CustomerName)
+            @Html.ValidationMessageFor(model => model.CustomerName)
+        </div>
+        <div>
+            @Html.LabelFor(model => model.CustomerType)
+            @Html.EnumDropDownListFor(model => model.CustomerType)
+            @Html.ValidationMessageFor(model => model.CustomerType)
+        </div>
+        <div>
+            @Html.LabelFor(m => m.OrderContactFirstName)
+            @Html.TextBoxFor(m => m.OrderContactFirstName)
+            @Html.ValidationMessageFor(x => x.OrderContactFirstName)
+        </div>
+        <div>
+            @Html.LabelFor(m => m.OrderContactLastName)
+            @Html.TextBoxFor(m => m.OrderContactLastName)
+            @Html.ValidationMessageFor(x => x.OrderContactLastName)
+        </div>
+        <div>
+            @Html.LabelFor(model => model.OrderContactEmail)
+            @Html.TextBoxFor(model => model.OrderContactEmail)
+            @Html.ValidationMessageFor(x => x.OrderContactEmail)
+        </div>
+        <div>
+            @Html.LabelFor(model => model.OrderContactPhone)
+            @Html.TextBoxFor(model => model.OrderContactPhone)
+        </div>
+        <div class="customerinfo">
+            <div>
+                @Html.LabelFor(model => model.Id)
+                @Html.DisplayFor(model => model.Id)
+            </div>
+            <div>
+                @Html.LabelFor(model => model.PortalPassword)
+                @Html.TextBoxFor(model => model.PortalPassword)
+                @Html.ValidationMessageFor(x => x.PortalPassword)
+            </div>
+        </div>
+    </fieldset>
+    <fieldset class="dataentry">
+        <legend>Label Preferences</legend>
+        <div>
+            @Html.LabelFor(model => model.BagLabel)
+            @Html.TextBoxFor(model => model.BagLabel)
+            @Html.ValidationMessageFor(model => model.BagLabel)
+        </div>
+        <div>
+            @Html.LabelFor(model => model.BoxLabel)
+            @Html.TextBoxFor(model => model.BoxLabel)
+            @Html.ValidationMessageFor(model => model.BoxLabel)
+        </div>
+        <div>
+            @Html.LabelFor(model => model.BestBeforeDays)
+            @Html.Kendo().IntegerTextBoxFor(model => model.BestBeforeDays).Min(1).Max(999999)
+            @Html.ValidationMessageFor(model => model.BestBeforeDays)
+        </div>
+        <div>
+            @Html.LabelFor(model => model.LabelDistributedBy)
+            @Html.TextBoxFor(model => model.LabelDistributedBy)
+        </div>
+        <div>
+            @Html.LabelFor(model => model.UseLogoOnLabels)
+            @Html.EnumDropDownListFor(m => m.UseLogoOnLabels)
+        </div>
+        <div>
+            @Html.LabelFor(model => model.CustomerLogo)
+            @Html.TextBoxFor(x => x.CustomerLogo, new {type = "file"})
+        </div>
+        <div>
+            logo file must be 100px by 100px
+        </div>
+        <img id="logoProviewImg" src="~/Content/Images/CustomerLogo/@Model.CustomerLogoFileName">
+    </fieldset>
+    <fieldset class="dataentry">
+        <legend>Owner's Customers</legend>
+        @(Html.Kendo().Grid<CustomerLocation>()
+              .Name("CustomerLocationssGrid")
+              .Columns(columns =>
+              {
+                  columns.Bound(location => location.Name).Width(200);
+                  columns.Bound(location => location.Id)
+                      .ClientTemplate("<span class='oms-button '><a onclick='locationWindow(" + "#= LocationId #" + ")' class='k-button' >Edit</a></span>").Title("").Width(50)
+                      .HeaderTemplate("<span class='oms-button '><a onclick='locationWindow(null)' class='k-button'  >Add</a></span>")
+                      .Width(70).Sortable(false);
+              })
+              .Pageable()
+              .Sortable()
+              .Scrollable()
+              .DataSource(dataSource => dataSource
+                  .Ajax()
+                  .Model(model => model.Id(location => location.Id))
+                  .Read(read => read.Action("CustomerLocations", "Customer"))
+              )
+        )
+    </fieldset>
+    <div style="margin: -13px 0 10px 19px; color: red; font-weight: bold;">@ViewBag.Message</div>
+    <div id="locationWindow"></div>
+
+    <script>
+        $(function() {
+            $("#locationWindow").kendoWindow({
+                title: "Owner's Customer",
+                resizable: false,
+                visible: false,
+                modal: true,
+                activate: function() {
+                    $('#form-customer').validate({
+                        errorElement: "span",
+                        errorClass: "input-validation-error",
+                        validClass: "valid",
+                        errorPlacement: function(error, element) {
+                            $(element).next().html(error.html()).addClass('field-validation-error');
+                        }
+                    });
+                    $('#form-customer input[type=text]').each(function() {
+                        if ($(this).data('need-required') === true) {
+                            $(this).rules("add", "required");
+                        }
+                    });
+                    $('#form-customer input[type=text]').bind("change keyup input", function() {
+                        if ($(this).valid()) {
+                            $(this).next().removeClass('field-validation-error');
+                        }
+                    });
+                }
+            });
+        });
+
+        function locationWindow(id) {
+            var window = $("#locationWindow").data("kendoWindow");
+            window.refresh({ url: '@Url.Action("CustomerLocation")?locationId=' + id });
+            window.center();
+            window.open();
+        }
+
+        function customerLocationSuccess(result) {
+            if (result.Success === true) {
+                var source = $('#CustomerLocationssGrid').data('kendoGrid').dataSource;
+                source.transport.update();
+                source.read();
+                closeLocationWindow();
+            }
+        }
+
+        function closeLocationWindow() {
+            var window = $("#locationWindow").data("kendoWindow");
+            window.close();
+        }
+
+        var ext = $("#logoProviewImg").attr('src').split('.');
+        if (!ext || ext.length <= 1) {
+            $("#logoProviewImg").hide();
+        }
+
+        $("#CustomerLogo").change(function () {
+            var input = this;
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#logoProviewImg').width(100);
+                    $('#logoProviewImg').height(100);
+                    $('#logoProviewImg').attr('src', e.target.result);
+                }
+
+                reader.readAsDataURL(input.files[0]);
+                $("#logoProviewImg").show();
+            }
+        });
+    </script>
+
+    if (Model.CurrentEditLocation == null)
+    {
+        <div class="buttonRow oms-button">
+            @Html.ActionLink("Cancel", "Index", "Customers", new { @class = "k-button cancel" })
+            <input type="submit" name="updateCustomer" class="k-button" value="Update" />
+        </div>
+    }
+}

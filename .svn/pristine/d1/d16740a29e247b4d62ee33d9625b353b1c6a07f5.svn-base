@@ -1,0 +1,86 @@
+﻿@model OrderViewModel
+
+@{
+    ViewBag.Title = "Order Entry - Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="content-container">
+    <div id="tabstrip">
+        <ul>
+            <li class="k-state-active">General</li>
+            <li>Animal Tracking</li>
+        @if (Model.IsFabOwner) {
+            <li>Order Details</li>
+        }
+        @*else
+        {
+            <li>Cut Sheets</li>
+        }*@
+            <li>Reports</li>
+        </ul>
+
+        <div>@Html.Partial("_EditCommon")</div>
+
+        <div>@Html.Action("GetAnimalTrackingTab", Model.Id)</div>
+
+    @if (Model.IsFabOwner)
+    {
+        <div>
+            @Html.Action("GetDetailsTab", Model)
+        </div>
+    }
+    @*else
+    {
+        <div>@Html.Action("GetCutSheetTab", Model)</div>
+    }*@
+
+        <div>@Html.Action("GetReportsTab", Model)</div>
+    </div>
+    <div style="clear: both;"></div>
+</div>
+
+@section SiteNavigation {
+    @Html.Action("_Site", "Navigation", new { area = "", selected = OmsSiteNavigation.Orders })
+}
+
+@section Scripts {
+    <script src="~/Scripts/kendo.all.min.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        var addAnimalNumbers = '@Url.Action("AddDetail", "Orders")';
+        var getCutSheetGrid = '@Url.Action("GetCutSheetGrid", "Orders")';
+        var getGrid = '@Url.Action("GetAnimalTrackingGrid", "Orders")';
+        var removeDetailUrl = '@Url.Action("RemoveDetail", "Orders")';
+        var removeAllDetailUrl = '@Url.Action("RemoveAllDetails", "Orders")';
+        var saveAnimalNumbers = '@Url.Action("SaveAnimalNumber", "Orders")';
+        var getProductUrl = '@Url.Action("GetProductQuantities", "Orders")';
+        var isEdit = 'True';
+    </script>
+
+    <script src="@Url.Content("~/Scripts/DoubleJ.Oms.Web.Internal.Orders.js")" type="text/javascript"></script>
+    <script type="text/javascript">
+        InternalOrders.Init({
+            urls: {
+                getCustomerUrl: '@Url.Action("GetCustomerPreferences")'
+            },
+            elements: {
+                customerDropDown: $('#CustomerId'),
+                dateTypeInput: $("#BestBeforeDays"),
+                logoTypeInput: $('#LogoTypeId'),
+                bestBeforeDateDays: $("#BestBeforeDateDays")[0],
+                slaughterDate: $("#SlaughterDate")
+            }
+        });
+
+        $(document).ready(function () {
+            $("#tabstrip").kendoTabStrip({
+                animation: {
+                    open: {
+                        effects: "fadeIn"
+                    }
+                }
+            });
+        });
+    </script>
+}

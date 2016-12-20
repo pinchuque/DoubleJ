@@ -1,0 +1,25 @@
+﻿@model LoginViewModel
+
+@{
+    ViewBag.Title = "Login";
+}
+
+<div id="login">
+    <div id="content">
+        @using (Html.BeginForm())
+        {
+            @Html.ValidationSummary(true, "The email and password combination was not found.  Please check your entries and try again.")
+            <div class="dataentry">@Html.LabelFor(model => model.Email) @Html.TextBoxFor(model => model.Email) @Html.ValidationMessageFor(model => model.Email)</div>
+            <div class="dataentry">@Html.LabelFor(model => model.Password) @Html.PasswordFor(model => model.Password) @Html.ValidationMessageFor(model => model.Password)
+            </div>
+            <div class="buttonRow oms-button">
+                <input type="submit" id="btnSubmit" class="k-button" value="login" />
+            </div>
+	  
+        }
+
+    </div>
+
+    <div style="clear: both;"></div>
+</div>
+

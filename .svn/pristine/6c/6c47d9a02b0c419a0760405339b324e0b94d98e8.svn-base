@@ -1,0 +1,1 @@
+ALTER TABLE dbo.Customer ADD PONumber VARCHAR(50) NULL

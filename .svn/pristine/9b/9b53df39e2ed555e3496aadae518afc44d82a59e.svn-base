@@ -1,0 +1,161 @@
+﻿body { font-size: .85em; font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif; color: #000000; background-color: #252c26; margin: 0px;}
+
+/* content configurations. */
+.ui-grid-a, .ui-grid-b, .ui-grid-c, .ui-grid-d { overflow: hidden; }
+.ui-block-a, .ui-block-b, .ui-block-c, .ui-block-d, .ui-block-e { margin: 0; padding: 0; border: 0; float: left; min-height: 1px; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -ms-box-sizing: border-box; box-sizing: border-box; }
+/* grid solo: 100 - single item fallback */
+.ui-grid-solo .ui-block-a { display: block; float: none; }
+/* Lower percentages for older browsers (i.e. IE7) to prevent wrapping. -.5px to fix BB5 wrap issue. */
+/* grid a: 50/50 */
+.ui-grid-a .ui-block-a, .ui-grid-a .ui-block-b { width: 49.95%; }
+.ui-grid-a > :nth-child(n) { width: 50%; margin-right: -.5px; }
+.ui-grid-a .ui-block-a { clear: left; }
+/* grid b: 33/33/33 */
+.ui-grid-b .ui-block-a, .ui-grid-b .ui-block-b, .ui-grid-b .ui-block-c { width: 33.25%; }
+.ui-grid-b > :nth-child(n) { width: 33.333%; margin-right: -.5px; }
+.ui-grid-b .ui-block-a { clear: left; }
+/* grid c: 25/25/25/25 */
+.ui-grid-c .ui-block-a, .ui-grid-c .ui-block-b, .ui-grid-c .ui-block-c, .ui-grid-c .ui-block-d { width: 24.925%; }
+.ui-grid-c > :nth-child(n) { width: 25%; margin-right: -.5px; }
+.ui-grid-c .ui-block-a { clear: left; }
+/* grid d: 20/20/20/20/20 */
+.ui-grid-d .ui-block-a, .ui-grid-d .ui-block-b, .ui-grid-d .ui-block-c, .ui-grid-d .ui-block-d, .ui-grid-d .ui-block-e { width: 19.925%; }
+.ui-grid-d > :nth-child(n) { width: 20%; }
+.ui-grid-d .ui-block-a { clear: left; }
+
+#container { background:#ffffff; width:1020px; position:relative; top:0; left:0; margin:0px auto;}
+#header { background-color:#ffffff; border-top:5px solid #235a3d; border-bottom:5px solid #235a3d; font-family: "Rockwell Extra Bold", "Rockwell Bold", monospace;}
+    #header .ui-block-a { width: 22%; padding-left: 10px; }
+    #header .ui-block-b { width: 48%; padding-top: 68px;}
+    #header .ui-block-c { width: 30%; text-align:right; }
+    #header #site-title { font-size: 16pt;color:#235a3d; }
+    #header #greeting {padding:30px 10px 10px 10px; font-family: "Palatino Linotype","Book Antiqua",Palatino,serif; font-size: 11px; font-weight: bold; color:#363636; }
+    #header #greeting-name { font-family: "Trebuchet MS",Arial,Helvetica,sans-serif; font-size: 16px; text-transform: uppercase; }
+    #header #greeting a.logout { font-family: "Trebuchet MS",Arial,Helvetica,sans-serif; display:block; color:#363636;}
+    
+#navigation { float: left; width: 1020px; background:#363636; text-align:center; padding:10px 0px 5px 0px; }
+#navigation ul {margin: 0;padding: 0px; display:inline-block;}
+#navigation ul li {	list-style-type: none; display: block; float: left; padding: 4px 6px; color:#fff; font-weight:bold; }
+
+#navigation li a {display: block; float: left; color:#fff; text-decoration: none; font-family: "Palatino Linotype","Book Antiqua",Palatino,serif; text-transform:uppercase; font-size:14px; font-weight:bold;}
+#navigation li a:hover, #navigation li.selected a { /*background:#FF0000; background:#383;*/ color:#8f9b82;   }
+
+#login, #content-container { clear: left; padding: 0px 40px 40px 40px; background-color:#363636;}
+
+#footer { clear:both; border-top:5px solid #235a3d; text-align: left; padding: 20px 0px 20px 10px; color:#000000;	font-size:.8em;}
+
+#hud { float:left; width: 280px; min-height: 200px; background-color: #235a3d; border:3px solid #fff;padding: 10px;}
+#content { float:right; width: 590px; min-height: 200px; background-color: #ffffff; border: 4px solid #235a3d;padding: 10px;}
+#content-wide { width: 912px;background-color: #ffffff; border: 4px solid #235a3d;padding: 10px;min-height: 400px;}
+
+
+/*login*/
+#login #hud { margin-top: 46px;}
+#login #content { margin-top: 46px;}
+
+#login form { margin: 60px 0px 0px 75px;}
+#login .validation-summary-errors  { margin: 0px 75px 0px -20px; }
+
+
+.dataentry label{width:120px; display:inline-block; text-align:right; margin-right:5px; vertical-align:top;color: #235a3d;font-weight: bold;text-transform: uppercase;}
+.dataentry label:after {content: ":"}
+.dataentry label.checkbox {display:inline; text-align:left;}
+.dataentry label.checkbox:after {content : ""}
+
+form div.dataentry {margin:8px 0px; vertical-align:top;}
+
+form div.labelspacer {margin-left:108px;}
+
+
+/* Styles for validation helpers
+-----------------------------------------------------------*/
+.field-validation-error { color: #f00;text-transform: none;font-weight: normal;font-size: .9em}
+.field-validation-valid { display: none; }
+.input-validation-error { border: 1px solid #f00; background-color: #fee;text-transform: none;font-weight: normal;}
+.validation-summary-errors { font-weight: bold; color: #f00; }
+.validation-summary-valid { display: none; }
+
+/* Notification styles */
+#notificationwrapper { position: fixed; top: 0px; right: 10px; z-index: 1000; margin: 5px auto; width: 500px;   /*left: 50%; margin-left: -140px; margin-top: -40px; top: 50%;*/}  
+#notificationwrapper .notificationbox {padding: 15px 10px 20px 50px; box-shadow: 5px 5px 10px #000; font-family:Segoe UI, Lucida Sans Unicode, Verdana, Trebuchet MS; font-size:14px;}
+#notificationwrapper .success {color: #060;background: #cfc url(Images/Notification/success.png) no-repeat 8px 12px;}
+#notificationwrapper .warning {color: #c60;background: #ffc url(Images/Notification/warning.png) no-repeat 8px 12px;}
+#notificationwrapper .error {color: #c00;background: #fcc url(Images/Notification/error.png) no-repeat 8px 12px;}
+.notificationbox-close { background:url(Images/Notification/close.png) no-repeat; width:16px; height:16px; position: absolute; top:7px; right:7px; cursor:pointer;}
+
+
+/* kendo customizations*/
+
+.k-state-selected, .k-list > .k-state-selected, .k-list > .k-state-focused, .k-list > .k-state-highlight, .k-panelbar > .k-state-selected, .k-panel > .k-state-selected, .k-button:active, .k-ghost-splitbar-vertical, .k-ghost-splitbar-horizontal, .k-draghandle.k-state-selected:hover {
+    background-color: #235a3d;
+    border-color: #235a3d;
+    color: #FFFFFF;
+}
+.oms-button .k-button {color: #ffffff; background-image: url("Images/GlassTexture.png");min-width: 75px;font-size: 13px;}
+.oms-button .k-button,.oms-button .k-button.k-state-disabled:hover,.oms-button .k-state-disabled .k-button:hover,.oms-button .k-draghandle {border-color: #363636;background-color: #235a3d;}
+.oms-button .k-button:hover,.oms-button .k-draghandle:hover {border-color: #363636;background-color: #363636;}
+
+#login .validation-summary-errors { margin-top: -50px;}
+
+/*Utility*/
+.utility-url-resolve {display:none;}
+
+
+fieldset { border: none;border-top: solid 1px;width: 90%;margin: 10px;}
+fieldset legend {text-transform: uppercase;color: #235a3d;font-weight: bold;}
+.dataentry div{ margin: 5px 0px;font-size: 11px;}
+.dataentry label{width:162px; display:inline-block; text-align:right; margin-right:5px; vertical-align:top;text-transform: uppercase;}
+.dataentry input {font-size:11px;}
+.dataentry input[type='text'],.dataentry input[type='password'], .dataentry textarea { width: 200px;}
+.dataentry input[type='text'].short { width: 100px;}
+.dataentry input[type='text'].long { width: 300px;}
+.dataentry label:after {content: ":"}
+.dataentry select { width: 204px;font-size:11px;}
+
+.dataentry .k-numerictextbox input[type='text'] { width: 100%;}
+
+.k-window .dataentry label{width: 150px;}
+.k-window .oms-button {text-align: center; margin-bottom: 10px;}
+.k-window .field-validation-error {display: block; text-align: right;}
+.k-window .validation-summary-errors{display: none;}
+.k-listview {border: none;}
+
+div.buttonRow { width: 100%;text-align: center; padding: 10px 0px;}
+.border-top { border-top: solid 1px;color: #235a3d;}
+.border-bottom { border-bottom: solid 1px;color: #235a3d;}
+
+
+ul.checkboxList {margin: 0;padding-left: 80px; display:inline-block;}
+.checkboxList li { list-style-type: none;}
+.checkboxList li  table{ width: 100%;}
+.checkboxList label {float:none; text-align:left; display: inline-block;width:180px;color: #363636;line-height: 16px;font-weight: normal;text-transform: none;}
+.checkboxList label:after { content: none;}
+
+#content h1, #content-wide h1 {font-weight: bold;text-transform: uppercase;font-size: 1.3em;margin: 0px;color: #363636;}
+
+#ProductSearchResultGrid, #OrderSearchResultGrid, #ColdWeightGrid{font-size:11px; font-family:Segoe UI, Lucida Sans Unicode, Verdana, Trebuchet MS;margin-bottom: 58px;}
+#OrderDetailGrid,#BoxLabelGrid, #BagLabelGrid, #LabelEditGrid, #ColdWeightGrid { font-size: 11px; font-family: Segoe UI, Lucida Sans Unicode, Verdana, Trebuchet MS; }
+#OrderDetailGrid .k-grid tbody .k-button, #BagLabelGrid .k-grid tbody .k-button, #LabelEditGrid .k-button, #ColdWeightGrid .k-button{ min-width: 20px;}
+#OrderDetailGrid .k-grid-edit-row .text-box { width: 90%;font-family: "Segoe UI, ​ Lucida Sans Unicode, ​ Verdana, ​ Trebuchet MS"; font-size:11px;height: 19px;}
+#LabelEditGrid .k-numerictextbox { width: 100%;font-family: "Segoe UI, ​ Lucida Sans Unicode, ​ Verdana, ​ Trebuchet MS"; font-size:11px;height: 19px;}
+#OrderDetailGrid td, #BagLabelGrid td, #ColdWeightGrid td {border-style: solid;border-bottom-width: 1px;}
+#OrderDetailGrid .k-grid-add { float: right;margin-right: 10px;}
+#ColdWeightGrid div { margin: 0px;}
+
+#BagLabelGrid .oms-selected, #BoxLabelGrid .oms-selected {background-color:honeydew;font-weight: bold;} 
+#BagLabelGrid .yellow, #BoxLabelGrid .yellow { color:orange;}
+#BagLabelGrid .green, #BoxLabelGrid .green {color:green;}
+#BagLabelGrid .red, #BoxLabelGrid .red { color: red;}
+
+.completed, .progress { text-align: center;} 
+
+.progress-img {background: url("Images/Loading.gif") no-repeat;display: inline-block;width: 18px;height: 16px;vertical-align: middle;}
+
+#ProductId-list, #CustomerLocationId-list {width: auto !important;}
+
+#AnimalTrackingGrid .k-grid-header .k-header {overflow: visible;white-space: normal;font-weight: bold;text-align: center}
+#AnimalTrackingGrid .k-grid-X {min-width: 4px !important;color: white;background-color: red;border-radius: 20px;}
+#AnimalTrackingGrid .k-edit-cell > input[type=text] {width: 98%;}
+
+.customerinfo {padding-top: 20px;font-weight: bold;color: #235a3d;}
+.customerLocationId {font-weight: bold;color: #235a3d;}

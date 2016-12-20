@@ -1,0 +1,2 @@
+﻿@model object
+<span id="@ViewData.ModelMetadata.PropertyName">@ViewData.TemplateInfo.FormattedModelValue</span>

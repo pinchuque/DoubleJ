@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <startup> 
+        <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.5" />
+    </startup>
+  <appSettings>
+    <add key="ScaleId" value="0" />
+    <add key="SerialPort" value="3" />
+    <add key="OrganicFileName" value="C:\\ProdSupport\\Graphics\\organic.jpg"/>
+    <add key="BeefFileName" value="C:\\ProdSupport\\Graphics\\beef.jpg"/>
+    <add key="BisonFileName" value="C:\ProdSupport\Graphics\bison.jpg"/>
+    <add key="NoLogoImageFileName" value="\\TODO:\Where\Is\The\NoLogoImage"/>
+    <add key="DoubleJLogoFileName" value="\\TODO:\Where\Is\The\DoubleJLogo"/>
+    <add key="LabelBaseFolder" value="C:\\ProdSupport\\Labels\\"/>
+  </appSettings>
+	<connectionStrings>
+    <add name="OmsContext" connectionString="data source=DJSERVER01;initial catalog=DoubleJOms;user id=sa;password=Tr1n1ty;" providerName="System.Data.SqlClient" />
+	</connectionStrings>
+</configuration>

@@ -1,0 +1,123 @@
+﻿<Window x:Class="DoubleJ.Oms.LabelManager.LabelManagerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+        xmlns:uc="clr-namespace:DoubleJ.Oms.LabelManager.UserControls"
+        WindowStartupLocation="CenterScreen"
+        Closing="LabelManagerWindow_OnClosing" Height="1024" Width="1280">
+    <Window.Resources>
+    </Window.Resources> 
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="220px"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Image Source="Cow.png" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Row="1" Grid.Column="2" Visibility="{Binding ElementName=ComboOrder, Path=SelectedIndex, Converter={StaticResource OrderToVisibility}, ConverterParameter=false}"></Image>
+        <DockPanel Grid.Row="0" Grid.Column="0" Margin="3">
+            <DockPanel Dock="Top" Margin="3,10">
+                <telerik:Label Content="Order:" Margin="6"/>
+                <telerik:RadComboBox
+                    x:Name="ComboOrder"
+                    Margin="6,3"
+                    ItemsSource="{Binding Orders}"
+                    DisplayMemberPath="Name"
+                    SelectedValuePath="Id"
+                    SelectionChanged="ComboOrder_SelectedIndexChanged"/>
+            </DockPanel>
+            <DockPanel>
+                <uc:OrderSummaryPanel
+                    x:Name="MainOrderSummary"
+                    Visibility="{Binding ElementName=ComboOrder, Path=SelectedIndex, Converter={StaticResource OrderToVisibility}}"
+                    DataContext="{Binding OrderSummary}" />
+            </DockPanel>
+        </DockPanel>
+        <Grid Grid.Row="0" Grid.Column="1" Visibility="{Binding ElementName=ComboOrder, Path=SelectedIndex, Converter={StaticResource OrderToVisibility}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="2*"/>
+            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <telerik:RadButton Click="CompleteOrderButton_Click" Width="95" Height="60" Margin="20,0,0,0" Content="Complete"/>
+                <telerik:RadButton Click="ParkOrderButton_Click" Width="95" Height="60" Grid.Column="1" Content="Park"/>
+                <telerik:RadButton Click="EditLabelsButton_OnClick" Width="95" Height="60" Margin="0,0,20,0" Grid.Column="2" Content="Edit Labels" Name="BtnEditLabels"/>
+            </Grid>
+            <DockPanel Grid.Row="1" Margin="10,10,10,3">
+                <telerik:GroupBox>
+                    <StackPanel>
+                        <DockPanel MaxHeight="100">
+                            <telerik:Label Content="Special Instructions:"/>
+                            <telerik:Label>
+                                <TextBlock TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Text="{Binding SpecialInstructions}"/>
+                            </telerik:Label>
+                        </DockPanel>
+                        <DockPanel MaxHeight="100">
+                            <telerik:Label Content="Owner Comments:"/>
+                            <telerik:Label>
+                                <TextBlock TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Text="{Binding CustomerComments}"/>
+                            </telerik:Label>
+                        </DockPanel>
+                    </StackPanel>
+                </telerik:GroupBox>
+            </DockPanel>
+        </Grid>
+        <DockPanel Grid.Row="0" Grid.Column="2" Visibility="{Binding ElementName=ComboOrder, Path=SelectedIndex, Converter={StaticResource OrderToVisibility}, ConverterParameter=true}">
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" HorizontalAlignment="Right">
+                <TextBlock Foreground="Red" FontSize="12" Width="150" Text="{Binding Message}"/>
+                <Menu Width="40">
+                    <MenuItem Header="HELP">
+                        <MenuItem Header="Show/Hide Log window" Click="OpenLog"/>
+                        <MenuItem Header="Settings" Click="OpenSettings"/>
+                    </MenuItem>
+                </Menu>
+            </StackPanel>
+           
+            <telerik:RadButton DockPanel.Dock="Bottom" VerticalAlignment="Bottom" Style="{StaticResource OnButtonStyle}" Content="enter manual weight" Click="ShowNumericKeyboard"/>
+            <telerik:GroupBox Margin="3,40,3,3" Header="Last Weight">
+                <TextBox IsReadOnly="True" FontSize="10" TextWrapping="WrapWithOverflow" Background="{Binding WeightErrorColor}" Text="{Binding WeightOutput}"/>
+            </telerik:GroupBox>
+        </DockPanel>
+
+        <telerik:RadTabControl x:Name="Tabs" SelectionChanged="Tabs_OnSelectionChanged" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" 
+                               Visibility="{Binding ElementName=ComboOrder, Path=SelectedIndex, Converter={StaticResource OrderToVisibility}, ConverterParameter=true}">
+            <telerik:RadTabItem Header="Bags" x:Name="BagsTab">
+                <Grid>
+                    <uc:UnitListView x:Name="GridBags" DataContext="{Binding BagsList}" />
+                    <uc:CustomerBagGrid x:Name="GridCustomBags" DataContext="{Binding AnimalNumbers}" /></Grid>
+            </telerik:RadTabItem>
+            
+            <telerik:RadTabItem Header="Boxes" IsSelected="True" x:Name="BoxTab">
+                <Grid>
+                    <uc:UnitListView x:Name="GridBoxes" DataContext="{Binding BoxesList}" />
+                    <uc:CustomBoxGrid x:Name="GridCustomBoxes" DataContext="{Binding BoxesCustomList}" /></Grid>
+            </telerik:RadTabItem>
+            
+            <telerik:RadTabItem Header="Offals">
+                <uc:OrdersConstructor DataContext="{Binding OffalsSource}" AddOrder="Offals_Add" DeleteOrder="Offals_Delete"/> 
+            </telerik:RadTabItem>
+            <telerik:RadTabItem Header="Combos">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition Height="75"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="200"/>
+                    </Grid.ColumnDefinitions>
+                    <uc:OrdersConstructor Grid.ColumnSpan="2" DataContext="{Binding CombosSource}" AddOrder="Combos_Add" DeleteOrder="Combos_Delete"/>
+                    <telerik:RadButton Grid.Row="1" Grid.Column="1" Content="COMPLETE COMBOS" Margin="15"/>
+                </Grid>
+            </telerik:RadTabItem>
+        </telerik:RadTabControl>
+    </Grid>
+</Window>

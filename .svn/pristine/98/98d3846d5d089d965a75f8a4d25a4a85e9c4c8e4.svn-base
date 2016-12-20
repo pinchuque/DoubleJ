@@ -1,0 +1,208 @@
+﻿@model AddCustomerViewModel
+@{
+    ViewBag.Title = "Owner Entry - Add";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#CustomerName").change(function (e) {
+            $("#Location_Name").val($("#CustomerName").val());
+        });
+    });
+</script>
+@using (Html.BeginForm("Add", "Customer", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div id="content-container">
+        <div id="content">
+            <h1>Owner Entry</h1>
+            @Html.ValidationSummary(true)
+
+            <fieldset class="dataentry">
+                <legend>General</legend>
+                <div>
+                    @Html.LabelFor(m => m.CustomerName)
+                    @Html.TextBoxFor(m => m.CustomerName)
+                    @Html.ValidationMessageFor(x => x.CustomerName)
+                </div>
+                <div>
+                    @Html.LabelFor(model => model.CustomerType)
+                    @Html.EnumDropDownListFor(model => model.CustomerType)
+                    @Html.ValidationMessageFor(model => model.CustomerType)
+                </div>
+                <div>
+                    @Html.LabelFor(m => m.OrderContactFirstName)
+                    @Html.TextBoxFor(m => m.OrderContactFirstName)
+                    @Html.ValidationMessageFor(x => x.OrderContactFirstName)
+                </div>
+                <div>
+                    @Html.LabelFor(m => m.OrderContactLastName)
+                    @Html.TextBoxFor(m => m.OrderContactLastName)
+                    @Html.ValidationMessageFor(x => x.OrderContactLastName)
+                </div>
+                <div>
+                    @Html.LabelFor(m => m.OrderContactEmail)
+                    @Html.TextBoxFor(m => m.OrderContactEmail)
+                    @Html.ValidationMessageFor(x => x.OrderContactEmail)
+                </div>
+                <div>
+                    @Html.LabelFor(m => m.PortalPassword)
+                    @Html.PasswordFor(m => m.PortalPassword, new { value = Model.PortalPassword })
+                    @Html.ValidationMessageFor(x => x.PortalPassword)
+                </div>
+                <div>
+                    @Html.LabelFor(m => m.OrderContactPhone)
+                    @Html.TextBoxFor(m => m.OrderContactPhone)
+                    @Html.ValidationMessageFor(x => x.OrderContactPhone)
+                </div>
+            </fieldset>
+            <fieldset class="dataentry">
+                <legend>Label Preferences</legend>
+                <div>
+                    @Html.LabelFor(m => m.BagLabel)
+                    @Html.TextBoxFor(m => m.BagLabel)
+                    @Html.ValidationMessageFor(m => m.BagLabel)
+                </div>
+                <div>
+                    @Html.LabelFor(m => m.BoxLabel)
+                    @Html.TextBoxFor(m => m.BoxLabel)
+                    @Html.ValidationMessageFor(m => m.BoxLabel)
+                </div>
+                <div>
+                    @Html.LabelFor(model => model.BestBeforeDays)
+                    @Html.Kendo().IntegerTextBoxFor(model => model.BestBeforeDays).Min(1).Max(999999)
+                    @Html.ValidationMessageFor(model => model.BestBeforeDays)
+                </div>
+                <div>
+                    @Html.LabelFor(m => m.LabelDistributedBy)
+                    @Html.TextBoxFor(m => m.LabelDistributedBy)
+                    @Html.ValidationMessageFor(x => x.LabelDistributedBy)
+                </div>
+                <div>
+                    @Html.LabelFor(m => m.UseLogoOnLabels)
+                    @Html.EnumDropDownListFor(m => m.UseLogoOnLabels)
+                    @Html.ValidationMessageFor(x => x.UseLogoOnLabels)
+                </div>
+                <div>
+                    @Html.LabelFor(model => model.CustomerLogo)
+                    @Html.TextBoxFor(x => x.CustomerLogo, new { type = "file" })
+                </div>
+                <div>
+                    logo file must be 100px by 100px
+                </div>
+                <img id="logoProviewImg" src="#" alt="preview logo" />
+            </fieldset>
+
+
+            <fieldset id="ownerCustomer" class="dataentry">
+                <legend>Owner Customer</legend>
+                <div>
+                    @Html.LabelFor(m => m.Location.Name)
+                    @Html.TextBoxFor(m => m.Location.Name, new { data_need_required = "true" })
+                    @Html.ValidationMessageFor(x => x.Location.Name)
+                </div>
+                <div>
+                    @Html.LabelFor(m => m.Location.ShortName)
+                    @Html.TextBoxFor(m => m.Location.ShortName, new { data_need_required = "true" })
+                    @Html.ValidationMessageFor(x => x.Location.ShortName)
+                </div>
+                <div>
+                    @Html.LabelFor(m => m.Location.Email)
+                    @Html.TextBoxFor(m => m.Location.Email, new { data_need_required = "true" })
+                    @Html.ValidationMessageFor(x => x.Location.Email)
+                </div>
+                <div>
+                    @Html.LabelFor(m => m.Location.Phone)
+                    @Html.TextBoxFor(m => m.Location.Phone, new { data_need_required = "true" })
+                    @Html.ValidationMessageFor(x => x.Location.Phone)
+                </div>
+                <div>
+                    @Html.LabelFor(m => m.Location.Fax)
+                    @Html.TextBoxFor(m => m.Location.Fax)
+                    @Html.ValidationMessageFor(x => x.Location.Fax)
+                </div>
+                <div>
+                    @Html.LabelFor(m => m.Location.Address1)
+                    @Html.TextBoxFor(m => m.Location.Address1, new { data_need_required = "true" })
+                    @Html.ValidationMessageFor(x => x.Location.Address1)
+                </div>
+                <div>
+                    @Html.LabelFor(m => m.Location.Address2)
+                    @Html.TextBoxFor(m => m.Location.Address2)
+                    @Html.ValidationMessageFor(x => x.Location.Address2)
+                </div>
+                <div>
+                    @Html.LabelFor(m => m.Location.City)
+                    @Html.TextBoxFor(m => m.Location.City, new { data_need_required = "true" })
+                    @Html.ValidationMessageFor(x => x.Location.City)
+                </div>
+                <div>
+                    @Html.LabelFor(m => m.Location.StateCode)
+                    @Html.TextBoxFor(m => m.Location.StateCode, new { data_need_required = "true" })
+                    @Html.ValidationMessageFor(x => x.Location.StateCode)
+                </div>
+                <div>
+                    @Html.LabelFor(m => m.Location.ZipCode)
+                    @Html.TextBoxFor(m => m.Location.ZipCode, new { data_need_required = "true" })
+                    @Html.ValidationMessageFor(x => x.Location.ZipCode)
+                </div>
+            </fieldset>
+            <div class="buttonRow oms-button">
+                <input type="button" name="cancelCustomer" value="Cancel" class="k-button cancel" />
+                <input type="submit" name="addCustomer" class="k-button" value="Add" />
+            </div>
+        </div>
+        <div style="clear: both;"></div>
+    </div>
+}
+@section SiteNavigation {
+    @Html.Action("_Site", "Navigation", new { area = "", selected = OmsSiteNavigation.Customers })
+}
+<script type="text/javascript">
+    $(".cancel").click(function () {
+        history.back();
+    });
+
+    $(function () {
+        var requiredRulesApplied = false;
+        $('#ownerCustomer input').bind("change keyup input", function () {
+            var summaryValues = $('#ownerCustomer input').map(function() { return this.value; }).get().join('');
+            if (!!summaryValues) {
+                if (requiredRulesApplied) return;
+
+                requiredRulesApplied = true;
+                $('#ownerCustomer input').each(function() {
+                    if ($(this).data('need-required') === true) {
+                        $(this).rules("add", "required");
+                        $(this).valid();
+                    }
+                });
+            } else {
+                requiredRulesApplied = false;
+                $('#ownerCustomer input').each(function () {
+                    if ($(this).data('need-required') === true) {
+                        $(this).rules("remove", "required");
+                        $(this).valid();
+                        $(this).next().removeClass('field-validation-error').addClass('field-validation-valid');
+                    }
+                });
+            }
+        });
+
+        $("#logoProviewImg").hide();
+        $("#CustomerLogo").change(function () {
+            var input = this;
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#logoProviewImg').width(100);
+                    $('#logoProviewImg').height(100);
+                    $('#logoProviewImg').attr('src', e.target.result);
+                }
+
+                reader.readAsDataURL(input.files[0]);
+                $("#logoProviewImg").show();
+            }
+        });
+    });
+</script>

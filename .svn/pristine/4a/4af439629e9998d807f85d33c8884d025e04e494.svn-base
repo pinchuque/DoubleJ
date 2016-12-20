@@ -1,0 +1,69 @@
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Entity.ModelConfiguration;
+
+using DoubleJ.Oms.Domain.Entities;
+
+
+namespace DoubleJ.Oms.DataAccess.Mappings
+{
+    internal class ProductMap : EntityTypeConfiguration<Product>
+    {
+        public ProductMap()
+        {
+            ToTable("dbo.Product");
+            HasKey(x => x.Id);
+
+            Property(x => x.Id)
+                .HasColumnName("Id")
+                .IsRequired()
+                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+
+            Property(x => x.Upc).HasColumnName("UPC").IsRequired().HasMaxLength(12);
+            Property(x => x.EnglishDescription).HasColumnName("EnglishDescription").IsRequired().HasMaxLength(25);
+            Property(x => x.GermanDescription).HasColumnName("GermanDescription").IsOptional().HasMaxLength(25);
+            Property(x => x.FrenchDescription).HasColumnName("FrenchDescription").IsOptional().HasMaxLength(25);
+            Property(x => x.ItalianDescription).HasColumnName("ItalianDescription").IsOptional().HasMaxLength(25);
+            Property(x => x.SwedishDescription).HasColumnName("SwedishDescription").IsOptional().HasMaxLength(25);
+            Property(x => x.PrimalCutId).HasColumnName("PrimalCutId").IsRequired();
+            //Property(x => x.SubPrimalCutId).HasColumnName("SubPrimalCutId").IsOptional();
+            Property(x => x.TrimCutId).HasColumnName("TrimCutId").IsOptional();
+            Property(x => x.SpeciesId).HasColumnName("SpeciesId").IsOptional();
+            Property(x => x.Code).HasColumnName("Code").IsOptional().HasColumnType("char").HasMaxLength(5);
+            Property(x => x.Gtin).HasColumnName("GTIN").IsOptional().HasColumnType("numeric");
+            Property(x => x.PricePerPound).HasColumnName("PricePerPound").IsOptional().HasColumnType("money");
+            Property(x => x.CustomerTypeId).HasColumnName("CustomerTypeId").IsOptional();
+            Property(x => x.BoxSizeId).HasColumnName("BoxSizeId").IsRequired();
+            Property(x => x.BagSizeId).HasColumnName("BagSizeId").IsRequired();
+            Property(x => x.BoxBagQuantity).HasColumnName("BoxBagQuantity");
+            Property(x => x.BagPieceQuantity).HasColumnName("BagPieceQuantity");
+            Property(x => x.IsOffal).HasColumnName("IsOffal").IsRequired();
+            Property(x => x.IsActive).HasColumnName("IsActive").IsRequired();
+            #region NutritionInfo
+
+            Property(x => x.NutritionDescription).HasColumnName("NutritionDescription").IsOptional().HasMaxLength(25);
+            Property(x => x.NutritionServingSize).HasColumnName("NutritionServingSize").IsOptional().HasMaxLength(22);
+            Property(x => x.NutritionServingContainer).HasColumnName("NutritionServingContainer").IsOptional().HasMaxLength(12);
+            Property(x => x.NutritionCalories).HasColumnName("NutritionCalories").IsOptional();
+            Property(x => x.NutritionCaloriesFat).HasColumnName("NutritionCaloriesFat").IsOptional();
+            Property(x => x.NutritionTotalFat).HasColumnName("NutritionTotalFat").IsOptional();
+            Property(x => x.NutritionSatFat).HasColumnName("NutritionSatFat").IsOptional();
+            Property(x => x.NutritionTransFat).HasColumnName("NutritionTransFat").IsOptional();
+            Property(x => x.NutritionPolyFat).HasColumnName("NutritionPolyFat").IsOptional();
+            Property(x => x.NutritionMonoFat).HasColumnName("NutritionMonoFat").IsOptional();
+            Property(x => x.NutritionCholesterol).HasColumnName("NutritionCholesterol").IsOptional();
+            Property(x => x.NutritionSodium).HasColumnName("NutritionSodium").IsOptional();
+            Property(x => x.NutritionCarbs).HasColumnName("NutritionCarbs").IsOptional();
+            Property(x => x.NutritionProtein).HasColumnName("NutritionProtein").IsOptional();
+            Property(x => x.NutritionVitA).HasColumnName("NutritionVitA").IsOptional();
+            Property(x => x.NutritionVitC).HasColumnName("NutritionVitC").IsOptional();
+            Property(x => x.NutritionCalcium).HasColumnName("NutritionCalcium").IsOptional();
+            Property(x => x.NutritionIron).HasColumnName("NutritionIron").IsOptional();
+
+            #endregion
+            HasRequired(a => a.PrimalCut).WithMany(b => b.Product).HasForeignKey(c => c.PrimalCutId);
+            //HasOptional(a => a.SubPrimalCut).WithMany(b => b.Product).HasForeignKey(c => c.SubPrimalCutId);
+            HasOptional(a => a.TrimCut).WithMany(b => b.Product).HasForeignKey(c => c.TrimCutId);
+            HasOptional(a => a.Species).WithMany(b => b.Product).HasForeignKey(c => c.SpeciesId);
+        }
+    }
+}

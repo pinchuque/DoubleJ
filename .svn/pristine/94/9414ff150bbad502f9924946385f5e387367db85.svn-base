@@ -1,0 +1,58 @@
+﻿@using DoubleJ.Oms.Model.ViewModels.Internal;
+@{
+    ViewBag.Title = "Owner Management";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    div#loading { display: none; }
+</style>
+<script type="text/javascript">
+        function error_handler(e) {
+            if (e.errors) {
+                var message = "Errors:\n";
+                $.each(e.errors, function (key, value) {
+                    if ('errors' in value) {
+                        $.each(value.errors, function () {
+                            message += this + "\n";
+                        });
+                    }
+                });
+                alert(message);
+            }
+        }
+</script>
+<div id="content-container">
+    <div id="content">
+        <fieldset style="margin-top: 25px">
+            <legend>
+                Run Daily Report
+            </legend>
+            <div>
+                @using (@Ajax.BeginForm("GenerateReport", new AjaxOptions() { HttpMethod = "Get", LoadingElementId = "loading" }))
+                {
+                    <div id="loading">
+                        <img src="~/Content/Images/Loading.gif" />
+                    </div>
+                    @Html.Action("Reports", "Admin")
+                }
+            </div>
+        </fieldset>
+        <fieldset style="margin-top: 25px">
+            <legend>
+                Manage Tare Weights
+            </legend>
+            @Html.Partial("_TareWeights")
+        </fieldset>
+        <fieldset>
+            <legend>
+                Manage Animal Labels
+            </legend>
+            @Html.Partial("_ManageLabels")
+        </fieldset>
+    </div>
+    <div style="clear: both; margin-bottom: 50px"></div>
+</div>
+@section SiteNavigation {
+    @Html.Action("_Site", "Navigation", new { area = "", selected = OmsSiteNavigation.Admin })
+}
+

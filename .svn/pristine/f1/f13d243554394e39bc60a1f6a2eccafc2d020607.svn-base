@@ -1,0 +1,121 @@
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Web.Mvc;
+using DoubleJ.Oms.Domain.Definitions;
+using DoubleJ.Oms.Model.Models;
+
+namespace DoubleJ.Oms.Model.ViewModels.Internal
+{
+    public class ProductDataViewModel
+    {
+        public int ProductId { get; set; }
+
+        [DisplayName("Owners")]
+        public IEnumerable<ProductCodeItem> CustomerProductCodeList { get; set; }
+
+        [DisplayName("Applied Owners Count")]
+        public int CustomersCount { get; set; }
+
+        public bool CustomerProductCodeExists { get; set; }
+    }
+
+    public class ProductViewModel
+    {
+        public ProductViewModel()
+        {
+            Gtin = 90853685002011m;
+            CustomerType = OmsCustomerType.Fabrication;
+        }
+
+        public int? Id { get; set; }
+
+        [Required]
+        [StringLength(25)]
+        [DisplayName("English Description")]
+        public string Description { get; set; }
+
+        [Required]
+        [StringLength(12)]
+        [DisplayName("Double J Product Id")]
+        public string Upc { get; set; }
+
+        [DisplayName("Double J Product Code")]
+        public string DoubleJProductCode { get; set; }
+
+        [Required]
+        [Range(typeof(decimal), "10000000000000", "99999999999999")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:0}")]
+        [DisplayName("GTIN")]
+        public decimal Gtin { get; set; }
+
+        [DataType(DataType.Currency)]
+        [DisplayName("Price Per Pound")]
+        public decimal PricePerPound { get; set; }
+
+        [StringLength(25)]
+        [DisplayName("German")]
+        public string GermanDescription { get; set; }
+
+        [StringLength(25)]
+        [DisplayName("French")]
+        public string FrenchDescription { get; set; }
+
+        [StringLength(25)]
+        [DisplayName("Italian")]
+        public string ItalianDescription { get; set; }
+
+        [StringLength(25)]
+        [DisplayName("Swedish")]
+        public string SwedishDescription { get; set; }
+
+        [Required]
+        [DisplayName("Species")]
+        public int? SpeciesId { get; set; }
+
+        [Required]
+        [DisplayName("Quality Grade")]
+        public int? QualityGradeId { get; set; }
+
+        [Required]
+        [DisplayName("Primal")]
+        public int? PrimalCutId { get; set; }
+
+        [Required]
+        [DisplayName("Sub-Primal")]
+        public int? SubPrimalCutId { get; set; }
+
+        [Required]
+        [DisplayName("Trim")]
+        public int? TrimCutId { get; set; }
+
+        [DisplayName("Owner Type")]
+        public OmsCustomerType? CustomerType { get; set; }
+
+        [Display(Name = "Box size")]
+        [Required(ErrorMessage = "required")]
+        public int? BoxTypeId { get; set; }
+
+        public SelectList BoxTypeNames { get; set; }
+
+        [Display(Name = "Bag size")]
+        [Required(ErrorMessage = "required")]
+        public int? BagTypeId { get; set; }
+
+        public SelectList BagTypeNames { get; set; }
+
+        [Display(Name = "Pieces Per Bag")]
+        [DataType("Quantity")]
+        public int BagPieceQuantity { get; set; }
+
+        [Display(Name = "Bags Per Box")]
+        [DataType("Quantity")]
+        public int BoxBagQuantity { get; set; }
+    }
+
+    public class ProductTypeItem
+    {
+        public int? TypeId { get; set; }
+        public string TypeName { get; set; }
+    }
+}

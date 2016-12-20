@@ -1,0 +1,9 @@
+﻿@model CheckBoxItem
+
+@Html.HiddenFor(model => model.Id)
+@Html.HiddenFor(model => model.Name)
+@Html.CheckBoxFor(model => model.IsSelected) @Html.LabelFor(model => model.IsSelected, @Model.Name)
+@Html.ValidationMessageFor(model => model.IsSelected)
+
+
+

@@ -1,0 +1,4 @@
+﻿@model GreetingViewModel
+
+LOGGED IN AS: <span id="greeting-name">@Model.GreetingName</span>
+@Html.ActionLink("log out", "Logout", "Account", null, new { @class = "logout" })

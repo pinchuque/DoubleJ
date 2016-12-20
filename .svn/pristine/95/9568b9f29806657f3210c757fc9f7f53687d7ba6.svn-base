@@ -1,0 +1,42 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+
+using DoubleJ.Oms.Model.Interfaces;
+using DoubleJ.Oms.Model.ViewModels.Internal;
+using DoubleJ.Oms.Service.Interfaces.Web;
+
+using NLog;
+
+
+namespace DoubleJ.Oms.Service.Services.Web
+{
+    public class OrderSearchService : IOrderSearchService
+    {
+        private readonly IOrderRepository _orderRepository;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+        public OrderSearchService(IOrderRepository orderRepository)
+        {
+            _orderRepository = orderRepository;
+        }
+
+        public List<OrderSearchResultItem> Search(OrderSearchViewModel viewModel)
+        {
+            Logger.Debug("Order Search - Order Number:" + viewModel.OrderId);
+
+            var result = _orderRepository
+                .GetBySearchCriteria(viewModel.CustomerId, viewModel.OrderId, viewModel.StatusId, viewModel.CustomerType)
+                .Select(order => new OrderSearchResultItem
+                {
+                    OrderId = order.Id,
+                    CustomerName = order.Customer.Name,
+                    StatusName = order.Status.Name,
+                    RequestedProcessDate = order.RequestedProcessDate
+                })
+                .OrderByDescending(x => x.OrderId)
+                .ToList();
+
+            return result;
+        }
+    }
+}

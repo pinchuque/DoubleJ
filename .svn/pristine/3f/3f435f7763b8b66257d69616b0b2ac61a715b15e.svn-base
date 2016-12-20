@@ -1,0 +1,30 @@
+﻿@model ColdWeightCutSheetViewModel
+<div>
+    <h1>Cut Sheets</h1>
+    <fieldset class="dataentry">
+        <legend>Summary</legend>
+        <div>
+            @Html.LabelFor(model => model.OrderId)
+            @Html.DisplayFor(model => model.OrderId)
+        </div>
+        <div>
+            @Html.LabelFor(model => model.CustomerName)
+            @Html.DisplayFor(model => model.CustomerName)
+        </div>
+        <div>
+            @Html.LabelFor(model => model.StatusName)
+            @Html.DisplayFor(model => model.StatusName)
+        </div>
+        <div>
+            @Html.LabelFor(model => model.RequestedProcessDate)
+            @Html.DisplayFor(model => model.RequestedProcessDate)
+        </div>
+        <div>
+            @Html.LabelFor(model => model.ExpectedHeadNumber)
+            @Html.DisplayFor(model => model.ExpectedHeadNumber)
+        </div>
+    </fieldset>
+</div>
+
+<div id="CutSheet">@Html.Action("CutSheetGrid", "Orders", new {orderId = @Model.OrderId})</div>
+<div id="CutSheetDetailGreed"></div>

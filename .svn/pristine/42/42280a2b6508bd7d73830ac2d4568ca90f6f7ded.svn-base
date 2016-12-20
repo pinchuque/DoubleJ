@@ -1,0 +1,79 @@
+﻿using System;
+using System.ComponentModel;
+using DoubleJ.Oms.Domain.Definitions;
+
+namespace DoubleJ.Oms.Service.Services.Device
+{
+    internal class LabelOutputViewModel
+    {
+        public int OrderDetailId { get; set; }
+        public OmsLabelType Type { get; set; }
+        public string ItemCode { get; set; }
+        public string LotNumber { get; set; }
+        public string Description { get; set; }
+        public double PoundWeight { get; set; }
+        public double KilogramWeight { get; set; }
+        public DateTime ProcessDate { get; set; }
+        public DateTime SlaughterDate { get; set; }
+        public DateTime BestBeforeDate { get; set; }
+        public string SpeciesBugPath { get; set; }
+        public string LogoPath { get; set; }
+        public string BornInRegionName { get; set; }
+        public string RaisedInRegionName { get; set; }
+        public string ProductOfRegionName { get; set; }
+        public string SlaughteredInRegionName { get; set; }
+        public string DistributedBy { get; set; }
+        public string GermanDescription { get; set; }
+        public string FrenchDescription { get; set; }
+        public string ItalianDescription { get; set; }
+        public string SwedishDescription { get; set; }
+        public bool IsPrinted { get; set; }
+        public DateTime WeighedDate { get; set; }
+        public string LabelFile { get; set; }
+        [DisplayName("Owner")]
+        public string Customer { get; set; }
+        [DisplayName("Owner Product Code")]
+        public string CustomerProductCode { get; set; }
+        public string GradeName { get; set; }
+        public string SerialNumber { get; set; }
+        public string Organic { get; set; }
+        public string Primal { get; set; }
+        public string SubPrimal { get; set; }
+        public string Trim { get; set; }
+        public string PackedFor { get; set; }
+        public string Refrigeration { get; set; }
+        public string VarCustomerJobValue { get; set; }
+        public string VarCustomerProductValue { get; set; }
+        public decimal Gtin { get; set; }
+        public decimal? PricePerPound { get; set; }
+        public decimal? Price { get; set; }
+        public string JulianProductionDate { get; set; }
+        public string Printer { get; set; }
+        [DisplayName("Owner PO")]
+        public string CustomerPO { get; set; }
+        public decimal? TareWeight { get; set; }
+
+        #region NutritionInfo
+
+        public string NutritionDescription { get; set; }
+        public string NutritionServingSize { get; set; }
+        public string NutritionServingContainer { get; set; }
+        public int? NutritionCalories { get; set; }
+        public int? NutritionCaloriesFat { get; set; }
+        public int? NutritionTotalFat { get; set; }
+        public decimal? NutritionSatFat { get; set; }
+        public decimal? NutritionTransFat { get; set; }
+        public decimal? NutritionPolyFat { get; set; }
+        public decimal? NutritionMonoFat { get; set; }
+        public int? NutritionCholesterol { get; set; }
+        public int? NutritionSodium { get; set; }
+        public int? NutritionCarbs { get; set; }
+        public int? NutritionProtein { get; set; }
+        public int? NutritionVitA { get; set; }
+        public int? NutritionVitC { get; set; }
+        public int? NutritionCalcium { get; set; }
+        public int? NutritionIron { get; set; }
+
+        #endregion
+    }
+}

@@ -1,0 +1,20 @@
+﻿@(Html.Kendo().Grid<CustomerSearchResult>()
+    .Name("CustomerSearchResultGrid")
+    .Columns(columns =>
+        {
+            columns.Bound(customer => customer.CustomerId).Visible(false);
+            columns.Bound(customer => customer.CustomerName).Width(100);
+            columns.Bound(customer => customer.Location).Width(100);
+            columns.Bound(customer => customer.CustomerId).
+                ClientTemplate("<div class='oms-button '><a href='" + Url.Action("EditCustomer", "Customer", new { customerId = "id" }).Replace("id", "#= CustomerId #") 
+                + "' class='k-button' >Edit</a></div>").Title("").Width(50);
+        })
+    .Pageable()
+    .Sortable()
+    .Scrollable()
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .Model(model => model.Id(customer => customer.CustomerId))
+        .Read(read => read.Action("SearchResultGridRead", "Customer"))
+    )
+)

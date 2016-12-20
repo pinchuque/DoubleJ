@@ -1,0 +1,61 @@
+﻿@model ProductViewModel
+
+@{
+    ViewBag.Title = "Edit Product";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="content-container">
+    <div id="tabstrip">
+        <ul>
+            <li class="k-state-active">General</li>
+            <li>Owner Details</li>
+            <li>Nutrition Info</li>
+        </ul>
+        <div>
+            @Html.Partial("_EditCommon")
+        </div>
+        <div style="min-height: 360px;">
+            @Html.Action("EditCustomerData", new { productId = Model.Id })
+        </div>
+        <div style="min-height: 360px;">
+            @Html.Action("EditNutritionInfo", new { productId = Model.Id })
+        </div>
+    </div>
+    <div style="clear: both;"></div>
+</div>
+
+@section SiteNavigation {
+    @Html.Action("_Site", "Navigation", new { area = "", selected = OmsSiteNavigation.Products })
+}
+
+@section Scripts {
+    <script src="@Url.Content("~/Scripts/DoubleJ.Oms.Web.Internal.Product.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/DoubleJ.Oms.Web.Internal.CustomerProduct.js")" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#tabstrip").kendoTabStrip({
+                animation: {
+                    open: {
+                        effects: "fadeIn"
+                    }
+                }
+            });
+        });
+    </script>
+    
+<script>
+$(function () {
+    $("#ProductEntry").submit(function (event) {
+        //for validation drop down lists
+        var validator = $("#packaging").kendoValidator().data("kendoValidator");
+        if (validator.validate() === false) {
+            return false;
+        } else {
+            return true;
+        }
+    });
+});
+</script>
+}

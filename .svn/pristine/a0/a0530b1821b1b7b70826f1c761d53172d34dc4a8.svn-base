@@ -1,0 +1,54 @@
+﻿@model List<DoubleJ.Oms.Model.ViewModels.Mobile.ProductViewModel>
+<script type="text/javascript">
+    function removePopup(data, orderid, destid) {
+        var elem = document.getElementById("remove-popup");
+        if (elem != null) {
+            elem.remove();
+        }     
+        var popup = document.createElement("span");
+        popup.id = "remove-popup";
+        popup.innerHTML = "Are you sure that you want to remove:<br /><br />" + data + "<br /><br /> from this order? <br /><br /><input id=\"remove2\" type=\"button\" value=\"cancel\" onclick=\"removeLabel(" + data + "," + orderid + "," + destid + ", false" + ")\" />&nbsp<input id=\"remove2\" type=\"button\" value=\"remove\" onclick=\"removeLabel(" + data + "," + orderid + "," + destid + ", true" + ")\" />";
+        var rowToRemove = document.getElementById(data);
+        rowToRemove.appendChild(popup);
+    }
+    function removeLabel(data, orderid, destid, flag) {
+        if (flag) {
+            window.location.href = "RemoveAllocatedLabel?labelId=" + data + "&orderId=" + orderid + "&destid=" + destid;
+        } else {
+            window.location.href = "AllocatedProducts?orderId=" + orderid + "&destinationId=" + destid;
+        }
+    }
+</script>
+<div id="table-products">
+    <div id="orderInfo">Order @ViewBag.OrderId Something Something Owner Primary Ship to @ViewBag.DestinationId</div>
+    <div id="table-header"><span>Serial No:</span>
+        <span style="margin-left: 10px;">Product No:</span>
+        <span style="margin-left: 10px;">Product</span>
+    </div>
+    <table>
+        @if (Model.Count == 0)
+        {
+            <tr>
+            </tr>
+        }
+        else
+        {
+            foreach (var item in Model)
+            {
+            <tr>
+                <td style="width: 23%;">@item.SerialNumber</td>
+                <td style="width: 28%;">@item.ProductNumber</td>
+                <td>@item.Product</td>
+                <td><input id="remove" type="button" value="remove" onclick="@("removePopup(" + item.LabeId +','+ @ViewBag.OrderId + ',' + @ViewBag.DestinationId + ")")"  class="jbutton" /></td>
+                <td id="@item.LabeId"></td>
+            </tr>
+            }
+        }
+
+    </table>
+    @Html.ActionLink("Back", "OrderFulfillmentComplete", new {orderId = @ViewBag.OrderId, destinationId = @ViewBag.DestinationId }, new { @class = "jbutton", @id = "back" })
+</div>
+<div id="bottom-menu">
+    @Html.ActionLink("Main Menu", "index", null, new { @class = "jbutton", @id = "main-menu-link-relative" })
+    @Html.ActionLink("Fulfillment Main", "OrderFulfillment", null, new { @class = "jbutton", @id = "fulfillment-main-relative" })
+</div>

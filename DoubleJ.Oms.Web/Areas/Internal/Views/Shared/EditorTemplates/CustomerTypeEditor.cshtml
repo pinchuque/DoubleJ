@@ -1,0 +1,8 @@
+﻿@using DoubleJ.Oms.Domain.Entities
+@model CustomerTypeViewModel
+
+@(Html.Kendo().DropDownListFor(m => m)
+            .DataValueField("Id")
+            .DataTextField("Name")
+            .BindTo((IEnumerable<CustomerTypeViewModel>)Session["CustomerTypes"])
+)

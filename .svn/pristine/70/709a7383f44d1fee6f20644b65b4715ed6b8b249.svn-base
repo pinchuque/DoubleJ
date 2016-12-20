@@ -1,0 +1,21 @@
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+
+namespace DoubleJ.Oms.Model.ViewModels.Internal
+{
+    public class AnimalLabelsViewModel
+    {
+        [DisplayName("Id")]
+        public int Id { get; set; }
+        [DisplayName("Name")]
+        [Required]
+        public string Name { get; set; }
+
+        [DisplayName("Type")]
+        public SpeciesViewModel Species{ get; set; }
+
+        [DisplayName("Organic")]
+        public bool IsOrganic{ get; set; }
+        
+    }
+}

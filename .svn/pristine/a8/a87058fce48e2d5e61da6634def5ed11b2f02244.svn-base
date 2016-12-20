@@ -1,0 +1,14 @@
+﻿using System.Collections.Generic;
+using DoubleJ.Oms.Domain.Definitions;
+using DoubleJ.Oms.Domain.Entities;
+using DoubleJ.Oms.Model.Models;
+
+namespace DoubleJ.Oms.Service.Interfaces
+{
+    public interface ILabelCreateService
+    {
+        void ProduceLabel(int orderDetailId, ScaleWeight weight, OmsLabelType labelType);
+        void ProduceLabel(int orderDetailId, double poundWeight, OmsLabelType labelType, int quantity);
+        void ProduceCustomBagLabels(List<OrderDetail> orderDetails, double poundWeight, OmsLabelType labelType);
+    }
+}

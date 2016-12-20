@@ -1,0 +1,90 @@
+﻿@model OrderViewModel
+
+@{
+    ViewBag.Title = "Order Entry - Add";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="content-container">
+    <div id="hud"></div>
+    <div id="window"></div>
+    <div id="content">
+        <h1>Order Entry</h1>
+        @using (Html.BeginForm("Add", "Orders", FormMethod.Post, new { id = "OrderEntry" }))
+        {
+            @Html.ValidationSummary(true)
+            @Html.EditorForModel("OrderAdd")
+            <div class="buttonRow oms-button">
+                @Html.ActionLink("cancel", "Index", "Orders", new { @class = "k-button" })
+                <input type="submit" id="btnSubmit" class="k-button" value="next" />
+            </div>
+        }
+    </div>
+    <div style="clear: both;"></div>
+
+</div>
+@section SiteNavigation {
+    @Html.Action("_Site", "Navigation", new { area = "", selected = OmsSiteNavigation.Orders })
+}
+
+@section Scripts {
+    <script src="~/Scripts/kendo.all.min.js" type="text/javascript"></script>
+
+    <script src="@Url.Content("~/Scripts/DoubleJ.Oms.Web.Internal.Orders.js")" type="text/javascript"></script>
+
+    <script type="text/javascript">
+
+        InternalOrders.Init({
+            urls: {
+                getCustomerUrl: '@Url.Action("GetCustomerPreferences")'
+            },
+            data: {
+                bestBeforeDateDays: +'@(Model.CustomerBestBeforeDays ?? 45)'
+            },
+            elements: {
+                customerDropDown: $('#CustomerId'),
+                dateTypeInput: $("#BestBeforeDate"),
+                logoTypeInput: $('#LogoTypeId'),
+                bestBeforeDateDays: $("#BestBeforeDateDays")[0],
+                slaughterDate: $("#SlaughterDate")
+            }
+        });
+
+        var wnd = $("#window");
+        var btn = $("#viewPastOrdersLink").bind("click", function() {
+            wnd.kendoWindow({
+                width: "615px",
+                title: "View past Orders",
+                content: '@Url.Action("ViewPastOrders")' + '?customerId=' + $('#CustomerId').val(),
+                close: onClose
+            });
+
+            wnd.data("kendoWindow").center().open();
+            btn.hide();
+        });
+
+        var onClose = function() {
+            btn.show();
+        };
+
+        $('#CustomerId').change(function(e) {
+            var v = $(e.target).val();
+            toggleViewPastOrdersButton(v !== null && v !== "");
+        });
+
+        function cloneDetails(e) {
+            $('#CloneDetails').val(this.dataItem($(e.target).closest("tr")).OrderId);
+            $("#window").data("kendoWindow").close();
+        }
+
+        function toggleViewPastOrdersButton(isVisible) {
+            var link = $('#viewPastOrdersLink');
+            isVisible ? link.show() : link.hide();
+        }
+    </script>
+}
+
+
+
+
+

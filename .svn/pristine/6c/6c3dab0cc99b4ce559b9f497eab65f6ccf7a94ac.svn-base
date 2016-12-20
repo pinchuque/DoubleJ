@@ -1,0 +1,98 @@
+﻿<Application x:Class="DoubleJ.Oms.LabelManager.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:DoubleJ.Oms.LabelManager.Converters" >
+    <Application.Resources>
+        <converters:OrderToVisibilityConverter x:Key="OrderToVisibility"/>
+        <converters:UnitLabelConverter x:Key="UnitToLabel" />
+        <converters:BoolToVisibilityConverter x:Key="SideVisibility" />
+        <converters:CutColorsConverter x:Key="HexConverter"/>
+
+        <Style TargetType="{x:Type telerik:RadButton}" x:Key="OffButtonStyle">
+            <Setter Property="Margin" Value="3"/>
+            <Setter Property="Padding" Value="2"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="YellowGreen"/>
+            <Setter Property="BorderBrush" Value="YellowGreen"/>
+        </Style>
+        <Style TargetType="{x:Type telerik:RadButton}" x:Key="OnButtonStyle">
+            <Setter Property="Margin" Value="3"/>
+            <Setter Property="Padding" Value="2"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="YellowGreen"/>
+            <Setter Property="BorderBrush" Value="YellowGreen"/>
+        </Style>
+        <Style x:Key="NumericKeyboardStyle" TargetType="{x:Type telerik:RadButton}">
+            <Setter Property="Focusable" Value="False"/>
+        </Style>
+        <Style x:Key="BottomNumericKeyboardStyle" TargetType="{x:Type telerik:RadButton}">
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Margin" Value="0 0 0 10"/>
+        </Style>
+        <Style TargetType="{x:Type telerik:RadGridView}" x:Key="DefaultGridStyle">
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="ShowGroupPanel" Value="False"/>
+            <Setter Property="AutoGenerateColumns" Value="False"/>
+            <Setter Property="IsFilteringAllowed" Value="False"/>
+            <Setter Property="RowIndicatorVisibility" Value="Collapsed"/>
+            <Setter Property="ReorderColumnsMode" Value="None"/>
+            <Setter Property="CanUserSortColumns" Value="False"/>
+            <Setter Property="SelectionMode" Value="Single"/>
+            <Setter Property="SelectionUnit" Value="Cell"/>
+            <Setter Property="EnableColumnVirtualization" Value="False" />
+        </Style>
+
+        <Style TargetType="{x:Type ListView}" x:Key="ListViewBase">
+            <Setter Property="ScrollViewer.CanContentScroll" Value="False"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden"/>
+        </Style>
+        <Style TargetType="{x:Type ListView}" x:Key="UnitsStyle" BasedOn="{StaticResource ListViewBase}">
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" />
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+        <Style TargetType="{x:Type ListView}" x:Key="CustomOrderStyle" BasedOn="{StaticResource ListViewBase}">
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Hidden"/>
+        </Style>
+        <Style TargetType="{x:Type TextBlock}" x:Key="UnitCaptionBase">
+            <Setter Property="Padding" Value="5 0 0 0" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Width" Value="80" />
+            <Setter Property="Height" Value="18" />
+        </Style>
+        <Style TargetType="{x:Type TextBlock}" x:Key="UnitCaptionDefault" BasedOn="{StaticResource UnitCaptionBase}">
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" />
+            <Setter Property="Foreground" Value="Black" />
+        </Style>
+        <Style TargetType="{x:Type TextBlock}" x:Key="UnitCaptionSelected" BasedOn="{StaticResource UnitCaptionBase}">
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+        <Style TargetType="{x:Type Grid}" x:Key="SideCaptionSelected">
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" />
+        </Style>
+        
+        <Style TargetType="{x:Type Grid}" x:Key="SideCaptionDefault">
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" />
+        </Style>
+
+        <Style TargetType="{x:Type StackPanel}" x:Key="CustomBagCaptionSelected">
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" />
+        </Style>
+
+        <Style TargetType="{x:Type StackPanel}" x:Key="CustomBagCaptionDefault">
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" />
+        </Style>
+
+        <Style TargetType="{x:Type ListView}" x:Key="ProductCaptionSelected">
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" />
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+
+        <Style TargetType="{x:Type ListView}" x:Key="ProductCaptionDefault">
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" />
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+    </Application.Resources>
+</Application>

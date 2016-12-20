@@ -1,0 +1,5 @@
+﻿@{
+    ViewBag.Title = "ResetLocation";
+}
+
+<h2>ResetLocation</h2>

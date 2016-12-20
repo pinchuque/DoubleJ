@@ -1,0 +1,116 @@
+﻿using System.Collections.Generic;
+using System.Data.Entity;
+using DoubleJ.Oms.DataAccess.Mappings;
+using DoubleJ.Oms.Domain;
+using DoubleJ.Oms.Domain.Entities;
+using EntityFramework.BulkInsert.Extensions;
+
+
+namespace DoubleJ.Oms.DataAccess
+{
+    public class OmsContext : DbContext, IOmsContext
+    {
+        static OmsContext()
+        {
+            //Database.SetInitializer(new OmsDbContextInitializer());
+            Database.SetInitializer<OmsContext>(null);
+        }
+
+        public OmsContext()
+            : base("Name=OmsContext")
+        {
+        }
+
+
+        public OmsContext(string connectionString) : base(connectionString)
+        {
+        }
+
+        public IDbSet<Offal> Offals { get; set; }
+        public IDbSet<OrderCombo> OrderCombos { get; set; }
+        public IDbSet<OrderOffal> OrderOffals { get; set; }
+        public IDbSet<CurrentLocationType> CurrentLocationType { get; set; }
+        public IDbSet<ColdWeightEntry> ColdWeightEntry { get; set; }
+        public IDbSet<ColdWeightEntryDetail> ColdWeightEntryDetail { get; set; }
+        public IDbSet<Customer> Customer { get; set; }
+        public IDbSet<CustomerLocation> CustomerLocation { get; set; }
+        public IDbSet<CustomerProductData> CustomerProductData { get; set; }
+        public IDbSet<CustomerType> CustomerType { get; set; }
+        public IDbSet<Label> Label { get; set; }
+        public IDbSet<LabelType> LabelType { get; set; }
+        public IDbSet<LogoType> LogoType { get; set; }
+        public IDbSet<Order> Order { get; set; }
+        public IDbSet<OrderDetail> OrderDetail { get; set; }
+        public IDbSet<PrimalCut> PrimalCut { get; set; }
+        public IDbSet<Product> Product { get; set; }
+        public IDbSet<QualityGrade> QualityGrade { get; set; }
+        public IDbSet<Region> Region { get; set; }
+        public IDbSet<Scale> Scale { get; set; }
+        public IDbSet<SiteNavigation> SiteNavigation { get; set; }
+        public IDbSet<Species> Species { get; set; }
+        public IDbSet<Status> Status { get; set; }
+        public IDbSet<SubPrimalCut> SubPrimalCut { get; set; }
+        public IDbSet<TrimCut> TrimCut { get; set; }
+        public IDbSet<User> User { get; set; }
+        public IDbSet<UserType> UserType { get; set; }
+        public IDbSet<BoxSize> BoxSize { get; set; }
+        public IDbSet<BagSize> BagSize { get; set; }
+
+        public IDbSet<SteakType> SteakType { get; set; }
+        public IDbSet<ChuckType> ChuckType { get; set; }
+        public IDbSet<CutSheetDetail> CutSheetDetail { get; set; }
+        public IDbSet<OrganMeatType> OrganMeatType { get; set; }
+        public IDbSet<RibType> RibType { get; set; }
+        public IDbSet<PackageSize> PackageSize { get; set; }
+        public IDbSet<OrganMeatValue> OrganMeatValue { get; set; }
+        public IDbSet<AnimalOrderDetail> AnimalOrderDetail{ get; set; }
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Configurations.Add(new ColdWeightEntryMap());
+            modelBuilder.Configurations.Add(new ColdWeightEntryDetailMap());
+            modelBuilder.Configurations.Add(new CustomerMap());
+            modelBuilder.Configurations.Add(new CustomerLocationMap());
+            modelBuilder.Configurations.Add(new CustomerProductDataMap());
+            modelBuilder.Configurations.Add(new LabelMap());
+            modelBuilder.Configurations.Add(new LabelTypeMap());
+            modelBuilder.Configurations.Add(new LogoTypeMap());
+            modelBuilder.Configurations.Add(new OrderMap());
+            modelBuilder.Configurations.Add(new OrderDetailMap());
+            modelBuilder.Configurations.Add(new OrderOffalMap());
+            modelBuilder.Configurations.Add(new OffalMap());
+            modelBuilder.Configurations.Add(new OrderComboMap());
+            modelBuilder.Configurations.Add(new PrimalCutMap());
+            modelBuilder.Configurations.Add(new ProductMap());
+            modelBuilder.Configurations.Add(new QualityGradeMap());
+            modelBuilder.Configurations.Add(new RegionMap());
+            modelBuilder.Configurations.Add(new ScaleMap());
+            modelBuilder.Configurations.Add(new SiteNavigationMap());
+            modelBuilder.Configurations.Add(new SpeciesMap());
+            modelBuilder.Configurations.Add(new StatusMap());
+            modelBuilder.Configurations.Add(new SubPrimalCutMap());
+            modelBuilder.Configurations.Add(new TrimCutMap());
+            modelBuilder.Configurations.Add(new UserMap());
+            modelBuilder.Configurations.Add(new UserTypeMap());
+            modelBuilder.Configurations.Add(new RefrigerationMap());
+            modelBuilder.Configurations.Add(new CurrentLocationTypeMap());
+            modelBuilder.Configurations.Add(new BoxSizeMap());
+            modelBuilder.Configurations.Add(new BagSizeMap());
+            modelBuilder.Configurations.Add(new CutSheetDetailMap());
+            modelBuilder.Configurations.Add(new SteakTypeMap());
+            modelBuilder.Configurations.Add(new ChuckTypeMap());
+            modelBuilder.Configurations.Add(new RibTypeMap());
+            modelBuilder.Configurations.Add(new PackageSizeMap());
+            modelBuilder.Configurations.Add(new OrganMeatTypeMap());
+            modelBuilder.Configurations.Add(new OrganMeatValueMap());
+            modelBuilder.Configurations.Add(new AnimalOrderDetailMap()); 
+        }
+
+        public void BulkInsert<T>(IEnumerable<T> items)
+        {
+            BulkInsertExtension.BulkInsert(this, items);
+        }
+
+    }
+}

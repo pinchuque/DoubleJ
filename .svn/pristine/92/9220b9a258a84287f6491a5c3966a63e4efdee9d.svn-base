@@ -1,0 +1,120 @@
+﻿@using DoubleJ.Oms.Utils.Extensions
+@model ColdWeightEntryDetailItem
+
+<style type="text/css">
+    #table {
+        display: table;
+        width: 100%;
+    }
+
+    #table div {
+        display: table-cell;
+    }
+
+    #table div div {
+        display: inline-flex;
+    }
+
+        #table .dataentry label, #SpecId label {
+            width: 105px;
+        }
+
+    #table .dataentry input[type='checkbox'] {
+        margin: 2px;
+    }
+    #table .dataentry input[type='text'], 
+    #table .dataentry input[type='password'], 
+    #table .dataentry textarea {
+        width: 132px;
+    }
+    #table .dataentry select {
+        width: 136px;
+    }
+    fieldset legend {
+        margin-bottom: 10px;
+    }
+    #AnimalTrackingGrid {
+        font-size: 12px;
+        font-family: Segoe UI,Lucida Sans Unicode,Verdana,Trebuchet MS;
+    }
+</style>
+
+<form id="formAnimalTracking">
+    <h1>Order Animal Tracking</h1>
+    @Html.HiddenFor(model => model.IsExist)
+    @Html.HiddenFor(model => model.OrderId)
+    @Html.HiddenFor(model => model.OmsEntryMode)
+    <fieldset>
+        <legend>Assign Tracking Numbers</legend>
+        <div>@Html.ValidationMessageFor(model => model.StartNumber)</div>
+        <div>@Html.ValidationMessageFor(model => model.CustomerLocationID)</div>
+
+    
+        <div id="table">
+            <div class="dataentry">
+                <div>
+                    @Html.LabelFor(model => model.StartNumber)
+                    @Html.TextBoxFor(model => model.StartNumber)
+                </div>
+                <div>
+                    @Html.LabelFor(model => model.TrackAnimalBy) 
+                    @Html.DropDownListFor(m => m.TrackAnimalBy, EnumAttributeExtension.GetAllEnumValues()
+                            .Select(f => new SelectListItem()
+                            {
+                                Text = f.GetEnumDescription(),
+                                Value = Enum.GetName(typeof(TrackAnimal),f),
+                                Selected = f == @Model.TrackAnimalBy
+                            }))
+                </div>
+                <div>
+                    @Html.LabelFor(model => model.CustomerLocationID)
+                    @Html.DropDownListFor(model => model.CustomerLocationID, Model.CustomerLocations)
+                </div>
+            </div>
+            <div class="dataentry">
+                <div>
+                    @Html.LabelFor(model => model.EndNumber)
+                    @Html.TextBoxFor(model => model.EndNumber)
+                </div>
+                <div>
+                    @Html.LabelFor(model => model.Organic)
+                    @Html.CheckBoxFor(model => model.Organic, new {@checked = false})
+                </div>
+                <div>
+                    @Html.LabelFor(model => model.GrassFed)
+                    @Html.CheckBoxFor(model => model.GrassFed, new {@checked = false})
+                </div>
+            </div>
+
+
+            <div id="SpecId" class="dataentry">
+                <div>
+                    @Html.LabelFor(model => model.SpeciesId)
+                    @Html.DropDownListFor(model => model.SpeciesId, Model.SpeciesList)
+                </div>
+                <div class="oms-button" style="vertical-align: bottom; padding: 20px 0px 0px 60px; ">
+                    <input type="button" id="btnAddAnimalNumber" class="k-button" value="Add Numbers" onclick="addNumbers()" />
+                </div>
+            </div>
+           
+            <div class="oms-button" style="padding-left: 10px; ">
+                <input type="button" id="btnResetnumber" class="k-button" value="Reset All Numbers" />
+            </div>
+        </div>
+    </fieldset>
+</form>
+<div id="AT">@Html.Action("AnimalTrackingGrid", "Orders", Model)</div>
+
+<div id="modalWindow" class="modalWindow" style="visibility: collapse" >
+    <div>Do you really want reset all numbers for order?</div>
+    <div class="buttonRow oms-button">
+        <button id="yes" class="k-button">Yes</button>
+        <button id="no" class="k-button">No</button>
+    </div>
+</div>
+
+
+<div class="buttonRow oms-button buttonsForAnimal">
+    @Html.ActionLink("Back", "Edit", new { id = @Model.OrderId }, new { @class = "k-button", @id = "btnBack" })
+    <input type="button" id="btnSave" class="k-button edit-mode" value="Save" onclick="saveAnimals()" />
+</div>

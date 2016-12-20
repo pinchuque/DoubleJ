@@ -1,0 +1,730 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using System.Web.Mvc;
+using DoubleJ.Oms.Domain.Definitions;
+using DoubleJ.Oms.Domain.Entities;
+using DoubleJ.Oms.Model.Interfaces;
+using DoubleJ.Oms.Model.Models;
+using DoubleJ.Oms.Model.ViewModels.Internal;
+using DoubleJ.Oms.Service.Interfaces;
+using DoubleJ.Oms.Service.Interfaces.Web;
+using DoubleJ.Oms.Service.Services;
+using DoubleJ.Oms.Web.Reports;
+using Kendo.Mvc.Extensions;
+using Kendo.Mvc.UI;
+using Microsoft.Ajax.Utilities;
+using MuscovyTechnology.Mvc.Notification;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Telerik.Reporting;
+using UnitsType = DoubleJ.Oms.Model.ViewModels.Internal.OrderReportViewModel.ReportUnitsType;
+
+
+namespace DoubleJ.Oms.Web.Areas.Internal.Controllers
+{
+    public class OrdersController : Controller
+    {
+        private readonly IOrderSearchService _orderSearchService;
+
+        private readonly IOrderRepository _orderRepository;
+
+        private readonly IOrderDetailRepository _orderDetailRepository;
+
+        private readonly ILabelRepository _labelRepository;
+
+        private readonly ILookupService _lookupService;
+
+        private readonly IOrderService _orderService;
+
+        private readonly IOrderDetailService _orderDetailService;
+
+        private readonly IOrderReportService _orderReportService;
+
+        private readonly IColdWeightEntryService _coldWeightEntryService;
+
+        private readonly IColdWeightEntryRepository _coldWeightEntryRepository;
+
+
+        private readonly IProductRepository _productRepository;
+
+
+        private readonly ICustomerLocationRepository _customerLocationRepository;
+
+        private readonly ISteakTypeRepository _steakTypeRepository;
+        private readonly IChuckTypeRepository _chuckTypeRepository;
+        private readonly IRibTypeRepository _ribTypeRepository;
+        private readonly IOrganMeatTypeRepository _organMeatTypeRepository;
+        private readonly IPackageSizeRepository _packageSizeRepository;
+        private readonly IAnimalOrderDetailRepository _animalOrderDetailRepository;
+        private readonly IColdWeightEntryDetailRepository _coldWeightEntryDetailRepository;
+
+        public OrdersController(IColdWeightEntryRepository coldWeightEntryRepository, IOrderSearchService orderSearchService, IOrderRepository orderRepository, IOrderDetailRepository orderDetailRepository, ILabelRepository labelRepository, ILookupService lookupService, IOrderService orderService, IOrderDetailService orderDetailService, IOrderReportService orderReportService, IColdWeightEntryService coldWeightEntryService, ICustomerRepository customerRepository, IProductRepository productRepository, ICustomerLocationRepository customerLocationRepository, ISteakTypeRepository steakTypeRepository, IOrganMeatTypeRepository organMeatTypeRepository, IPackageSizeRepository packageSizeRepository, IRibTypeRepository ribTypeRepository, IChuckTypeRepository chuckTypeRepository, IAnimalOrderDetailRepository animalOrderDetailRepository, IColdWeightEntryDetailRepository coldWeightEntryDetailRepository)
+        {
+            _orderSearchService = orderSearchService;
+            _orderRepository = orderRepository;
+            _orderDetailRepository = orderDetailRepository;
+            _labelRepository = labelRepository;
+            _lookupService = lookupService;
+            _orderService = orderService;
+            _orderDetailService = orderDetailService;
+            _orderReportService = orderReportService;
+            _coldWeightEntryService = coldWeightEntryService;
+            _coldWeightEntryRepository = coldWeightEntryRepository;
+            _productRepository = productRepository;
+            _customerLocationRepository = customerLocationRepository;
+            _steakTypeRepository = steakTypeRepository;
+            _organMeatTypeRepository = organMeatTypeRepository;
+            _packageSizeRepository = packageSizeRepository;
+            _ribTypeRepository = ribTypeRepository;
+            _chuckTypeRepository = chuckTypeRepository;
+            _animalOrderDetailRepository = animalOrderDetailRepository;
+            _coldWeightEntryDetailRepository = coldWeightEntryDetailRepository;
+            Customers = new List<Customer>(lookupService.GetCustomers().Select(x=>new Customer()
+            {
+                Name = x.Name,
+                Id = x.Id
+            } ));
+        }
+
+        public IList<Customer> Customers { get; set; }
+
+        #region Search
+
+        public OrderSearchViewModel OrderSearchData
+        {
+            get { return SessionService.Get().OrderSearchViewModel; }
+            set { SessionService.Get().OrderSearchViewModel = value; }
+        }
+
+        [HttpGet]
+        public ActionResult Index()
+        {
+            FillLookups();
+            return View(OrderSearchData);
+        }
+
+        [HttpPost]
+        public ActionResult Index(OrderSearchViewModel model)
+        {
+            FillLookups();
+
+            if (ModelState.IsValid)
+            {
+                model.HasSessionCriteria = true;
+                OrderSearchData = model;
+            }
+
+            return View(model);
+        }
+
+        public ActionResult Reset()
+        {
+            OrderSearchData = new OrderSearchViewModel();
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult SearchResultGrid_Read([DataSourceRequest] DataSourceRequest request)
+        {
+            var data = _orderSearchService.Search(OrderSearchData);
+            return Json(data.ToDataSourceResult(request));
+        }
+
+        #endregion
+
+        #region Add/Edit
+
+        [HttpGet]
+        public ActionResult Add()
+        {
+            var model = _orderService.Get();
+            model.ExpectedHeadNumber = 0;
+            model.SlaughteredHeadNumber = 0;
+            model.ReceivedHeadNumber = 0;
+            model.RequestedProcessDate = DateTime.Today;
+            model.BestBeforeDate = DateTime.Today.AddDays(model.CustomerBestBeforeDays ?? 45);
+            FillLookups(model);
+
+            return View(model);
+        }
+
+
+        public void SaveAnimalNumber(string animalNumbers, int orderId, TrackAnimal trackAnimal)
+        {
+            var animalNumbersList = GetAnimalTrackingGridItems(animalNumbers);
+
+            _coldWeightEntryService.Save(animalNumbersList, orderId, trackAnimal);
+
+            this.ShowNotification(NotificationType.Success, "All numbers have been saved");
+        }
+
+        private static List<ColdWeightEntryDetailItem> GetAnimalTrackingGridItems(string animalNumbers)
+        {
+            var animalNumbersInGrid = JObject.Parse(animalNumbers).SelectToken("animalNumbersInGrid").ToString();
+            var animalNumbersList = JsonConvert.DeserializeObject<List<ColdWeightEntryDetailItem>>(animalNumbersInGrid);
+            return animalNumbersList;
+        }
+
+        /// <summary>
+        /// Remove one animal number to order
+        /// </summary>
+        public JsonResult RemoveDetail(ColdWeightEntryDetailItem item, string animalNumbers)
+        {
+            var success = _coldWeightEntryService.RemoveDetail(item);
+            if (success)
+                this.ShowNotification(NotificationType.Success, "The number " + item.AnimalNumber + " has been removed");
+
+            var animalNumbersList = GetAnimalTrackingGridItems(animalNumbers);
+            animalNumbersList.RemoveAll(c => c.AnimalNumber == item.AnimalNumber);
+
+            return Json(animalNumbersList, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// Reset all animal numbers for order
+        /// </summary>
+        public JsonResult RemoveAllDetails(int coldId)
+        {
+            var success = _coldWeightEntryService.RemoveAllDetails(coldId);
+            if (success)
+                this.ShowNotification(NotificationType.Success, "All numbers have been dropped");
+
+            return Json(new List<ColdWeightEntryDetailItem>(), JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// Add animal numbers to order
+        /// </summary>
+        public JsonResult AddDetail(string newAnimalNumbers, ColdWeightEntryDetailItem item)
+        {
+            var animalNumberList = new List<ColdWeightEntryDetailItem>();
+            if (newAnimalNumbers != "")
+                animalNumberList = GetAnimalTrackingGridItems(newAnimalNumbers);
+
+            var animalNumbers = _coldWeightEntryService.AddDetail(animalNumberList, item);
+            animalNumberList.AddRange(animalNumbers);
+
+            return Json(animalNumberList, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult Add(OrderViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var orderId = _orderService.Add(model);
+                if (model.CloneDetails != null)
+                {
+                    var items = _orderDetailService.GetItems(model.CloneDetails.Value);
+                    foreach (var orderDetailItem in items)
+                    {
+                        var item = orderDetailItem;
+                        item.OrderId = orderId;
+                        _orderDetailService.Add(item);
+                    }
+                }
+
+                var routeValues = new
+                {
+                    orderId,
+                    customerId = model.CustomerId,
+                    mode = OmsEntryMode.Add
+                };
+                return RedirectToAction("AnimalTracking", routeValues);
+            }
+
+            FillLookups(model);
+            return View(model);
+        }
+
+        public PartialViewResult _CustomerLocationList(int? customerId)
+        {
+            return PartialView(_orderService.GetCustomerLocations(customerId));
+        }
+
+        [HttpGet]
+        public ActionResult Edit(int id)
+        {
+            var model = _orderService.Get(id);
+            FillLookups(model);
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult Edit(OrderViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                _orderService.Edit(model);
+                return RedirectToAction("Index");
+            }
+
+            FillLookups(model);
+            return View(model);
+        }
+
+        #endregion
+
+        #region Detail
+
+        [HttpGet]
+        public ActionResult Detail(int orderId, OmsEntryMode mode)
+        {
+            var neworder = _orderRepository.Get(orderId);
+            if (neworder.Customer.CustomerTypeId == OmsCustomerType.Custom)
+            {
+                this.ShowNotification(NotificationType.Success,
+                    string.Format("Order {0} was successfully {1}.", orderId,
+                        mode == OmsEntryMode.Add ? "added" : "edited"), true);
+                return RedirectToAction("Index");
+            }
+            FillDetailTemp(neworder.CustomerId, neworder.Customer.CustomerTypeId);
+
+            return View(_orderDetailService.Get(orderId, mode));
+        }
+
+        private void FillDetailTemp(int customerId, OmsCustomerType customerTypeId)
+        {
+            ViewBag.Products = _orderDetailService.GetAllProducts(customerTypeId);
+            ViewBag.CustomerLocations = _orderDetailService.GetCustomerLocations(customerId);
+            ViewBag.Species = _orderDetailService.GetSpecies();
+        }
+
+        public ActionResult GetDetailsTab(OrderViewModel model)
+        {
+            Debug.Assert(model.Id != null, "model.Id != null");
+            Order order = _orderRepository.Get(model.Id.Value);
+            FillDetailTemp(model.CustomerId, order.Customer.CustomerTypeId);
+
+            return PartialView("_Detail", _orderDetailService.Get(model.Id.Value, OmsEntryMode.Edit));
+        }
+
+        [HttpGet]
+        public ActionResult AnimalTracking(int orderId, int customerId)
+        {
+            var customerLocations = _orderDetailService.GetCustomerLocations(customerId);
+            var newCold = _coldWeightEntryService.GetColdWeightEntryDetail(orderId);
+            newCold.CustomerLocations = new SelectList(customerLocations, "CustomerLocationId", "CustomerLocationName");
+
+            ViewBag.CustomerLocations = customerLocations;
+
+            return View(newCold);
+        }
+
+        public ActionResult GetAnimalTrackingTab(int Id)
+        {
+            return PartialView("_AnimalTracking", _coldWeightEntryService.GetColdWeightEntryDetail(Id));
+        }
+        
+        [HttpGet]
+        public ActionResult AnimalTrackingGrid(ColdWeightEntryDetailItem item)
+        {
+            var coldWeight = _coldWeightEntryRepository.GetByOrderId(item.OrderId);
+            if (coldWeight == null || item.IsExist == false)
+                return new EmptyResult();
+
+            return GetAnimalGridPartial(coldWeight.TrackAnimalId, item);
+        }
+
+        private IEnumerable<OrderDetailCustomerLocationItem> GetCustomerLocationsByOrderId(int orderId)
+        {
+            var customer = _orderService.Get(orderId);
+            var customerLocations = _orderDetailService.GetCustomerLocations(customer.CustomerId);
+            return customerLocations;
+        }
+
+        public ActionResult GetAnimalTrackingGrid(ColdWeightEntryDetailItem cold)
+        {
+            return GetAnimalGridPartial(cold.TrackAnimalBy, cold);
+        }
+
+        private PartialViewResult GetAnimalGridPartial(TrackAnimal trackAnimal, ColdWeightEntryDetailItem item)
+        {
+            ViewBag.CustomerLocations = GetCustomerLocationsByOrderId(item.OrderId);
+            ViewBag.Species = _orderDetailService.GetSpecies();
+
+            switch (trackAnimal)
+            {
+                case (TrackAnimal.Whole):
+                    return PartialView("_AnimalTrackingGrid", item);
+                case (TrackAnimal.Quarter):
+                    return PartialView("_AnimalTrackingGridQuarters", item);
+                case (TrackAnimal.Half):
+                    return PartialView("_AnimalTrackingGridHalves", item);
+                case (TrackAnimal.HalfAndTwoQuaters):
+                    return PartialView("_AnimalTrakingGridHalfAndTwoQuaters", item);
+                case (TrackAnimal.ThreeQuatersAndQuater):
+                    return PartialView("_AnimalTrakingGridThreeQuatersAndQuater", item);
+                default:
+                    return new PartialViewResult();
+            }
+        }
+
+        public JsonResult AnimalGrid_Read([DataSourceRequest] DataSourceRequest request, int orderId)
+        {
+            var resultForGrid = _coldWeightEntryService.GetItems(orderId);
+            return Json(resultForGrid.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult OrderDetailGrid_Read([DataSourceRequest] DataSourceRequest request, int orderId)
+        {
+            return Json(_orderDetailService.GetItems(orderId).ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult OrderDetailGrid_Create([DataSourceRequest] DataSourceRequest request, OrderDetailItem detailItem)
+        {
+            if (detailItem != null && ModelState.IsValid)
+            {
+                detailItem.Id = _orderDetailService.Add(detailItem);
+            }
+            FillProductQuantities(detailItem);
+
+            return Json(new[] { detailItem }.ToDataSourceResult(request, ModelState), JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult OrderDetailGrid_Update([DataSourceRequest] DataSourceRequest request, OrderDetailItem detailItem)
+        {
+            if (detailItem != null && ModelState.IsValid)
+            {
+                _orderDetailService.Edit(detailItem);
+            }
+
+            FillProductQuantities(detailItem);
+
+            return Json(new[] { detailItem }.ToDataSourceResult(request, ModelState), JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult OrderDetailGrid_Destroy([DataSourceRequest] DataSourceRequest request, OrderDetailItem detailItem)
+        {
+            if (detailItem != null)
+            {
+                _orderDetailService.Delete(detailItem);
+                this.ShowNotification(NotificationType.Success, "Detail item was successfully removed from Order.");
+            }
+
+            return Json(ModelState.ToDataSourceResult(), JsonRequestBehavior.AllowGet);
+        }
+
+
+        public ActionResult Complete(int orderId, OmsEntryMode mode)
+        {
+            this.ShowNotification(NotificationType.Success, string.Format("Order {0} was successfully {1}.", orderId, mode == OmsEntryMode.Add ? "added" : "edited"), true);
+            return RedirectToAction("Index");
+        }
+
+
+        public JsonResult GetProductsByCustomer(int id)
+        {
+            return Json(_orderDetailService.GetProductsByCustomer(id), JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetCustomerLocations(int id)
+        {
+            return Json(_orderDetailService.GetCustomerLocations(id), JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetCustomerPreferences(int? customerId)
+        {
+            return Json(_orderService.GetCustomerPreferences(customerId), JsonRequestBehavior.AllowGet);
+        }
+
+        #endregion
+
+        #region Report
+
+        public ActionResult GetReportsTab(OrderViewModel viewModel)
+        {
+            if (viewModel.Id == null)
+            {
+                return new EmptyResult();
+            }
+
+            return PartialView("_Report", _orderReportService.Get((viewModel.Id.Value)));
+        }
+
+        private Label[] GetLabelsByOrderDetailsId(List<OrderDetail> orderDetailsForSides)
+        {
+            var orderDetails = orderDetailsForSides
+                .Select(x => x.Id)
+                .ToArray();
+
+            var labels = _labelRepository
+                .FindAll(x => orderDetails.Contains(x.OrderDetailId))
+                .OrderBy(x => x.ItemCode)
+                .ToArray();
+
+            return labels;
+        }
+
+        [HttpPost]
+        public PartialViewResult GenerateReport(OrderReportViewModel viewModel)
+        {
+            string reportType = ReportService.GetReportType(viewModel.ReportType);
+            if (reportType == null)
+                ModelState.AddModelError("ReportType", "Report Type is invalid");
+
+            if (!viewModel.ReportIds.Any())
+                ModelState.AddModelError("ReportIds", "Report type is required");
+
+            Dictionary<string, string> files = null;
+
+            if (ModelState.IsValid)
+            {
+                var orderId = viewModel.OrderId;
+                var reportsFolder = string.Format("~/Documents/Reports/{0}/", orderId);
+                var order = _orderRepository.Get(orderId);
+                bool isCustom = order.Customer.CustomerTypeId == OmsCustomerType.Custom;
+
+                List<CustomerLocation> locations = null;
+                List<AnimalOrderDetail> animalOrderDetails = null;
+                List<ColdWeightEntryDetail> coldWeightDetails = null;
+
+                if (isCustom)
+                {
+                    var coldWeightEntry = _coldWeightEntryRepository.GetByOrderId(orderId);
+                    if (coldWeightEntry == null)
+                    {
+                        ModelState.AddModelError("ColdWeight", "No AnimalNumbers");
+
+                        OrderReportViewModel reportViewModel = _orderReportService.Get(viewModel.OrderId);
+                        return PartialView("_Report", reportViewModel);
+                    }
+                    coldWeightDetails = coldWeightEntry.ColdWeightEntryDetails.ToList();
+
+                    // All records from dbo.AnimalOrderDetail by Order
+                    animalOrderDetails = coldWeightDetails.SelectMany(cw => cw.AnimalOrderDetails).ToList();
+                }
+
+                foreach (var report in viewModel.ReportIds)
+                {
+                    var reportName = ReportService.GetReportName(report);
+
+                    DeleteOldReports(reportsFolder, reportName + "*." + reportType);
+
+                    if (isCustom)
+                    {
+                        foreach (var detail in coldWeightDetails)
+                        {
+                            var sides = _coldWeightEntryDetailRepository.GetSideWeigths(detail.Id);
+                            foreach (var side in sides)
+                            {
+                                if (!side.Value.HasValue) continue;
+
+                                var orderDetailsForSides = animalOrderDetails.Where(a => a.ColdWeightDetailId == detail.Id)
+                                                                             .Select(a => a.OrderDetail).ToList()
+                                                                             .FindAll(x => x.SideTypeId == side.Key);
+
+                                var path = string.Format("{0}{1}BackTag{2}{3}{4}.{5}", reportsFolder, reportName,
+                                    detail.AnimalNumber, side.Key, side.Value, reportType);
+
+                                var filename = GetFilenameSafe(path);
+
+                                switch (reportName)
+                                {
+                                    case OrderReportViewModel.ReportTypes.ProductionManifest:
+                                        ReportService.GenerateProductionManifest(order, orderDetailsForSides, filename,
+                                            reportType, (UnitsType) viewModel.UnitsType, viewModel.SuppressWeights);
+                                        break;
+
+                                    case OrderReportViewModel.ReportTypes.ShippingManifest:
+                                        var location = _customerLocationRepository.Get(side.Value.Value);
+
+                                        ReportService.GenerateShippingManifest(order, orderDetailsForSides, filename,
+                                            location, reportType, (UnitsType) viewModel.UnitsType, viewModel.SuppressWeights);
+                                        break;
+
+                                    case OrderReportViewModel.ReportTypes.ProductionDetail:
+                                    {
+                                        var currentLocation = _customerLocationRepository.Get(side.Value.Value);
+                                        var labels = GetLabelsByOrderDetailsId(orderDetailsForSides);
+
+                                        ReportService.GenerateProductionManifestDetail(order, labels, filename,
+                                            currentLocation, reportType, viewModel.SuppressWeights);
+                                        break;
+                                    }
+                                    case OrderReportViewModel.ReportTypes.YieldReport:
+                                    {
+                                        var coldWeightsDeatails = _coldWeightEntryService.GetItems(orderId).ToList();
+                                        var labels = GetLabelsByOrderDetailsId(orderDetailsForSides);
+
+                                        ReportService.GenerateYield(order, labels, filename, reportType, coldWeightsDeatails);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (reportName == OrderReportViewModel.ReportTypes.ProductionManifest)
+                        {
+                            var path = string.Format("{0}{1}.{2}", reportsFolder, reportName, reportType);
+                            var filename = GetFilenameSafe(path);
+                            
+                            var orderDetails = _orderDetailRepository.FindAll(x => x.OrderId == order.Id).ToList();
+
+                            ReportService.GenerateProductionManifest(order, orderDetails, filename, reportType, (UnitsType)viewModel.UnitsType, viewModel.SuppressWeights);
+                        }
+
+                        if (reportName == OrderReportViewModel.ReportTypes.ShippingManifest)
+                        {
+                            locations = GetLocations(order).ToList();
+
+                            foreach (var currentLocation in locations)
+                            {
+                                var location = currentLocation;
+                                var path = string.Format("{0}{1}_{2}.{3}", reportsFolder, reportName, location.Id, reportType);
+                                var filename = GetFilenameSafe(path);
+
+                                var orderDetails = _orderDetailRepository
+                                    .FindAll(x => x.OrderId == orderId && x.CustomerLocationId == location.Id)
+                                    .ToArray();
+
+                                ReportService.GenerateShippingManifest(order, orderDetails, filename, location,
+                                    reportType, (UnitsType)viewModel.UnitsType, viewModel.SuppressWeights);
+                            }
+                        }
+
+                        if (reportName == OrderReportViewModel.ReportTypes.ProductionDetail)
+                        {
+                            locations = locations ?? GetLocations(order).ToList();
+
+                            foreach (var currentLocation in locations)
+                            {
+                                var location = currentLocation;
+
+                                var path = string.Format("{0}{1}{2}.{3}", reportsFolder, reportName,
+                                    location.Id,
+                                    reportType);
+                                var filename = GetFilenameSafe(path);
+
+                                var orderDetailsForSides = _orderDetailRepository
+                                    .FindAll(x => x.OrderId == orderId && x.CustomerLocationId == location.Id).ToList();
+
+                                var labels = GetLabelsByOrderDetailsId(orderDetailsForSides);
+
+                                ReportService.GenerateProductionManifestDetail(order, labels, filename, currentLocation,
+                                    reportType, viewModel.SuppressWeights);
+                            }
+                        }
+                        if (reportName == OrderReportViewModel.ReportTypes.YieldReport)
+                        {
+                            var path = string.Format("{0}{1}.{2}", reportsFolder, reportName, reportType);
+                            var filename = GetFilenameSafe(path);
+                            var coldWeightsDeatails = _coldWeightEntryService.GetItems(order.Id).ToList();
+                            var orderDetails = _orderDetailRepository.FindAll(x => x.OrderId == order.Id).ToList();
+                            var labels = GetLabelsByOrderDetailsId(orderDetails);
+
+                            ReportService.GenerateYield(order, labels, filename, reportType, coldWeightsDeatails);
+                        }
+                    }
+                }
+
+                files = Directory.GetFiles(GetFilenameSafe(reportsFolder), "*." + reportType,
+                    SearchOption.TopDirectoryOnly)
+                    .Select(Path.GetFileName)
+                    .ToDictionary(x => x, x => string.Format("{0}{1}", reportsFolder, x));
+            }
+
+            FillLookups();
+            OrderReportViewModel model = _orderReportService.Get(viewModel.OrderId);
+            model.ReportIds = viewModel.ReportIds;
+            model.ReportFiles = files;
+            return PartialView("_Report", model);
+        }
+
+        private static IEnumerable<CustomerLocation> GetLocations(Order order)
+        {
+            return order
+                .OrderDetail
+                .Select(x => x.CustomerLocation)
+                .Distinct();
+        }
+
+        private string GetFilenameSafe(string path)
+        {
+            var filename = Server.MapPath(path);
+            Server.CreateDirectoryIfNotExists(filename);
+            return filename;
+        }
+
+        private void DeleteOldReports(string directoryPath, string mask)
+        {
+            var directoryInfo = new DirectoryInfo(Server.MapPath(directoryPath));
+            if (!directoryInfo.Exists) return;
+
+            foreach (var fileInfo in directoryInfo.GetFiles(mask))
+            {
+                fileInfo.Delete();
+            }
+        }
+
+        #endregion
+
+        #region Status
+
+        public ActionResult SetStatus(int orderId, OmsStatus status)
+        {
+            _orderService.SetStatus(orderId, status);
+            this.ShowNotification(NotificationType.Success, string.Format("Order has been marked {0}.", status), true);
+            return RedirectToAction("Index");
+        }
+
+        #endregion
+
+        private void FillLookups(OrderViewModel model = null)
+        {
+            if (model != null) model.Customers = new SelectList(_lookupService.GetCustomers(), "Id", "Name");
+            if (model != null) model.Statuses = new SelectList(_lookupService.GetStatuses(), "Id", "Name");
+
+            ViewBag.Customers = _lookupService.GetCustomers();
+            ViewBag.Statuses = _lookupService.GetStatuses();
+            ViewBag.Regions = _lookupService.GetRegions();
+            ViewBag.Refrigerations = _lookupService.GetRefrigerations();
+            ViewBag.QualityGrades = _lookupService.GetQualityGrades();
+        }
+
+        public ActionResult ViewPastOrders(int? customerId)
+        {
+            if (customerId == null)
+            {
+                return new EmptyResult();
+            }
+
+            return PartialView(customerId.Value);
+        }
+
+        public ActionResult GetByCustomer([DataSourceRequest] DataSourceRequest request, int? customerId)
+        {
+            return Json(_orderSearchService.Search(new OrderSearchViewModel { CustomerId = customerId }).ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetProductQuantities(int productId)
+        {
+            var product = GetProduct(productId);
+            return Json(new { product.BagPieceQuantity, product.BoxBagQuantity }, JsonRequestBehavior.AllowGet);
+        }
+
+        private void FillProductQuantities(OrderDetailItem detailItem)
+        {
+            var product = GetProduct(detailItem.ProductId);
+            detailItem.BagPieceQuantity = product.BagPieceQuantity;
+            detailItem.BoxBagQuantity = product.BoxBagQuantity;
+        }
+
+        private Product GetProduct(int productId)
+        {
+            return _productRepository.Get(productId);
+        }
+
+        [HttpGet]
+        public ActionResult GetCustomers()
+        {
+            return Json(Customers, JsonRequestBehavior.AllowGet);
+        }
+     
+    }
+}

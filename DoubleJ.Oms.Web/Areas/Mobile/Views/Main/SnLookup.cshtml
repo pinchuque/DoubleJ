@@ -1,0 +1,46 @@
+﻿@model DoubleJ.Oms.Model.ViewModels.Mobile.SnLookupViewModel
+<div id="sn-lookup">
+    <form name="form-sn-lookup" method="POST">
+        <span id="serial-number">Serial Number</span><input id="lookup-input" type="text" name="serialNumber">
+                                                     <input id="lookup-button" class="jbutton" type="submit" value="Lookup">
+    </form>
+    @if (IsPost)
+    {   if(Model != null) 
+        {
+            <table>
+                <tr>
+                    <td style="text-align: right">Order No</td>
+                    <td>@Model.OrderNumber</td>
+                </tr>
+                <tr>
+                    <td style="text-align: right">Product Id</td>
+                    <td>@Model.ProductId</td>
+                </tr>
+                <tr>
+                    <td style="text-align: right">Current Location</td>
+                    <td>@Model.CurrentLocation</td>
+                </tr>
+            </table>
+            @Html.ActionLink("Reset location to finished goods", "ResetLocation", new {serialNumber = Model.SerialNumber}, new {@class = "jbutton reset-location"})
+        }
+        else
+        {
+            <table>
+                <tr></tr>
+                <tr>
+                    <td style="width: 130px; padding-top: 30px;">No records found!</td>
+                </tr>
+            </table>
+        }
+    }
+    @Html.ActionLink("Main Menu", "index", null,  new { @class = "jbutton",  @id = "main-menu-link"})
+    
+</div>
+<script type="text/javascript">   
+     window.onload = function() {   
+         var id = document.getElementById('lookup-input');
+         if (id) {
+            id.focus();  
+         }   
+    }
+</script>

@@ -1,0 +1,11 @@
+﻿@model DoubleJ.Oms.Model.ViewModels.Internal.Fulfillment.SearchBySnViewModel
+
+<table>
+    <tr>
+        <td>@Html.DisplayFor(x => x.SerialNumber)</td>
+        <td>@Html.DisplayFor(x => x.ItemCode)</td>
+        <td>Order @Html.DisplayFor(x => x.OrderId)</td>
+        <td>@Html.DisplayFor(x => x.Status)</td>
+        <td>@Html.ActionLink("View Detail", "ViewDetails", "Fulfillment", new {orderId = Model.OrderId}, new { @class = "k-button" })</td>
+    </tr>
+</table>

@@ -1,0 +1,293 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Web;
+
+using DoubleJ.Oms.Domain.Definitions;
+using DoubleJ.Oms.Domain.Entities;
+using DoubleJ.Oms.Model.Extensions;
+using DoubleJ.Oms.Model.ViewModels.Internal;
+using DoubleJ.Oms.Service.Services.Device;
+using DoubleJ.Oms.Service.Services.Internal;
+using DoubleJ.Oms.Web.Reports.Model;
+using DoubleJ.Oms.Web.Reports.Template;
+
+using Telerik.Reporting;
+using Telerik.Reporting.Processing;
+using Label = DoubleJ.Oms.Domain.Entities.Label;
+using UnitsType = DoubleJ.Oms.Model.ViewModels.Internal.OrderReportViewModel.ReportUnitsType;
+
+
+namespace DoubleJ.Oms.Web.Reports
+{
+    public static class ReportService
+    {
+        public static void GenerateProductionManifest(Order order, IEnumerable<OrderDetail> details, string fileName,
+            string reportType, UnitsType unitsType = UnitsType.Boxes, bool suppressWeight = false)
+        {
+            var items = GetProductItems(details, unitsType, suppressWeight);
+            var model = new ProductionManifestModel
+            {
+                SlaughterDate = order.SlaughterDate,
+                OrderNumber = order.Id.ToString(CultureInfo.InvariantCulture),
+                SubCaption = order.Customer.GetFormattedAddress(),
+                FileName = fileName,
+            };
+
+            Action<Telerik.Reporting.Report> fill = rep =>
+            {
+                rep.DataSource = items;
+                rep.ReportParameters["Date"].Value = model.Date;
+                rep.ReportParameters["OrderNumber"].Value = model.OrderNumber;
+                rep.ReportParameters["SubCaption"].Value = model.SubCaption;
+                rep.ReportParameters["Logo"].Value = GetLogo(order);
+                rep.ReportParameters["CustomerPO"].Value = GetCustomerPO(order);
+            };
+
+            Telerik.Reporting.Report report;
+            if (suppressWeight) report = new ProductionManifestSuppressWeight();
+            else report = new ProductionManifest();
+
+            fill(report);
+
+            report.CreateReport(model.FileName, reportType);
+        }
+
+        public static void GenerateShippingManifest(Order order, IEnumerable<OrderDetail> details, string fileName,
+            CustomerLocation location, string reportType, UnitsType unitsType = UnitsType.Boxes,
+            bool suppressWeight = false)
+        {
+            var items = GetProductItems(details, unitsType, suppressWeight);
+            var model = new ShippingManifestModel
+            {
+                SlaughterDate = order.SlaughterDate,
+                OrderNumber = order.Id.ToString(CultureInfo.InvariantCulture),
+                SubCaption = order.Customer.GetFormattedAddress(),
+                FileName = fileName,
+                Company = order.Customer.Name,
+                ShipTo = location.Name,
+            };
+
+            Action<Telerik.Reporting.Report> fill = rep =>
+            {
+                rep.DataSource = items;
+                rep.ReportParameters["Date"].Value = model.Date;
+                rep.ReportParameters["OrderNumber"].Value = model.OrderNumber;
+                rep.ReportParameters["SubCaption"].Value = model.SubCaption;
+                rep.ReportParameters["TopCaption"].Value = model.TopCaption;
+                rep.ReportParameters["Logo"].Value = GetLogo(order);
+                rep.ReportParameters["CustomerPO"].Value = GetCustomerPO(order);
+            };
+
+            Telerik.Reporting.Report report;
+            if (suppressWeight) report = new ShippingManifestSuppressWeight();
+            else report = new ShippingManifest();
+
+            fill(report);
+
+            report.CreateReport(model.FileName, reportType);
+        }
+
+        public static void GenerateProductionManifestDetail(Order order, IEnumerable<Label> labels, string fileName,
+            CustomerLocation location, string reportType, UnitsType unitsType = UnitsType.Boxes, bool suppressWeight = false)
+        {
+            var items = labels.Where(c => (int)c.TypeId == (int)unitsType).GroupBy(x => x.SerialNumber)
+                .Select(x => new ProductDetailItem
+                {
+                    ProductDescription = x.First().Description,
+                    SpeciesName = x.First().Species,
+                    ProductCode = x.First().ItemCode,
+                    Date = x.First().ProcessDate,
+                    WeightKg = suppressWeight ? 0 : Convert.ToDecimal(LbsToKg(GetNetWeight(x.First()))),
+                    WeightLbs = suppressWeight ? 0 : Convert.ToDecimal(GetNetWeight(x.First()))
+                })
+                .ToList();
+
+            var model = new ProductionManifestDetailModel
+            {
+                SlaughterDate = order.SlaughterDate,
+                Company = order.Customer.Name,
+                PoNumber = order.Id.ToString(CultureInfo.InvariantCulture),
+                ShipTo = location.Name,
+                FileName = fileName,
+            };
+
+            Action<Telerik.Reporting.Report> fill = rep =>
+            {
+                rep.DataSource = items;
+                rep.ReportParameters["Logo"].Value = GetLogo(order);
+                rep.ReportParameters["PONumber"].Value = model.PoNumber;
+                rep.ReportParameters["SubCaption"].Value = model.SubCaption;
+                rep.ReportParameters["CustomerPO"].Value = GetCustomerPO(order);
+            };
+
+            Telerik.Reporting.Report report;
+            if (suppressWeight) report = new ProductionManifestDetailSuppressWeight();
+            else report = new ProductionManifestDetail();
+
+            fill(report);
+
+            report.CreateReport(model.FileName, reportType);
+        }
+
+        public static void GenerateYield(Order order, IEnumerable<Label> labels, string fileName, string reportType, List<ColdWeightEntryDetailItem> weights,
+            UnitsType unitsType = UnitsType.Boxes)
+        {
+            var items = labels.Where(c => (int)c.TypeId == (int)unitsType)
+                .GroupBy(x => x.ItemCode)
+                .Select(x =>
+                {
+                    return new YieldReportItem
+                    {
+                        Description = x.First().Description,
+                        ItemCode = x.First().ItemCode,
+                        Bxs = x.GroupBy(y => y.SerialNumber).Select(z => z.First()).Count(),
+                        Weight = Convert.ToDecimal(x.Sum(y => GetNetWeight(y)))
+                    };
+                }).ToList();
+
+            var model = new YieldReportModel
+            {
+                SlaughterDate = order.SlaughterDate,
+                ProcessDate = order.ProcessDate,
+                ColdWeight = weights.Sum(x => x.ColdWeight),
+                Carcasses = weights.Count,
+                FileName = fileName,
+                Items = items
+            };
+
+            var report = new YieldReport { DataSource = model.Items };
+            report.ReportParameters["Logo"].Value = GetLogo(order);
+            report.ReportParameters["Date"].Value = model.KillDate;
+            report.ReportParameters["ColdWeight"].Value = model.ColdWeight;
+            report.ReportParameters["CustomerPO"].Value = GetCustomerPO(order);
+            report.ReportParameters["Carcasses"].Value = model.Carcasses;
+            report.ReportParameters["QualityGrade"].Value = GetQualityGrade(order);
+            report.CreateReport(model.FileName, reportType);
+        }
+
+        internal static string GetLogo(Order order)
+        {
+            return order.With(x => x.Customer).With(x => x.LogoFileName) ??
+                   HttpContext.Current.Server.MapPath("~/Content/Images/LogoReport.png");
+        }
+
+        internal static void CreateReport(this IReportDocument report, string fileName, string renderType)
+        {
+            var instanceReportSource = new InstanceReportSource { ReportDocument = report };
+            var result = new ReportProcessor().RenderReport(renderType, instanceReportSource, null);
+
+            using (var fileStream = new FileStream(fileName, FileMode.Create))
+            {
+                fileStream.Write(result.DocumentBytes, 0, result.DocumentBytes.Length);
+                fileStream.Flush();
+            }
+        }
+
+        internal static List<ProductItem> GetProductItems(IEnumerable<OrderDetail> details, UnitsType unitsType,
+            bool suppressWeight)
+        {
+            var result = details
+                .GroupBy(x => x.Product)
+                .Where(x => x.SelectMany(l => l.Label).Any(c => (int)c.TypeId == (int)unitsType))
+                .OrderBy(x => x.Key.Upc)
+                .Select(productOrderDetails =>
+                {
+                    var labels =
+                        productOrderDetails.SelectMany(y => y.Label)
+                            .Where(l => (int)l.TypeId == (int)unitsType)
+                            .GroupBy(s => s.SerialNumber)
+                            .Select(d => d.First())
+                            .ToList();
+
+                    int units = 0;
+                    switch (unitsType)
+                    {
+                        case UnitsType.Boxes:
+                            units = labels.Count;
+                            break;
+
+                        case UnitsType.Bags:
+
+                            units = productOrderDetails.SelectMany(y => y.Label).GroupBy(x => x.SerialNumber)
+                                .Count(l => l.First().TypeId == OmsLabelType.Bag);
+                            break;
+                            
+                    }
+
+                    return new ProductItem
+                    {
+                        Id = productOrderDetails.Key.Upc,
+                        Name = productOrderDetails.Key.EnglishDescription,
+                        WeightLbs = suppressWeight ? 0 : Convert.ToDecimal(labels.Sum(label => GetNetWeight(label))),
+                        WeightKg = suppressWeight ? 0 : Convert.ToDecimal(LbsToKg(labels.Sum(label => GetNetWeight(label)))),
+                        Units = units
+                    };
+                })
+                .ToList();
+
+            return result;
+        }
+
+        private static double GetNetWeight(Label label)
+        {
+            return LabelCreateService.GetNetPoundWeight(label.PoundWeight, OmsLabelType.Box, label.OrderDetail);
+        }
+
+        private static double LbsToKg(double weight)
+        {
+            return LabelCreateService.GetCorrectKilogramWeight(weight);
+        }
+
+        internal static string GetFormattedAddress(this Customer customer)
+        {
+            return string.Format("{0} {1} {2}", customer.Name, string.Empty, string.Empty);
+        }
+
+        internal static void CreateDirectoryIfNotExists(this HttpServerUtilityBase server, string path,
+            bool isFilePath = true)
+        {
+            if (isFilePath)
+            {
+                path = Path.GetDirectoryName(path);
+            }
+
+            if (path != null && !Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+        }
+
+        private static string GetCustomerPO(Order order)
+        {
+            return (order.With(x => x.Customer).With(x => x.PONumber) ?? order.POCustomer) ?? string.Empty;
+        }
+
+        private static string GetQualityGrade(Order order)
+        {
+            return order.QualityGrade == null ? string.Empty : order.QualityGrade.Name;
+        }
+
+        public static string GetReportType(int reportType)
+        {
+            switch (reportType)
+            {
+                case (int)OrderReportViewModel.ReportReturnTypes.PDF:
+                    return "PDF";
+                case (int)OrderReportViewModel.ReportReturnTypes.Excel:
+                    return "XLS";
+                default:
+                    return null;
+            }
+        }
+
+        public static OrderReportViewModel.ReportTypes GetReportName(int reportTypeId)
+        {
+            OrderReportViewModel.ReportTypes reportName;
+            Enum.TryParse(reportTypeId.ToString(), out reportName);
+            return reportName;
+        }
+    }
+}

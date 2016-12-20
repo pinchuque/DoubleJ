@@ -1,0 +1,273 @@
+﻿
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using DoubleJ.Oms.Domain.Definitions;
+using DoubleJ.Oms.Domain.Entities;
+using DoubleJ.Oms.Model.Interfaces;
+using DoubleJ.Oms.Model.ViewModels.Internal;
+using DoubleJ.Oms.Service.Interfaces;
+using DoubleJ.Oms.Web.Extensions;
+using DoubleJ.Oms.Web.Reports;
+using DoubleJ.Oms.Web.Reports.Template;
+using Kendo.Mvc.Extensions;
+using Kendo.Mvc.UI;
+using MuscovyTechnology.Mvc.Notification;
+using PdfSharp.Drawing;
+using PdfSharp.Pdf;
+using Telerik.Reporting;
+using Telerik.Reporting.Processing;
+
+namespace DoubleJ.Oms.Web.Areas.Internal.Controllers
+{
+    public class AdminController : Controller
+    {
+        private readonly IManageCaseService _manageCaseService;
+        private readonly ICaseSizeRepository _caseSizeRepository;
+        private readonly ICustomerTypeRepository _customerTypeRepository;
+        private readonly IAnimalLabelRepository _animalLabelRepository;
+        private readonly ISpeciesRepository _speciesRepository;
+        private readonly ILabelService _labelService;
+
+        public AdminController(IManageCaseService manageCaseService
+            ,ICaseSizeRepository caseSizeRepository
+            , ICustomerTypeRepository customerTypeRepository
+            , IAnimalLabelRepository animalLabelRepository
+            ,ISpeciesRepository speciesRepository
+            , ILabelService labelService)
+        {
+            _manageCaseService = manageCaseService;
+            _caseSizeRepository = caseSizeRepository;
+            _customerTypeRepository = customerTypeRepository;
+            _animalLabelRepository = animalLabelRepository;
+            _speciesRepository = speciesRepository;
+            _labelService = labelService;
+        }
+
+        [HttpGet]
+        public ActionResult Index()
+        {
+            InitTareValues();
+            InitLabelsValues();
+            return View("Index");
+        }
+
+        #region Tare Weights
+
+        private void InitTareValues()
+        {
+            var caseTypes = _manageCaseService.GetTypes().ToList().Select(x => new CaseTypeViewModel()
+            {
+                Name = x.Name,
+                Id = x.Id
+            }).ToList();
+            ;
+            ViewBag.CaseTypes = caseTypes;
+            var customerTypes = _customerTypeRepository.GetAll().ToList().Select(x => new CustomerTypeViewModel()
+            {
+                Id = x.Id,
+                Name = x.Name
+            }).ToList();
+            var defaultCustomer = new CustomerTypeViewModel()
+            {
+                Id = 0,
+                Name = "Both"
+            };
+            customerTypes.Add(defaultCustomer);
+            Session["CustomerTypes"] = customerTypes;
+            ViewBag.DefaultCustomerType = defaultCustomer;
+            ViewBag.DefaultCaseType = caseTypes.FirstOrDefault();
+        }
+
+        public ActionResult GetTareWeightsResultGrid([DataSourceRequest] DataSourceRequest request)
+        {
+            InitTareValues();
+            var sizes = _caseSizeRepository.GetAll().ToList().Select(x=>new TareWeightViewModel()
+            {
+                CaseType = new CaseTypeViewModel()
+                {
+                    Id = x.CaseType.Id,
+                    Name = x.CaseType.Name
+                },
+                CustomerType = new CustomerTypeViewModel()
+                {
+                    Id = x.CustomerType != null ? x.CustomerTypeId.GetValueOrDefault(): 0,
+                    Name = x.CustomerType != null? x.CustomerType.Name:"Both"
+                },
+                Name = x.Name,
+                Id = x.Id,
+                TareWeight_ = x.TareWeight
+            }).ToList();
+            return Json(sizes.ToDataSourceResult(request));
+        }
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult UpdateCaseSize([DataSourceRequest] DataSourceRequest request,
+           [Bind(Prefix = "models")]IEnumerable<TareWeightViewModel> products)
+        {
+            if (products != null && ModelState.IsValid)
+            {
+                foreach (var tareWeightViewModel in products)
+                {
+                    var caseSize = tareWeightViewModel.ToCaseSize();
+                    if (tareWeightViewModel.CustomerType.Id == 0)
+                    {
+                        caseSize.CustomerType = null;
+                        caseSize.CustomerTypeId = null;
+                    }
+                    _caseSizeRepository.Update(caseSize);
+                    _caseSizeRepository.Save();
+                }
+            }
+            return Json(products.ToDataSourceResult(request, ModelState));
+        }
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult CreateCaseSize([DataSourceRequest] DataSourceRequest request,
+            [Bind(Prefix = "models")]IEnumerable<TareWeightViewModel> products)
+        {
+            if (products != null && ModelState.IsValid)
+            {
+                foreach (var tareWeightViewModel in products)
+                {
+                    var caseSize = tareWeightViewModel.ToCaseSize();
+                     var savedItem = _caseSizeRepository.Add(caseSize);
+                    tareWeightViewModel.Id = savedItem.Id;
+                }
+            }
+            return Json(products.ToDataSourceResult(request, ModelState));
+        }
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult DeleteCaseSize([DataSourceRequest] DataSourceRequest request,
+            [Bind(Prefix = "models")] IEnumerable<TareWeightViewModel> products)
+        {
+            foreach (var tareWeightViewModel in products)
+            {
+                _caseSizeRepository.Remove(tareWeightViewModel.Id);
+            }
+            return Json(products.ToDataSourceResult(request, ModelState));
+        }
+
+        #endregion
+        #region Animal Lables
+
+        public ActionResult GetAnimalLabelsResultGrid([DataSourceRequest] DataSourceRequest request)
+        {
+            var labels = _animalLabelRepository.GetAll().ToList().Select(x => new AnimalLabelsViewModel()
+            {
+                Id = x.Id,
+                Name = x.Name,
+                IsOrganic = x.IsOrganic,
+                Species = new SpeciesViewModel()
+                {
+                    Id = x.SpeciesId,
+                    Name = x.Species.Name
+                }
+            }).ToList();
+            return Json(labels.ToDataSourceResult(request));
+        }
+
+        private void InitLabelsValues()
+        {
+            var species = _speciesRepository.GetAll().ToList().Select(x => new SpeciesViewModel()
+            {
+                Name = x.Name,
+                Id = x.Id
+            }).ToList();
+            ViewBag.LabelTypes = species;
+            ViewBag.DefaultLabelType = species.FirstOrDefault();
+        }
+        [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult UpdateAnimalLabel([DataSourceRequest] DataSourceRequest request,
+          [Bind(Prefix = "models")]IEnumerable<AnimalLabelsViewModel> labels)
+        {
+            if (labels != null && ModelState.IsValid)
+            {
+                foreach (var label in labels)
+                {
+                    var caseSize = label.ToAnimalLabel();
+                    _animalLabelRepository.Update(caseSize);
+                    _animalLabelRepository.Save();
+                }
+            }
+            return Json(labels.ToDataSourceResult(request, ModelState));
+        }
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult CreateAnimalLabel([DataSourceRequest] DataSourceRequest request,
+            [Bind(Prefix = "models")]IEnumerable<AnimalLabelsViewModel> labels)
+        {
+            if (labels != null && ModelState.IsValid)
+            {
+                foreach (var label in labels)
+                {
+                    var caseSize = label.ToAnimalLabel();
+                    var savedItem = _animalLabelRepository.Add(caseSize);
+                    label.Id = savedItem.Id;
+                }
+            }
+            return Json(labels.ToDataSourceResult(request, ModelState));
+        }
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult DeleteAnimalLabel([DataSourceRequest] DataSourceRequest request,
+            [Bind(Prefix = "models")] IEnumerable<AnimalLabelsViewModel> labels)
+        {
+            foreach (var label in labels)
+            {
+                _animalLabelRepository.Remove(label.Id);
+            }
+            return Json(labels.ToDataSourceResult(request, ModelState));
+        }
+        #endregion
+
+        #region Reports
+
+        public ActionResult Reports()
+        {
+            var model = new AdminReportsViewModel()
+            {
+                Date = DateTime.Today
+            };
+            return PartialView("_Reports",model);
+        }
+
+        [HttpGet]
+        public ActionResult GenerateReport(AdminReportsViewModel adminReportsViewModel)
+        {
+            var reportData = _labelService.GetLabelReports(adminReportsViewModel.SideId,adminReportsViewModel.Date);
+            Action<Telerik.Reporting.Report> fill = rep =>
+            {
+                rep.DataSource = reportData.Items;
+                rep.ReportParameters["Date"].Value = reportData.Date.ToShortDateString();
+            };
+
+            Telerik.Reporting.Report report;
+            report = new LabelsReport();
+
+            fill(report);
+            var instanceReportSource = new InstanceReportSource { ReportDocument = report };
+            var result = new ReportProcessor().RenderReport("PDF", instanceReportSource, null);
+            var reportFolder = ConfigurationManager.AppSettings["AdminReportFolder"];
+            if (!Directory.Exists(reportFolder))
+            {
+                Directory.CreateDirectory(reportFolder);
+            }
+            var reportName = string.Concat(reportFolder, reportData.Date.ToString(@"yyyyMMdd"), " - ", "daily report ", ".pdf");
+            using (var fileStream = new FileStream(reportName, FileMode.Create))
+            {
+                fileStream.Write(result.DocumentBytes, 0, result.DocumentBytes.Length);
+                fileStream.Flush();
+            }
+            this.ShowNotification(NotificationType.Success, string.Concat(reportName, "successfully  generated."));
+
+            return Json(ModelState.ToDataSourceResult(), JsonRequestBehavior.AllowGet);
+        }
+        #endregion
+    }
+}

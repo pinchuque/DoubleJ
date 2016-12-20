@@ -1,0 +1,99 @@
+﻿using System;
+using System.Windows.Forms;
+using DoubleJ.Oms.Domain.Definitions;
+using DoubleJ.Oms.Model.Models;
+using DoubleJ.Oms.Service.Interfaces;
+
+namespace TestHarness
+{
+    public partial class LauchPad : Form
+    {
+        private readonly ILabelCreateService _labelCreateService;
+
+        private delegate void SetTextCallback(string text);
+        private readonly Zq375 _scale;
+        private int _activeOrderDetailId;
+
+        public LauchPad(ILabelCreateService labelCreateService)
+        {
+            _labelCreateService = labelCreateService;
+            InitializeComponent();
+            FlushScaleButton.Enabled = false;
+            _scale = new Zq375();
+        }
+
+        private void ExitButton_Click(object sender, EventArgs e)
+        {
+            _scale.Disconnect();
+            Close();
+        }
+
+        private void ClearOutputButton_Click(object sender, EventArgs e)
+        {
+            OutputTextBox.Text = String.Empty;
+        }
+
+        private void DisconnectButton_Click(object sender, EventArgs e)
+        {
+            _scale.Disconnect();
+            _scale.Reading -= RecordReading;
+            OutputTextBox.Text += "disconnected from scale";
+            OutputTextBox.Text += Environment.NewLine;
+        }
+
+        private void ConnectButton_Click(object sender, EventArgs e)
+        {
+            bool isConnected = _scale.Connect();
+
+            OutputTextBox.Text += isConnected ? "connected to scale" : "unable to connect to scale";
+            OutputTextBox.Text += Environment.NewLine;
+
+            _scale.Reading += RecordReading;
+        }
+
+        private void RecordReading(Zq375 zq375, ReadingEventArgs args)
+        {
+            if (args.Weight.Status == OmsScaleWeighStatus.Success)
+            {
+                if ( _activeOrderDetailId > 0)
+                {
+                    _labelCreateService.ProduceLabel(_activeOrderDetailId, args.Weight, OmsLabelType.Bag,null);
+                    DisplayScaleOutput(args.Weight.FormattedDisplay);
+                }
+                else
+                {
+                    DisplayScaleOutput(String.Format("Order Detail must be set to value"));
+                }
+            }
+            else
+            {
+                DisplayScaleOutput(String.Format("error reading scale. Scale Status: [{0}]", args.Weight.Status));
+            }
+        }
+
+        private void DisplayScaleOutput(string output)
+        {
+            if (OutputTextBox.InvokeRequired)
+            {
+                Invoke(new SetTextCallback(DisplayScaleOutput), new object[] { output });
+            }
+            else
+            {
+                OutputTextBox.Text += output + Environment.NewLine;
+            }
+        }
+
+        private void FlushScaleButton_Click(object sender, EventArgs e)
+        {
+            _scale.FlushData();
+        }
+
+        private void SetOrderDetailButton_Click(object sender, EventArgs e)
+        {
+            if (OrderDetailTextBox.Text.Trim().Length > 0)
+            {
+                _activeOrderDetailId = Convert.ToInt32(OrderDetailTextBox.Text);
+            }
+        }
+    }
+}

@@ -1,0 +1,83 @@
+﻿@model CustomerViewModel
+@{
+    Layout = null;
+}
+<div id="customer-products" style="margin-bottom: 40px;">
+    @using (Html.BeginForm("ProcessProducts", "Customer", FormMethod.Post))
+    {
+        @Html.HiddenFor(x => x.Id)
+        @Html.HiddenFor(x => x.BoxLabel)
+        @Html.HiddenFor(x => x.BagLabel)
+        <fieldset class="dataentry">
+            <legend>Product Availability</legend>
+            @* todo: (alexm) implement a search by product
+            <div class="oms-button">
+                <button id="search" type="button">Search</button>
+            </div>*@
+            <div>
+                @Html.LabelFor(model => model.CustomerProductCodeList)
+                <ul class="checkboxList">
+                    @*<li>
+                        @Html.CheckBox("SelectAllProducts", Model.CustomerProductCodeList.All(l => l.IsSelected))
+                        <label for="SelectAllProducts" style="margin-left: 4px;">Select All</label>
+                    </li>*@
+                    <li>
+                        @(Html.Kendo().ListView(Model.CustomerProductCodeList)
+                              .Name("listView")
+                              .TagName("div")
+                              .ClientTemplateId("template")
+                              .Editable()
+                              .DataSource(dataSource => dataSource
+                                  .Model(model => model.Id("Id"))
+                                  .Read(read => read.Action("Products_Read", "Customer"))
+                                  .Update(update => update.Action("Products_Update", "Customer"))
+                                  .PageSize(10)
+                              )
+                              .Pageable()
+                              )
+                    </li>
+                </ul>                
+                
+            </div>
+        </fieldset>
+        @*<div class="buttonRow oms-button">
+            @Html.ActionLink("Cancel", "Index", "Customer", null, new { @class = "k-button" })
+            <input type="submit" name="updateCustomer" class="k-button" value="Update" />
+        </div>*@
+
+    }
+
+    <script type="text/x-kendo-tmpl" id="template">
+        <div class="product">
+            <div>
+                <a class="k-button k-button-icontext k-edit-button" onclick="setDisplayName()" href="\\#"><span class="k-icon k-edit"></span>Edit</a>
+                ${Upc} ${Name} (${Id})
+            </div>
+            <div>Product Code: ${ProductCode || ''}</div>
+            <div>Product Description: ${ProductDescription || ''}</div>
+            <div>Gtin: ${Gtin || ''}</div>
+            <div>Price Per Pound: ${PricePerPound || ''}</div>
+            <br />
+        </div>
+    </script>
+
+</div>
+<script type="text/javascript">
+    $(function() {
+        $('#search').click(function () {
+            var filterTerm = "33333";
+            $("#listView").data("kendoListView").dataSource.filter({
+                logic: "or",
+                filters: [
+                    { field: "ProductCode", operator: "contains", value: filterTerm },
+                ]
+            });
+        });
+    });
+    function setDisplayName() {
+        var id = $('.k-edit-item #Id');
+        var upc = $('.k-edit-item #Upc');
+        var name = $('.k-edit-item #Name');
+        $('.k-edit-item label[for=IsSelected]').text(upc + name + '(' + id + ')');
+    }
+</script>

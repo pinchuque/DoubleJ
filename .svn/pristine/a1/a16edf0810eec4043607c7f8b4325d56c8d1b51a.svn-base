@@ -1,0 +1,35 @@
+﻿@model ColdWeightEntryDetailItem
+
+@(Html.Kendo().Grid<ColdWeightEntryDetailItem>()
+    .Name("CutSheetGrid").AutoBind(Model.IsExist)
+    .Columns(columns =>
+    {
+        columns.Bound(coldWeight => coldWeight.Id).Visible(false);
+        columns.Bound(coldWeight => coldWeight.ColdWeightId).Visible(false);
+        columns.Bound(coldWeight => coldWeight.AnimalNumber).Width(40).Title("Back Tag");
+        columns.Bound(coldWeight => coldWeight.Note).Width(106);
+        columns.Bound(coldWeight => coldWeight.IsGrassFed).Width(25).ClientTemplate("# if(IsGrassFed){#" + "GF" + "#}else{#" + "" + "#}#");
+        columns.Bound(coldWeight => coldWeight.IsOrganic).Width(26).ClientTemplate("# if(IsOrganic){#" + "OR" + "#}else{#" + "" + "#}#");
+        columns.Bound(coldWeight => coldWeight.FirstCustomer.CustomerLocationName).Width(80).Title("Customer");
+        columns.Bound(coldWeight => coldWeight.FirstCustomer.CustomerLocationId).Width(80).Title("Customer").Hidden(true);
+        columns.Command(command => command.Custom("enter").Click("enter")).Width(40).HtmlAttributes(new { @class = "remove-animal-button" });
+        columns.Command(command => command.Custom("email").Click("email")).Width(40).HtmlAttributes(new { @class = "remove-animal-button" });
+        columns.Command(command => command.Custom("dup").Click("dup")).Width(40).HtmlAttributes(new { @class = "remove-animal-button" });
+        columns.Bound(coldWeight => coldWeight.SecondCustomer.CustomerLocationName).Width(80).Title("Customer");
+        columns.Bound(coldWeight => coldWeight.SecondCustomer.CustomerLocationId).Width(80).Title("Customer").Hidden(true);
+        columns.Command(command => command.Custom("enter").Click("enter")).Width(40).HtmlAttributes(new { @class = "remove-animal-button" });
+        columns.Command(command => command.Custom("email").Click("email")).Width(40).HtmlAttributes(new { @class = "remove-animal-button" });
+    })
+    .Editable(editing => editing.Mode(GridEditMode.InCell))
+    .Pageable()
+    .Scrollable()
+    .DataSource(dataSource => dataSource.Ajax()
+        .Model(model => model.Id(coldWeight => coldWeight.Id))
+            .Read(read => read.Action("AnimalGrid_Read", "Orders", new { orderId = @Model.OrderId }))
+        .Update(update => update.Action("Editing_Update", "Orders"))
+    )
+)
+
+
+
+

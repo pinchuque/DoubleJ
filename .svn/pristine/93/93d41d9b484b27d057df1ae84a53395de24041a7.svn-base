@@ -1,0 +1,68 @@
+﻿@using System.Collections
+@model OrderDetailViewModel
+
+<h1>Order Detail Entry</h1>
+<fieldset class="dataentry">
+    <legend>Summary</legend>
+    <div>@Html.LabelFor(model => model.OrderId) @Html.DisplayFor(model => model.OrderId)</div>
+    <div>@Html.LabelFor(model => model.CustomerName) @Html.DisplayFor(model => model.CustomerName)</div>
+    <div>@Html.LabelFor(model => model.StatusName) @Html.DisplayFor(model => model.StatusName)</div>
+    <div>@Html.LabelFor(model => model.RequestedProcessDate) @Html.DisplayFor(model => model.RequestedProcessDate)</div>
+    <div>@Html.LabelFor(model => model.ExpectedHeadNumber) @Html.DisplayFor(model => model.ExpectedHeadNumber)</div>
+</fieldset>
+<fieldset>
+    <legend>Line Items</legend>
+        @(Html.Kendo()
+          .Grid<OrderDetailItem>()
+          .Name("OrderDetailGrid")
+          .Columns(columns =>
+          { // od - orderDetail
+              columns.Bound(od => od.Id).Visible(false);
+              columns.Bound(od => od.OrderId).Visible(false);
+              columns.Bound(od => od.PieceQuantity).Width(60);
+              columns.ForeignKey(od => od.ProductId, (IEnumerable)ViewBag.Products, "ProductId", "ProductName")
+                     .EditorTemplateName("OrderDetailProduct").Width(100);
+              if (Model.BagEnable)
+              {
+                  columns.Bound(od => od.BagPieceQuantity).Width(65).HtmlAttributes(new { id = "BagPieceQuantity"});
+                  columns.Bound(od => od.BoxBagQuantity).Width(60).HtmlAttributes(new { id = "BoxBagQuantity" });
+              }
+              columns.ForeignKey(od => od.CustomerLocationId, (IEnumerable)ViewBag.CustomerLocations, "CustomerLocationId", "CustomerLocationName")
+                     .EditorTemplateName("OrderDetailCustomerLocation").Width(100);
+              columns.Command(command =>
+              {
+                  command.Edit().UpdateText("Save");
+                  command.Destroy();
+              }).Width(140);
+          })
+          .ToolBar(toolbar => toolbar.Create().Text("Add"))
+          .Editable(editable => editable.Mode(GridEditMode.InLine))
+          .Pageable()
+          .Sortable()
+          .Scrollable()
+          .DataSource(dataSource => dataSource
+              .Ajax()
+              .Model(model =>
+              {
+                  model.Id(od => od.Id);
+                  model.Field(od => od.OrderId).DefaultValue(@Model.OrderId);
+                  model.Field(od => od.ProductId).DefaultValue(null);
+                  model.Field(od => od.CustomerLocation).DefaultValue(null);
+                  if (!Model.BagEnable)
+                  {
+                      model.Field(od => od.BagPieceQuantity);
+                      model.Field(od => od.BoxBagQuantity);
+                  }
+              }
+              )
+              .Create(update => update.Action("OrderDetailGrid_Create", "Orders"))
+              .Read(read => read.Action("OrderDetailGrid_Read", "Orders", new { orderId = @Model.OrderId }))
+              .Update(update => update.Action("OrderDetailGrid_Update", "Orders"))
+              .Destroy(update => update.Action("OrderDetailGrid_Destroy", "Orders"))
+          )
+)
+</fieldset>
+<div class="buttonRow oms-button">
+    @Html.ActionLink("Back", "Edit", new { id = @Model.OrderId }, new { @class = "k-button" })
+    @Html.ActionLink("Save", "Complete", new { mode = @Model.OmsEntryMode }, new { @class = "k-button" })
+</div>

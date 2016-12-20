@@ -1,0 +1,54 @@
+﻿using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using DoubleJ.Oms.Domain;
+using DoubleJ.Oms.Domain.Entities;
+using DoubleJ.Oms.Model.Interfaces;
+
+namespace DoubleJ.Oms.Model.Repositories
+{
+    public class OrderDetailRepository : GenericRepository<OrderDetail>, IOrderDetailRepository
+    {
+        public OrderDetailRepository(IOmsContext context) : base(context)
+        {
+        }
+
+        public IEnumerable<OrderDetail> GetAllByOrder(int orderId)
+        {
+            return Context.OrderDetail.Where(x=>x.OrderId==orderId).OrderByDescending(x => x.Id);
+        }
+
+        public IEnumerable<Product> GetAllByCustomerLocationandOrderId(int customerLocationId, int orderId)
+        {
+            return Context.OrderDetail.Where(od => od.CustomerLocationId == customerLocationId).Where(od => od.OrderId == orderId).Select(od => od.Product).ToList();
+        }
+        public IEnumerable<OrderDetail> GetAllByOrderProduct(int orderId, int productId)
+        {
+            return FindAll(od => od.OrderId == orderId && od.ProductId == productId);
+        }
+
+        public OrderDetail GetLabelInfo(int id)
+        {
+            return Query()
+                .Include(x => x.Order)
+                .Include(x => x.Product)
+                .Include(x => x.Order.Customer)
+                .Include(x => x.Order.Customer.LogoType)
+                .Include(x => x.Order.BornRegion)
+                .Include(x => x.Order.ProductOfRegion)
+                .Include(x => x.Order.RaisedRegion)
+                .Include(x => x.Order.SlaughteredRegion)
+                .Include(x => x.Order.Refrigeration)
+                .Include(x => x.Product.CustomerProductData)
+                .Include(x => x.Product.PrimalCut)
+                .Include(x => x.Product.Species)
+                .Include(x => x.Product.SubPrimalCut)
+                .Include(x => x.Product.TrimCut)
+                .FirstOrDefault(x => x.Id == id);
+        }
+        public OrderDetail LastOrderDetail()
+        {
+            return Context.OrderDetail.OrderByDescending(x => x.Id).FirstOrDefault();
+        }
+    }
+}

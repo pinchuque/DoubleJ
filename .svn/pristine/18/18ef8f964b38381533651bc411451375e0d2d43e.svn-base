@@ -1,0 +1,90 @@
+﻿<UserControl
+    x:Class="DoubleJ.Oms.LabelManager.UserControls.OrderSummaryPanel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="300">
+    <telerik:GroupBox
+        x:Name="GroupPanel"
+        Header="{Binding Title}">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition
+                    Width="3*" />
+                <ColumnDefinition
+                    Width="7*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition
+                    Height="*" />
+                <RowDefinition
+                    Height="*" />
+                <RowDefinition
+                    Height="*" />
+                <RowDefinition
+                    Height="*" />
+                <RowDefinition
+                    Height="*" />
+            </Grid.RowDefinitions>
+            <telerik:Label
+                HorizontalContentAlignment="Right"
+                Content="Owner:" />
+            <telerik:Label
+                x:Name="CustomerName"
+                Grid.Column="1"
+                Content="{Binding CustomerName}" />
+            
+            <telerik:Label
+                Grid.Row="1"
+                HorizontalContentAlignment="Right"
+                Content="Locations:" />
+            <telerik:Label
+                x:Name="Locations"
+                Grid.Row="1"
+                Grid.Column="1"
+                Content="{Binding Locations}" />
+            
+            <telerik:Label
+                Grid.Row="2"
+                HorizontalContentAlignment="Right"
+                Content="Pieces:"
+                Visibility="Collapsed" />
+            <telerik:Label
+                x:Name="Pieces"
+                Grid.Row="2"
+                Grid.Column="1"
+                Content="{Binding Pieces}"
+                Visibility="Collapsed" />
+            
+            <telerik:Label
+                Grid.Row="3"
+                HorizontalContentAlignment="Right"
+                Content="Bags:"
+                Visibility="Collapsed" />
+            <telerik:Label
+                x:Name="Bags"
+                Grid.Row="3"
+                Grid.Column="1"
+                Content="{Binding Bags}"
+                Visibility="Collapsed" />
+            
+            <telerik:Label
+                Grid.Row="4"
+                HorizontalContentAlignment="Right"
+                Content="Boxes:"
+                Visibility="Collapsed" />
+            <telerik:Label
+                x:Name="Boxes"
+                Grid.Row="4"
+                Grid.Column="1"
+                Content="{Binding Boxes}"
+                Visibility="Collapsed"  />
+            
+        </Grid>
+    </telerik:GroupBox>
+</UserControl>
+

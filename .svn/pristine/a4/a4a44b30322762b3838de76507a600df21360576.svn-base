@@ -1,0 +1,6 @@
+﻿@model int?
+
+@(Html.Kendo().DropDownList()
+.Name("CustomerLocationId")
+.BindTo(((IEnumerable<OrderDetailCustomerLocationItem>)ViewBag.CustomerLocations).ToSelectListItems(location => location.CustomerLocationName, location => location.CustomerLocationId.ToString(), location => false, " ", ""))
+)

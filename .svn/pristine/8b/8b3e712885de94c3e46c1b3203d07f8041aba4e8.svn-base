@@ -1,0 +1,15 @@
+﻿@model ProductViewModel
+
+<h1>Edit Product</h1>
+
+@using (Html.BeginForm("Edit", "Products", FormMethod.Post, new { id = "ProductEntry" }))
+{
+    @Html.ValidationSummary(true)
+   
+    @Html.Partial("_Form")
+
+    <div class="buttonRow oms-button">
+        @Html.ActionLink("Cancel", "Index", "Products", null, new { @class = "k-button" })
+        <input type="submit" id="btnSubmit" class="k-button" value="Save" />
+    </div>
+}

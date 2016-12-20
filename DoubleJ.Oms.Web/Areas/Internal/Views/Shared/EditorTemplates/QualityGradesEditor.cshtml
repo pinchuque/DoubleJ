@@ -1,0 +1,7 @@
+﻿@model QualityGrade
+
+@(Html.Kendo().DropDownListFor(m => m)
+            .DataValueField("Id")
+            .DataTextField("Name")
+            .BindTo((IEnumerable<QualityGrade>)ViewBag.QualityGrades)
+)

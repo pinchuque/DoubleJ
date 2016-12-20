@@ -1,0 +1,7 @@
+﻿@model AnimalLabelsViewModel
+
+@(Html.Kendo().DropDownListFor(c => c)
+                    .DataValueField("Id")
+                    .DataTextField("Name")
+                .BindTo((IEnumerable<AnimalLabelsViewModel>)ViewBag.AnimalLabels)
+)

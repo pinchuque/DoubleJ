@@ -1,0 +1,143 @@
+﻿@model OrderViewModel
+@{
+    var minDate = new DateTime(1900, 1, 1);
+    var maxDate = new DateTime(2099, 12, 31);
+}
+
+<fieldset class="dataentry">
+    <legend>General</legend>
+    <div>
+        @Html.LabelFor(model => model.CustomerId)
+        @Html.DropDownListFor(model => model.CustomerId, Model.Customers, new {tabIndex = 1})
+        @Html.ValidationMessageFor(model => model.CustomerId)
+    </div>
+    <div>
+        @Html.LabelFor(model => model.POCustomer)
+        @Html.EditorFor(model => model.POCustomer, new {tabIndex = 2})
+        @Html.ValidationMessageFor(model => model.POCustomer)
+    </div>
+    <div>
+        @Html.LabelFor(model => model.StatusId)
+        @Html.DropDownListFor(model => model.StatusId, Model.Statuses, new {tabIndex = 3})
+        @Html.ValidationMessageFor(model => model.StatusId)
+    </div>
+</fieldset>
+
+@Html.HiddenFor(x => x.RequestedProcessDate)
+@Html.HiddenFor(x => x.ReceiveDate)
+@Html.HiddenFor(x => x.SlaughterDate)
+@Html.HiddenFor(x => x.ProcessDate)
+@Html.HiddenFor(x => x.ExpectedHeadNumber)
+@Html.HiddenFor(x => x.ReceivedHeadNumber)
+@Html.HiddenFor(x => x.SlaughteredHeadNumber)
+@Html.HiddenFor(x => x.QualityGradeId)
+@*<fieldset class="dataentry">
+    <legend>Schedule</legend>
+    <div>
+        @Html.LabelFor(model => model.RequestedProcessDate)
+        @Html.Kendo().DatePickerFor(model => model.RequestedProcessDate).Min(minDate).Max(maxDate).HtmlAttributes(new { tabIndex = 4 })
+        @Html.ValidationMessageFor(model => model.RequestedProcessDate)
+    </div>
+    <div>
+        @Html.LabelFor(model => model.ReceiveDate)
+        @Html.Kendo().DatePickerFor(model => model.ReceiveDate).Min(minDate).Max(maxDate).HtmlAttributes(new { tabIndex = 5 })
+        @Html.ValidationMessageFor(model => model.ReceiveDate)
+    </div>
+    <div>
+        @Html.LabelFor(model => model.SlaughterDate)
+        @Html.Kendo().DatePickerFor(model => model.SlaughterDate).Min(minDate).Max(maxDate).HtmlAttributes(new { tabIndex = 6 })
+        @Html.ValidationMessageFor(model => model.SlaughterDate)
+    </div>
+    <div>
+        @Html.LabelFor(model => model.ProcessDate)
+        @Html.Kendo().DatePickerFor(model => model.ProcessDate).Min(minDate).Max(maxDate).HtmlAttributes(new { tabIndex = 7 })
+        @Html.ValidationMessageFor(model => model.ProcessDate)
+    </div>
+</fieldset>
+<fieldset class="dataentry">
+    <legend>Head Count</legend>
+    <div>
+        @Html.LabelFor(model => model.ExpectedHeadNumber)
+        @Html.Kendo().IntegerTextBoxFor(model => model.ExpectedHeadNumber).Min(0).Max(999999).HtmlAttributes(new { tabIndex = 8 })
+        @Html.ValidationMessageFor(model => model.ExpectedHeadNumber)
+    </div>
+    <div>
+        @Html.LabelFor(model => model.ReceivedHeadNumber)
+        @Html.Kendo().IntegerTextBoxFor(model => model.ReceivedHeadNumber).Min(0).Max(999999).HtmlAttributes(new { tabIndex = 9 })
+        @Html.ValidationMessageFor(model => model.ReceivedHeadNumber)
+    </div>
+    <div>
+        @Html.LabelFor(model => model.SlaughteredHeadNumber)
+        @Html.Kendo().IntegerTextBoxFor(model => model.SlaughteredHeadNumber).Min(0).Max(999999).HtmlAttributes(new { tabIndex = 10 })
+        @Html.ValidationMessageFor(model => model.SlaughteredHeadNumber)
+    </div>
+    <div>
+        @Html.LabelFor(m => m.QualityGradeId)
+        @Html.DropDownListFor(model => model.QualityGradeId, ((IEnumerable<QualityGrade>)ViewBag.QualityGrades).ToSelectListItems(grade => grade.Name, grade => grade.Id.ToString(), grade => grade.Id == Model.QualityGradeId, " ", ""))
+        @Html.ValidationMessageFor(m => m.QualityGradeId)
+    </div>
+</fieldset>*@
+<fieldset class="dataentry">
+    <legend>Label</legend>
+    <div>
+        @Html.LabelFor(model => model.BestBeforeDate)
+        @Html.Kendo().DatePickerFor(model => model.BestBeforeDate).Min(minDate).Max(maxDate)
+        @Html.ValidationMessageFor(model => model.BestBeforeDate)
+    </div>
+    <div>
+        @Html.LabelFor(model => model.BornRegionId)
+        @Html.DropDownListFor(model => model.BornRegionId, ((IEnumerable<Region>)ViewBag.Regions).ToSelectListItems(region => region.Name, region => region.Id.ToString(), region => region.Id == Model.BornRegionId, " ", ""))
+        @Html.ValidationMessageFor(model => model.BornRegionId)
+    </div>
+    <div>
+        @Html.LabelFor(model => model.RaisedRegionId)
+        @Html.DropDownListFor(model => model.RaisedRegionId, ((IEnumerable<Region>)ViewBag.Regions).ToSelectListItems(region => region.Name, region => region.Id.ToString(), region => region.Id == Model.RaisedRegionId, " ", ""))
+        @Html.ValidationMessageFor(model => model.RaisedRegionId)
+    </div>
+    <div>
+        @Html.LabelFor(model => model.SlaughteredRegionId)
+        @Html.DropDownListFor(model => model.SlaughteredRegionId, ((IEnumerable<Region>)ViewBag.Regions).ToSelectListItems(region => region.Name, region => region.Id.ToString(), region => region.Id == Model.SlaughteredRegionId, " ", ""))
+        @Html.ValidationMessageFor(model => model.SlaughteredRegionId)
+    </div>
+    <div>
+        @Html.LabelFor(model => model.ProductOfRegionId)
+        @Html.DropDownListFor(model => model.ProductOfRegionId, ((IEnumerable<Region>)ViewBag.Regions).ToSelectListItems(region => region.Name, region => region.Id.ToString(), region => region.Id == Model.ProductOfRegionId, " ", ""))
+        @Html.ValidationMessageFor(model => model.ProductOfRegionId)
+    </div>
+    <div>
+        @Html.LabelFor(model => model.RefrigerationId)
+        @Html.DropDownListFor(model => model.RefrigerationId, ((IEnumerable<Refrigeration>)ViewBag.Refrigerations).ToSelectListItems(refrigeration => refrigeration.Name, refrigeration => refrigeration.Id.ToString(), refrigeration => refrigeration.Id == Model.RefrigerationId, " ", ""))
+        @Html.ValidationMessageFor(model => model.RefrigerationId)
+    </div>
+    <div>
+        @Html.LabelFor(model => model.BagSuppres)
+        @Html.EditorFor(model => model.BagSuppres)
+        @Html.ValidationMessageFor(model => model.BagSuppres)
+    </div>
+</fieldset>
+<fieldset class="dataentry">
+    <legend>Additional Information</legend>
+    <div>
+        @Html.LabelFor(model => model.AdditionalInfo)
+        @Html.EditorFor(model => model.AdditionalInfo)
+        @Html.ValidationMessageFor(model => model.AdditionalInfo)
+    </div>
+    <div>
+        @Html.LabelFor(model => model.SpecialInstructions)
+        @Html.TextAreaFor(model => model.SpecialInstructions)
+        @Html.ValidationMessageFor(model => model.SpecialInstructions)
+    </div>
+    <div>
+        @Html.LabelFor(model => model.CustomerComments)
+        @Html.TextAreaFor(model => model.CustomerComments)
+        @Html.ValidationMessageFor(model => model.CustomerComments)
+    </div>
+</fieldset>
+
+<script type="text/javascript">
+    $(function () {
+        
+        setBestBeforeDateValidationRule();
+        $("#SlaughterDate").trigger('change');
+    });
+</script>

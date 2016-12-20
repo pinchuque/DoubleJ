@@ -1,0 +1,136 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
+using DoubleJ.Oms.LabelManager.Extensions;
+using DoubleJ.Oms.Model.ViewModels.Internal;
+
+namespace DoubleJ.Oms.LabelManager.UserControls
+{
+    /// <summary>
+    /// Interaction logic for UnitListView.xaml
+    /// </summary>
+    public sealed partial class UnitListView : UserControl
+    {
+        public event EventHandler OnProductChanged;
+
+        public UnitListView()
+        {
+            InitializeComponent();
+            UnitProduct.SelectionChanged += Unit_OnSelectionChanged;
+        }
+
+        private bool _justSelected;
+        private void Unit_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var list = (ListView)sender;
+            var selectedItem = list.SelectedItem;
+            var selectedProduct = (LabelGridItem) selectedItem;
+            if (selectedProduct == null) return;
+
+            if (OnProductChanged != null) OnProductChanged(sender, EventArgs.Empty);
+
+            _justSelected = true;
+
+            var listViewItem = (ListViewItem) list.ItemContainerGenerator.ContainerFromItem(selectedItem);
+            ChangeLocation(listViewItem, selectedProduct, selectedProduct.SelectedLocation ?? 0);
+
+            listView_Click(listViewItem, e);
+        }
+
+        private void listView_Click(object sender, RoutedEventArgs e)
+        {
+            if (_justSelected)
+            {
+                _justSelected = false;
+                return;
+            }
+
+            var listViewItem = sender as ListViewItem;
+            if (listViewItem != null)
+            {
+                foreach (var item  in UnitProduct.Items)
+                {
+                    var listviewitem = UnitProduct.ItemContainerGenerator.ContainerFromItem(item) as ListViewItem;
+                    if (listviewitem != null)
+                    {
+                        listviewitem.GetChildOfType<Grid>().Background = new SolidColorBrush(Color.FromRgb(212, 208, 200));
+                    }
+                }
+                listViewItem.GetChildOfType<Grid>().Background = new SolidColorBrush(Color.FromRgb(0,153,102));
+                var selectedProduct = listViewItem.Content as LabelGridItem;
+                if (selectedProduct == null) return;
+
+                ChangeLocation(listViewItem, selectedProduct);
+            }
+        }
+
+        private void ProductLocationSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var innerList = sender as ListView;
+            if (innerList == null) return;
+
+            var parentInnerCurrentListViewItem = innerList.GetAncestorOfType<ListViewItem>();
+            var parentInnerCurrentListView = parentInnerCurrentListViewItem.GetAncestorOfType<ListView>();
+            parentInnerCurrentListView.SelectedItem = parentInnerCurrentListViewItem.Content as LabelGridItem;
+
+            var selectedProduct = parentInnerCurrentListViewItem.Content as LabelGridItem;
+            if (selectedProduct == null)
+                return;
+            
+            ChangeLocation(innerList, selectedProduct,
+                ((LabelGridItem.LocationTemplate) innerList.SelectedItem).LocationTemplateId);
+
+            _justSelected = true;
+            e.Handled = true;
+
+            listView_Click(parentInnerCurrentListViewItem, e);
+        }
+
+        private void ChangeLocation(Visual container, LabelGridItem selectedProduct, int? location = null)
+        {
+            if (location.HasValue)
+                selectedProduct.SelectedLocation = location;
+            else if (++selectedProduct.SelectedLocation == selectedProduct.Locations.Count)
+                selectedProduct.SelectedLocation = 0;
+
+            ApplyUnitCaptionStyle(container, selectedProduct.SelectedLocation);
+        }
+
+        private void ApplyUnitCaptionStyle(Visual container, int? location)
+        {
+            List<Visual> foundElements = new List<Visual>();
+            container.FindDescendantsByType(typeof (TextBlock), "Location", foundElements);
+            var count = 0;
+            foreach (var element in foundElements)
+            {
+                var textBlock = element as TextBlock;
+                if (textBlock == null || !textBlock.IsVisible)
+                    continue;
+                textBlock.Name = "Location" + count++;
+                textBlock.SetResourceReference(StyleProperty,
+                    (textBlock.Name == "Location" + location)
+                        ? "UnitCaptionSelected"
+                        : "UnitCaptionDefault");
+            }
+        }
+
+        private void Location_Click(object sender, MouseButtonEventArgs e)
+        {
+            var innerList = sender as ListViewItem;
+            if (innerList == null) return;
+            var location = innerList.Content as LabelGridItem.LocationTemplate;
+            var parentInnerCurrentListViewItem = innerList.GetAncestorOfType<ListView>();
+            var parentInnerCurrentListView = parentInnerCurrentListViewItem.GetAncestorOfType<ListViewItem>();
+
+            var selectedProduct = parentInnerCurrentListView.Content as LabelGridItem;
+
+            if (location == null) return;
+            UnitProduct.SelectedItem = selectedProduct;
+            ChangeLocation(parentInnerCurrentListView, selectedProduct, location.LocationTemplateId);
+        }
+        
+    }
+}

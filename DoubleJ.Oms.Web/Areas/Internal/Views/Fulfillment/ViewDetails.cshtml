@@ -1,0 +1,65 @@
+﻿@model int
+@{
+    ViewBag.Title = "ViewDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="content-container">
+    <div id="content">
+        <fieldset>
+            <legend>Pending Labels</legend>
+
+            @(Html.Kendo().Grid<DoubleJ.Oms.Model.ViewModels.Mobile.ProductViewModel>()
+                  .Name("PendingLabelsGrid")
+                  .Columns(columns =>
+                      {
+                          columns.Bound(order => order.LabeId).Hidden(true);
+                          columns.Bound(order => order.SerialNumber).Width(50);
+                          columns.Bound(order => order.ProductNumber).Width(40);
+                          columns.Bound(order => order.Product).Width(60);
+                          columns.Command(x => x.Destroy()).Width(35); ;
+                      })
+                  .Pageable()
+                  .Sortable()
+                  .Scrollable()
+                  .DataSource(dataSource => dataSource
+                                                .Ajax()
+                                                .Model(model => model.Id(order => order.LabeId))
+                                                .Read(read => read.Action("GetPendingLabels", "Fulfillment", new {orderId = Model}))
+                                                .Destroy(read => read.Action("RemovePendingLabel", "Fulfillment"))
+
+                  )
+                  )
+        </fieldset>
+        <fieldset>
+            <legend>Allocated Labels</legend>
+
+            @(Html.Kendo().Grid<DoubleJ.Oms.Model.ViewModels.Mobile.ProductViewModel>()
+                  .Name("AllocatedLabelsGrid")
+                  .Columns(columns =>
+                      {
+                          columns.Bound(order => order.LabeId).Hidden(true);
+                          columns.Bound(order => order.SerialNumber).Width(50);
+                          columns.Bound(order => order.ProductNumber).Width(40);
+                          columns.Bound(order => order.Product).Width(60);
+                          columns.Command(x => x.Destroy()).Width(35);
+                      })
+                  .Pageable()
+                  .Sortable()
+                  .Scrollable()
+                  .DataSource(dataSource => dataSource
+                                .Ajax()
+                                .Model(model => model.Id(order => order.LabeId))
+                                .Read(read => read.Action("GetAllocatedLabels", "Fulfillment", new {orderId = Model}))
+                                .Destroy(read => read.Action("RemoveAllocatedLabel", "Fulfillment"))
+                  )
+                  )
+        </fieldset>
+    </div>
+    <div style="clear: both; margin-bottom: 50px"></div>
+</div>
+@section SiteNavigation {
+    @Html.Action("_Site", "Navigation", new { area = "", selected = OmsSiteNavigation.Fulfillment })
+}
+
+

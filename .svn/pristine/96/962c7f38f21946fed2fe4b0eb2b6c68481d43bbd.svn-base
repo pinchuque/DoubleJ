@@ -1,0 +1,363 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Web.Mvc;
+using DoubleJ.Oms.Domain.Definitions;
+using DoubleJ.Oms.Domain.Entities;
+using DoubleJ.Oms.Model.Interfaces;
+using DoubleJ.Oms.Model.Models;
+using DoubleJ.Oms.Model.ViewModels.Internal;
+using DoubleJ.Oms.Service.Interfaces;
+using DoubleJ.Oms.Service.Interfaces.Web;
+
+namespace DoubleJ.Oms.Service.Services.Internal
+{
+    public class ProductService : IProductService
+    {
+        private readonly ICustomerProductDataRepository _customerProductDataRepository;
+        private readonly ICustomerRepository _customerRepository;
+        private readonly ILookupService _lookupService;
+        private readonly IProductRepository _productRepository;
+        private readonly IBoxSizeRepository _boxSizeRepository;
+        private readonly IBagSizeRepository _bagSizeRepository;
+        private readonly ICaseSizeRepository _caseSizeRepository;
+
+        public ProductService(ILookupService lookupService,
+            IProductRepository productRepository,
+            ICustomerProductDataRepository customerProductDataRepository,
+            ICustomerRepository customerRepository,
+            IBoxSizeRepository boxSizeRepository,
+            IBagSizeRepository bagSizeRepository, ICaseSizeRepository caseSizeRepository)
+        {
+            _lookupService = lookupService;
+            _productRepository = productRepository;
+            _customerProductDataRepository = customerProductDataRepository;
+            _customerRepository = customerRepository;
+            _boxSizeRepository = boxSizeRepository;
+            _bagSizeRepository = bagSizeRepository;
+            _caseSizeRepository = caseSizeRepository;
+        }
+
+        private void FillSizeTypes(ProductViewModel productViewModel)
+        {
+            productViewModel.BoxTypeNames = new SelectList(GetBoxTypes(productViewModel.CustomerType), "TypeId", "TypeName");
+            productViewModel.BagTypeNames = new SelectList(GetBagTypes(productViewModel.CustomerType), "TypeId", "TypeName");
+        }
+
+        #region Add
+
+        public ProductViewModel Get()
+        {
+            var productViewModel = new ProductViewModel
+            {
+                DoubleJProductCode = GenerateFormatedCode()
+            };
+
+            FillSizeTypes(productViewModel);
+            
+            return productViewModel;
+        }
+
+        public void Add(ProductViewModel model)
+        {
+            var product = new Product
+            {
+                Upc = model.Upc,
+                EnglishDescription = model.Description,
+                GermanDescription = model.GermanDescription,
+                FrenchDescription = model.FrenchDescription,
+                ItalianDescription = model.ItalianDescription,
+                SwedishDescription = model.SwedishDescription,
+                PrimalCutId = Convert.ToInt32(model.PrimalCutId),
+                SubPrimalCutId = model.SubPrimalCutId,
+                TrimCutId = model.TrimCutId,
+                SpeciesId = model.SpeciesId,
+                Code = GenerateFormatedCode(),
+                Gtin = model.Gtin,
+                PricePerPound = model.PricePerPound,
+                CustomerTypeId = model.CustomerType,
+                BoxSizeId = model.BoxTypeId,
+                BagSizeId = model.BagTypeId,
+                BagPieceQuantity = model.BagPieceQuantity,
+                BoxBagQuantity = model.BoxBagQuantity,
+                IsActive = true,
+            };
+            _productRepository.Add(product);
+            _productRepository.Save();
+
+            MakeProductActiveForAllCustomers(product);
+        }
+
+        private string GenerateFormatedCode()
+        {
+            var maxCode = int.Parse(_productRepository.GetAll().Max(x => x.Code)) + 1;
+            var formatedCode = maxCode.ToString(CultureInfo.InvariantCulture).PadLeft(5, '0');
+            return formatedCode;
+        }
+
+        #endregion
+
+        #region Edit
+
+        public ProductViewModel Get(int id)
+        {
+            Product product = _productRepository.Get(id);
+            var productViewModel = new ProductViewModel
+            {
+                Id = product.Id,
+                Upc = product.Upc,
+                PricePerPound = product.PricePerPound ?? 0,
+                Description = product.EnglishDescription,
+                GermanDescription = product.GermanDescription,
+                FrenchDescription = product.FrenchDescription,
+                ItalianDescription = product.ItalianDescription,
+                SwedishDescription = product.SwedishDescription,
+                PrimalCutId = product.PrimalCutId,
+                SubPrimalCutId = product.SubPrimalCutId,
+                TrimCutId = product.TrimCutId,
+                SpeciesId = product.SpeciesId,
+                DoubleJProductCode = product.Code,
+                Gtin = product.Gtin,
+                CustomerType = product.CustomerTypeId,
+                BoxTypeId = product.BoxSizeId,
+                BagTypeId = product.BagSizeId,
+                BoxBagQuantity = product.BoxBagQuantity,
+                BagPieceQuantity = product.BagPieceQuantity
+            };
+
+            FillSizeTypes(productViewModel);
+
+            return productViewModel;
+        }
+
+        
+
+        public ProductDataViewModel GetAllCustomerData(int id)
+        {
+            var customersProductData = _customerRepository.GetCustomersProductData(id);
+            var result = new ProductDataViewModel
+            {
+                //#if DEBUG
+                //                CustomerProductCodeList = customersProductData.Take(100).ToArray(),
+                //#else
+                CustomerProductCodeList = customersProductData.ToArray(),
+                //#endif
+                //CustomerProductCodeList = Enumerable.Empty<ProductCodeItem>(),
+                CustomerProductCodeExists = customersProductData.Any(),
+                ProductId = id
+            };
+
+            return result;
+        }
+
+        public void Edit(ProductViewModel model)
+        {
+            var product = _productRepository.Get(Convert.ToInt32(model.Id));
+            product.Upc = model.Upc;
+            product.EnglishDescription = model.Description;
+            product.GermanDescription = model.GermanDescription;
+            product.FrenchDescription = model.FrenchDescription;
+            product.ItalianDescription = model.ItalianDescription;
+            product.SwedishDescription = model.SwedishDescription;
+            product.SpeciesId = Convert.ToInt32(model.SpeciesId);
+            product.PrimalCutId = Convert.ToInt32(model.PrimalCutId);
+            product.SubPrimalCutId = Convert.ToInt32(model.SubPrimalCutId);
+            product.TrimCutId = Convert.ToInt32(model.TrimCutId);
+            product.PricePerPound = model.PricePerPound;
+            product.Gtin = model.Gtin;
+            product.CustomerTypeId = model.CustomerType;
+            product.BoxSizeId = model.BoxTypeId;
+            product.BagSizeId = model.BagTypeId;
+            product.BagPieceQuantity = model.BagPieceQuantity;
+            product.BoxBagQuantity = model.BoxBagQuantity;
+            _productRepository.Update(product);
+            _productRepository.Save();
+        }
+
+        public void Edit(int productId, ProductCodeItem model)
+        {
+            var product = _productRepository.Get(productId);
+            if (product == null) return;
+
+            var customerData = product.CustomerProductData.FirstOrDefault(x => x.CustomerId == model.Id);
+            if (customerData != null)
+            {
+                customerData.ProductCode = model.ProductCode;
+                customerData.ProductDescription = model.ProductDescription;
+                customerData.Gtin = model.Gtin;
+                customerData.PricePerPound = model.PricePerPound;
+            }
+            else
+            {
+                _customerProductDataRepository.Add(new CustomerProductData
+                {
+                    CustomerId = model.Id,
+                    ProductId = productId,
+                    ProductCode = model.ProductCode,
+                    ProductDescription = model.ProductDescription,
+                    Gtin = model.Gtin,
+                    PricePerPound = model.PricePerPound
+                });
+            }
+
+            _customerProductDataRepository.Save();
+        }
+
+        public void EditCustomerData(int productId, IEnumerable<ProductCodeItem> items)
+        {
+            var product = _productRepository.Get(productId);
+            if (product == null) return;
+
+            //Remove current ones
+            product.CustomerProductData.Clear();
+            _productRepository.Update(product);
+            _productRepository.Save();
+
+            //Add selected ones
+            AddCustomerProductCodes(product.Id, items);
+        }
+
+        public NutritionInfoViewModel GetNutritionInfo(int productId)
+        {
+            var product = _productRepository.Get(productId);
+
+            var nutritionInfoViewModel = new NutritionInfoViewModel
+            {
+                ProductId = productId,
+
+                Description = product.NutritionDescription,
+                ServingSize = product.NutritionServingSize,
+                ServingPerContainer = product.NutritionServingContainer,
+                Calories = product.NutritionCalories ?? 0,
+                CaloriesFat = product.NutritionCaloriesFat ?? 0,
+                TotalFat = product.NutritionTotalFat ?? 0,
+                SatFat = product.NutritionSatFat ?? 0,
+                TransFat = product.NutritionTransFat ?? 0,
+                PolyFat = product.NutritionPolyFat ?? 0,
+                MonoFat = product.NutritionMonoFat ?? 0,
+                Cholesterol = product.NutritionCholesterol ?? 0,
+                Sodium = product.NutritionSodium ?? 0,
+                Carbs = product.NutritionCarbs ?? 0,
+                Protein = product.NutritionProtein ?? 0,
+                VitA = product.NutritionVitA ?? 0,
+                VitC = product.NutritionVitC ?? 0,
+                Calcium = product.NutritionCalcium ?? 0,
+                Iron = product.NutritionIron ?? 0,
+            };
+
+            return nutritionInfoViewModel;
+        }
+
+        public void EditNutritionInfo(NutritionInfoViewModel model)
+        {
+            var product = _productRepository.Get(model.ProductId);
+
+            product.NutritionDescription = model.Description;
+            product.NutritionServingSize = model.ServingSize;
+            product.NutritionServingContainer = model.ServingPerContainer;
+            product.NutritionCalories = model.Calories;
+            product.NutritionCaloriesFat = model.CaloriesFat;
+            product.NutritionTotalFat = model.TotalFat;
+            product.NutritionSatFat = model.SatFat;
+            product.NutritionTransFat = model.TransFat;
+            product.NutritionPolyFat = model.PolyFat;
+            product.NutritionMonoFat = model.MonoFat;
+            product.NutritionCholesterol = model.Cholesterol;
+            product.NutritionSodium = model.Sodium;
+            product.NutritionCarbs = model.Carbs;
+            product.NutritionProtein = model.Protein;
+            product.NutritionVitA = model.VitA;
+            product.NutritionVitC = model.VitC;
+            product.NutritionCalcium = model.Calcium;
+            product.NutritionIron = model.Iron;
+
+            _productRepository.Update(product);
+            _productRepository.Save();
+        }
+
+        public IEnumerable<ProductCodeItem> GetCustomerItems(int productId)
+        {
+            var result = _customerRepository.GetCustomersProductData(productId);
+            return result;
+        }
+
+        #endregion
+
+        private void AddCustomerProductCodes(int productId, IEnumerable<ProductCodeItem> customerProductCodeItems)
+        {
+            var productCodeItems = customerProductCodeItems.Where(customer => customer.IsSelected).ToArray();
+            foreach (var item in productCodeItems)
+            {
+                _customerProductDataRepository.Add(new CustomerProductData
+                {
+                    CustomerId = item.Id,
+                    ProductId = productId,
+                    ProductCode = item.ProductCode,
+                    ProductDescription = item.ProductDescription,
+                    Gtin = item.Gtin,
+                    PricePerPound = item.PricePerPound
+                });
+            }
+
+            _customerProductDataRepository.Save();
+        }
+
+        private void MakeProductActiveForAllCustomers(Product product)
+        {
+            IEnumerable<Customer> customers = _customerRepository.GetAllActive();
+
+            foreach (var cust in customers)
+            {
+                _customerProductDataRepository.Add(new CustomerProductData
+                {
+                    CustomerId = cust.Id,
+                    ProductId = product.Id,
+                    ProductCode = product.Code,
+                    ProductDescription = product.EnglishDescription,
+                    Gtin = product.Gtin,
+                    PricePerPound = product.PricePerPound
+                });
+            }
+
+            _customerProductDataRepository.Save();
+        }
+
+        public static string GetFormattedProductName(Product product)
+        {
+            return string.Format("{1} {0}", product.EnglishDescription, product.Upc);
+        }
+
+        private IEnumerable<ProductTypeItem> GetBoxTypes(OmsCustomerType? customerTypeId)
+        {
+            var result = new List<ProductTypeItem>();
+            if (customerTypeId != null)
+            {
+                result = _caseSizeRepository.FindAll(
+                    x => x.IsActive && x.CaseTypeId == 2 && x.CustomerTypeId == (OmsCustomerType) customerTypeId)
+                    .Select(x => new ProductTypeItem
+                    {
+                        TypeId = x.Id,
+                        TypeName = x.Name,
+                    }).ToList();
+            }
+            return result;
+        }
+
+        private IEnumerable<ProductTypeItem> GetBagTypes(OmsCustomerType? customerTypeId)
+        {
+            var result = new List<ProductTypeItem>();
+            if (customerTypeId != null)
+            {
+                result = _caseSizeRepository.FindAll(
+                    x => x.IsActive && x.CaseTypeId == 1 && x.CustomerTypeId == (OmsCustomerType)customerTypeId)
+                    .Select(x => new ProductTypeItem
+                    {
+                        TypeId = x.Id,
+                        TypeName = x.Name,
+                    }).ToList();
+            }
+            return result;
+        }
+    }
+}
