@@ -926,6 +926,8 @@ namespace DoubleJ.Oms.LabelManager
 
         private void ShowNumericKeyboard(object sender, RoutedEventArgs e)
         {
+
+
             if (!_labelTypeMode.HasValue) return;
 
             var num = new ManualWeightPanel(3, 10,null,this) { Owner = this };
